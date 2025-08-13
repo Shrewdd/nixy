@@ -35,7 +35,7 @@
   #######################
   # Hostname & Networking
   #######################
-  networking.hostName = "nixos";
+  networking.hostName = "nixy";
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
