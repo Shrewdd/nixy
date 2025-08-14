@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    <home-manager/nixos>
   ];
 
   #######################
@@ -24,10 +25,10 @@
   home-manager.users.km = {
     # Modular package configuration
     imports = [
-      ./home/home.nix
-      ./home/spotify/default.nix
-      ./home/hyprland/default.nix
-      ./home/waybar/default.nix
+      ./home-manager/home.nix
+      ./home-manager/spotify/default.nix
+      ./home-manager/hyprland/default.nix
+      ./home-manager/waybar/default.nix
     ];
     home.stateVersion = "25.05";
   };
