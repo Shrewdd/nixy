@@ -4,7 +4,7 @@
   imports = [
     ./hyprland/default.nix
     ./waybar/default.nix
-  ./zen-browser/default.nix
+    ./zen-browser/default.nix
   ];
 
   home.username = "km";
