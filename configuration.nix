@@ -3,7 +3,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    <home-manager/nixos>
   ];
 
   #######################
@@ -22,16 +21,6 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.backupFileExtension = "backup";
-  home-manager.users.km = {
-    # Modular package configuration
-    imports = [
-      ./home-manager/home.nix
-      ./home-manager/spotify/default.nix
-      ./home-manager/hyprland/default.nix
-      ./home-manager/waybar/default.nix
-    ];
-    home.stateVersion = "25.05";
-  };
 
   #######################
   # Hostname & Networking
