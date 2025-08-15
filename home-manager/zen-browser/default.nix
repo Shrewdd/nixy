@@ -1,7 +1,5 @@
-{ pkgs, lib, inputs, ... }:
+{ ... }:
 
-# Re-export the zen-browser home-manager module from the `zen-browser` flake input.
-# This preserves the original behavior where `home.nix` previously imported
-# `inputs.zen-browser.homeModules.beta` directly.
-
-inputs.zen-browser.homeModules.beta
+# Forward all arguments to the upstream zen-browser module so this file is a
+# valid home-manager module that simply re-exports the upstream module.
+(import inputs.zen-browser.homeModules.beta) /* the upstream module */
