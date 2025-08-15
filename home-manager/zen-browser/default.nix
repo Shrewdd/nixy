@@ -1,5 +1,8 @@
 { pkgs, lib, inputs, ... }:
 
-# Forward all arguments to the upstream zen-browser module so this file is a
-# valid home-manager module that simply re-exports the upstream module.
-inputs.zen-browser.homeModules.beta
+# Make this a proper home-manager module by importing the upstream zen-browser
+# module. This ensures the file evaluates as a module when included from
+# `home.nix`.
+{
+	imports = [ inputs.zen-browser.homeModules.beta ];
+}
