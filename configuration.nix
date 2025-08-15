@@ -108,7 +108,7 @@
 
   # System-wide core apps
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    tuigreet
     kitty
     nautilus
     pavucontrol
