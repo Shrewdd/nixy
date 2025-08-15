@@ -1,15 +1,16 @@
-{ config, pkgs, ... }:
-{
+{ config, pkgs, inputs, ... }:
 
+{
   imports = [
     ./hyprland/default.nix
     ./waybar/default.nix
+  ./zen-browser/default.nix
   ];
 
   home.username = "km";
   home.homeDirectory = "/home/km";
   home.stateVersion = "25.05";
-  # Home Manager Applications
+
   home.packages = with pkgs; [
     playerctl
     vscode
