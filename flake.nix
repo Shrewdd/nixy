@@ -6,14 +6,22 @@
     home-manager.url = "github:nix-community/home-manager/release-25.05";
   };
 
-  outputs = { self, nixpkgs, home-manager }: {
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, ... }:
+  let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs { inherit system; };
+  in
+  {
+    nixosConfigurations.desktop = pkgs.lib.nixosSystem {
+      system = system;
       modules = [
         ./configuration.nix
         home-manager.nixosModules.home-manager
-	{
-	home-manager.users.km = import ./home-manager/home.nix;
-	}
+        {
+          home-manager.users.km = {
+            imports = [ ./home-manager/home.nix ];
+          };
+        }
       ];
     };
   };
