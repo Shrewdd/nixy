@@ -1,11 +1,7 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 
-# Module for zen-browser related home-manager configuration.
-# Pulled out from `home.nix` so it can live in its own folder while being worked on.
-{
-  programs.zen-browser = {
-    enable = true;
-    # Add additional zen-browser settings here when needed, e.g.
-    # settings = { ... };
-  };
-}
+# Re-export the zen-browser home-manager module from the `zen-browser` flake input.
+# This preserves the original behavior where `home.nix` previously imported
+# `inputs.zen-browser.homeModules.beta` directly.
+
+inputs.zen-browser.homeModules.beta
