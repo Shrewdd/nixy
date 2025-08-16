@@ -5,14 +5,13 @@
 
     settings = {
       "$mainMod" = "SUPER";
-      "$terminal" = "kitty";
+      "$terminal" = "ghostty";
       "$fileManager" = "nautilus";
       "$menu" = "rofi -show drun";
 
 
       "exec-once" = [
         "systemctl --user start hyprpolkitagent"
-        "eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh,gpg)"
       ];
 
 
