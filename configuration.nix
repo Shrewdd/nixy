@@ -109,15 +109,17 @@
   # System-wide core apps
   environment.systemPackages = with pkgs; [
     tuigreet
-    kitty
+    ghostty
     nautilus
     pavucontrol
+    playerctl
     rofi
     jq
     curl
     lm_sensors
     brightnessctl
-    git
+    libsecret
+    seahorse
   ];
 
   # Install Nerd Font system-wide (new nerd-fonts namespace)
@@ -132,7 +134,6 @@
 
   # GNOME Keyring (password/key storage)
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.greetd.enableGnomeKeyring = true;  # unlock via greetd login
 
   programs.localsend = {
     enable = true;
