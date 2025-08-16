@@ -122,6 +122,8 @@
     seahorse
     # Notification utils
     libnotify
+    # Screenshot utils
+    grimblast
   ];
 
   # Install Nerd Font system-wide (new nerd-fonts namespace)

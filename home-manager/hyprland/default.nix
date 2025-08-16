@@ -87,6 +87,9 @@
         "$mainMod SHIFT, S, movetoworkspace, special:magic"
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
+        # Screenshot keybinds
+        "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
+        ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
       ];
 
       bindm = [
