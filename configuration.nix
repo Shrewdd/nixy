@@ -120,6 +120,8 @@
     brightnessctl
     libsecret
     seahorse
+    # Notification utils
+    libnotify
   ];
 
   # Install Nerd Font system-wide (new nerd-fonts namespace)
