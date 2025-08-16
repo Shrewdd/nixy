@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  programs.dunst = {
+  services.dunst = {
     enable = true;
     settings = {
       global = {

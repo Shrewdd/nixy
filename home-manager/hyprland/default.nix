@@ -96,11 +96,11 @@
 
       bindel = [
         # Volume Up
-        ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && notify-send \"Volume Up\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
+        ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && notify-send -r 9991 \"Volume Up\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
         # Volume Down
-        ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && notify-send \"Volume Down\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
+        ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && notify-send -r 9991 \"Volume Down\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
         # Volume Mute
-        ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && notify-send \"Volume Mute\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print (\$3==\"MUTED\"?\"Muted\":int(\$2*100) \\\"%\\\")}\")\"'"
+        ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && notify-send -r 9991 \"Volume Mute\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print (\$3==\"MUTED\"?\"Muted\":int(\$2*100) \\\"%\\\")}\")\"'"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
         ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
         ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
