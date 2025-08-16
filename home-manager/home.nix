@@ -5,6 +5,7 @@
     ./hyprland/default.nix
     ./waybar/default.nix
     ./zen-browser/default.nix
+    ./git/default.nix
   ];
 
   home.username = "km";
@@ -12,7 +13,6 @@
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
-    playerctl
     vscode
     hyprpolkitagent
   ];
