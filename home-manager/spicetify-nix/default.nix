@@ -4,6 +4,7 @@
 
   programs.spicetify = {
     enable = true;
-    extensions = [ "no-ads" ];
+    extensions = [ "adblockify" ];
+    theme = spicePkgs.themes.minimal;
   };
 }

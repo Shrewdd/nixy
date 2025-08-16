@@ -6,6 +6,7 @@
     ./waybar/default.nix
     ./zen-browser/default.nix
     ./git/default.nix
+    ./spicetify-nix/default.nix
   ];
 
   home.username = "km";
