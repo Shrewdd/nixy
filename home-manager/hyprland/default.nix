@@ -6,7 +6,7 @@
     settings = {
       "$mainMod" = "SUPER";
       "$terminal" = "ghostty";
-      "$fileManager" = "nautilus";
+      "$fileManager" = "thunar";
       "$menu" = "rofi -show drun";
 
 

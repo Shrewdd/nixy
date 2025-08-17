@@ -110,7 +110,6 @@
   environment.systemPackages = with pkgs; [
     tuigreet
     ghostty
-    nautilus
     pavucontrol
     playerctl
     rofi
@@ -120,6 +119,8 @@
     brightnessctl
     libsecret
     seahorse
+    xarchiver
+    appimage-run
     # Notification utils
     libnotify
     # Screenshot utils
@@ -145,4 +146,11 @@
   };
 
   programs.steam.enable = true;
+  # Thunar utils
+  programs.thunar = {
+    enable = true;
+    plugins = [ pkgs.xfce.thunar-archive-plugin ];
+  };
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;
 }
