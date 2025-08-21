@@ -147,10 +147,12 @@
 
   programs.steam.enable = true;
   # Thunar utils
-  programs.thunar = {
-    enable = true;
-    plugins = [ pkgs.xfce.thunar-archive-plugin ];
-  };
+  programs.thunar.enable = true;
   services.tumbler.enable = true;
   services.gvfs.enable = true;
+  services.printing = {
+    enable = true;
+    startWhenNeeded = true;
+    drivers = [ pkgs.cups-filters ];
+  };
 }
