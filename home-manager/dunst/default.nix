@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   services.dunst = {
-  enable = false;
+  enable = true;
     settings = {
       global = {
         font = "Fira Sans 10";
