@@ -3,6 +3,7 @@
 {
   imports = [
     ./hyprland/default.nix
+    ./hyprland/hyprpaper/default.nix
     ./waybar/default.nix
     ./zen-browser/default.nix
     ./git/default.nix
