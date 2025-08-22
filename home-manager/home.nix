@@ -9,6 +9,7 @@
     ./git/default.nix
     ./spicetify-nix/default.nix
     ./dunst/default.nix
+    ./btop/default.nix
   ];
 
   home.username = "km";
