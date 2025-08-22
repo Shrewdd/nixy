@@ -3,24 +3,26 @@
   programs.eww = {
     enable = true;
     package = pkgs.eww-wayland;
-    configDir = ".config/eww"; # relative under $HOME
+    configDir = null; # managing files via xdg.configFile below
   };
 
   xdg.configFile."eww/eww.yuck".text = ''
 (defwidget sep [] (box :class "sep" :width 6 ""))
 
 (defpoll clock :interval "5s" "date '+%a %d %b %H:%M'")
-(defpoll cpu_temp :interval "10s" "bash -c 'for p in /sys/class/hwmon/hwmon*/temp*_input; do l=${p%_*}_label; if [ -r $l ] && grep -qi package $l; then v=$(cat $p); echo $((v/1000)); exit; fi; done; echo ?'" )
-(defpoll weather :interval "900s" "bash ~/.config/eww/scripts/weather.sh print")
+(defpoll cpu_temp :interval "10s" "~/.config/eww/scripts/cpu_temp.sh")
+(defpoll gpu_temp :interval "15s" "~/.config/eww/scripts/gpu_temp.sh")
+(defpoll weather :interval "900s" "~/.config/eww/scripts/weather.sh print")
 
-(defwidget workspace-btn [id] (button :onclick "hyprctl dispatch workspace ${id}" id))
+(defwidget workspace-btn [id]
+  (button :onclick (str "hyprctl dispatch workspace " id) id))
 (defwidget workspaces [] (box :class "workspaces" :spacing 4 (workspace-btn :id "1") (workspace-btn :id "2") (workspace-btn :id "3") (workspace-btn :id "4") (workspace-btn :id "5")))
 
 (defwidget bar []
   (centerbox :class "bar" :space-evenly "false"
     (box :class "left" :spacing 8 (workspaces))
     (box :class "center" (label :class "clock" :text clock))
-    (box :class "right" :spacing 10 (label :class "cpu" :text " ${cpu_temp}°C") (label :class "weather" :text weather)))
+  (box :class "right" :spacing 10 (label :class "gpu" :text "󰢮 ''${gpu_temp}°C") (label :class "cpu" :text " ''${cpu_temp}°C") (label :class "weather" :text weather)))
 )
 
 (defwindow topbar
@@ -47,22 +49,8 @@ $accent: #7c3aed;
 .sep { }
 '';
 
-  xdg.configFile."eww/scripts/weather.sh".text = ''
-#!/usr/bin/env bash
-set -euo pipefail
-CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/eww-weather.json"
-CITY="Lubniany"
-MODE="${1:-print}"
-if [ "$MODE" = update ]; then
-  mkdir -p "$(dirname "$CACHE")"
-  curl -sS "https://wttr.in/${CITY}?format=j1" > "$CACHE.tmp" && mv "$CACHE.tmp" "$CACHE"
-fi
-if [ -f "$CACHE" ]; then
-  t=$(jq -r '.current_condition[0].temp_C' "$CACHE" 2>/dev/null || echo "?")
-  desc=$(jq -r '.current_condition[0].weatherDesc[0].value' "$CACHE" 2>/dev/null | tr '[:upper:]' '[:lower:]')
-  echo "${t}°C ${desc}"
-else
-  echo "--°C"
-fi
-'';
+  # External scripts now tracked directly in repo under home-manager/eww/scripts
+  xdg.configFile."eww/scripts/weather.sh" = { source = ./scripts/weather.sh; executable = true; };
+  xdg.configFile."eww/scripts/cpu_temp.sh" = { source = ./scripts/cpu_temp.sh; executable = true; };
+  xdg.configFile."eww/scripts/gpu_temp.sh" = { source = ./scripts/gpu_temp.sh; executable = true; };
 }
