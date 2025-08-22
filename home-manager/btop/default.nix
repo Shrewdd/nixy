@@ -3,13 +3,13 @@
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "dracula-plus"; # custom theme name below
-      theme_background = false;      # transparent so terminal theme shows
-      vim_keys = true;               # faster navigation
-      rounded_corners = true;        # nicer box look
-      graph_symbol = "braille";      # dense graphs
-      shown_boxes = "proc cpu mem net"; # minimal essential boxes
-      update_ms = 1600;              # balanced refresh (lower CPU usage)
+      color_theme = "dracula-plus";
+      theme_background = false;
+      vim_keys = true;
+      rounded_corners = true;
+      graph_symbol = "braille";
+      shown_boxes = "proc cpu mem net";
+      update_ms = 1600;
       proc_sorting = "cpu";
       proc_reversed = false;
       proc_tree = false;
@@ -22,7 +22,7 @@
       show_battery = true;
       show_uptime = true;
       check_temp = true;
-      use_psutil = false;            # native /proc parsing faster generally
+      use_psutil = false;
     };
 
     themes.dracula-plus = ''
