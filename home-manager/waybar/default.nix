@@ -77,7 +77,7 @@ let
 in
 {
   programs.waybar = {
-    enable = true;
+    enable = false; # temporarily disabled (keeping config for later)
     systemd.enable = true;
 
     settings = [

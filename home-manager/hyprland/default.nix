@@ -12,6 +12,7 @@
 
       "exec-once" = [
         "systemctl --user start hyprpolkitagent"
+        "eww open topbar"
       ];
 
 
