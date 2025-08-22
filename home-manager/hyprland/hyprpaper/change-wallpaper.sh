@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# dirs / monitors
 WALL_DIR="$HOME/nixy/home-manager/hyprland/hyprpaper/wallpapers"
 PRIMARY="desc:Samsung Electric Company LS24C33xG H9TX501846"
 SECONDARY="desc:Samsung Electric Company LS24C33xG H9TX501795"
+# mode / target screens
 MODE=next
 TARGETS=all
 
@@ -36,18 +38,21 @@ rm -f "$LIST_TMP"
 echo "$IDX" > "$STATE_FILE"
 if [ -z "$IMG" ] || [ ! -f "$IMG" ]; then echo "Invalid image: $IMG" >&2; rm -f "$LIST_TMP"; exit 1; fi
 IMG=$(readlink -f "$IMG")
-hyprctl hyprpaper preload "$IMG" >/dev/null 2>&1 || true
-apply_wall(){ hyprctl hyprpaper wallpaper "$1","$IMG" >/dev/null 2>&1 || true; }
+hyprctl hyprpaper preload "$IMG" >/dev/null 2>&1 || true   # load just this one
+apply_wall(){ hyprctl hyprpaper wallpaper "$1","$IMG" >/dev/null 2>&1 || true; } # set on monitor
 case "$TARGETS" in
   all) apply_wall "$PRIMARY"; apply_wall "$SECONDARY" ;;
   primary) apply_wall "$PRIMARY" ;;
   secondary) apply_wall "$SECONDARY" ;;
   *) apply_wall "$TARGETS" ;;
 esac
-ACTIVE_SET=$(hyprctl hyprpaper list 2>/dev/null | awk '/CURRENT/ {print $2}' | sort -u || true)
-hyprctl hyprpaper list 2>/dev/null | awk '/PRELOADED/ {print $2}' | while read -r cached; do
+# keep only active image loaded (memory friendly)
+mapfile -t ACTIVE_PATHS < <(hyprctl hyprpaper listactive 2>/dev/null | awk -F'= ' '{print $2}' | sed 's/^ *//') || true
+CURRENT_SET=" ${ACTIVE_PATHS[*]} "
+hyprctl hyprpaper listloaded 2>/dev/null | while read -r cached; do
+  [ -z "$cached" ] && continue
   [ "$cached" = "$IMG" ] && continue
-  echo "$ACTIVE_SET" | grep -q "$cached" && continue
+  case " $CURRENT_SET " in *" $cached "*) continue ;; esac
   hyprctl hyprpaper unload "$cached" >/dev/null 2>&1 || true
 done
 notify-send -r 9911 "Wallpaper" "$(basename "$IMG")" -i "$IMG" 2>/dev/null || true
