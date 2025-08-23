@@ -10,6 +10,7 @@
     ./spicetify-nix/default.nix
     ./dunst/default.nix
     ./btop/default.nix
+    ./anytype/default.nix
   ];
 
   home.username = "km";
