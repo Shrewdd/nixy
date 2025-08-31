@@ -5,10 +5,6 @@
     enable = true;
     settings = {
       "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
-      logo = {
-        source = "$XDG_CONFIG_HOME/fastfetch/nixos.png";
-        height = 18;
-      };
       display = {
         separator = " ➜ ";
         color = "white";
@@ -52,7 +48,7 @@
         }
         {
           type = "os";
-          key = "   OS";
+          key = "   OS";
           keyColor = "blue";
         }
         {
@@ -98,7 +94,4 @@
       ];
     };
   };
-
-  # Copy the nixos.png logo to the user's config directory
-  home.file.".config/fastfetch/nixos.png".source = ./nixos.png;
 }
