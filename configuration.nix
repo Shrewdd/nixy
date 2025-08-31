@@ -110,7 +110,6 @@
   # System-wide core apps
   environment.systemPackages = with pkgs; [
     tuigreet
-    ghostty
     pavucontrol
     playerctl
     jq

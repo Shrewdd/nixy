@@ -12,6 +12,7 @@
     ./btop/default.nix
     ./anytype/default.nix
     ./rofi/default.nix
+    ./ghostty/default.nix
   ];
 
   home.username = "km";
