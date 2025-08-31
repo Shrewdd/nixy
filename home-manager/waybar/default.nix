@@ -1,80 +1,4 @@
 { pkgs, lib, ... }:
-let
-  weatherScript = pkgs.writeShellScript "waybar-weather" ''
-    #!/usr/bin/env bash
-    set -euo pipefail
-    CACHE="''${XDG_CACHE_HOME:-$HOME/.cache}/waybar-weather.json"
-    QUERY="Lubniany"
-
-    case "''${1:-print}" in
-      update)
-        mkdir -p "$(dirname "$CACHE")"
-        curl -sS "https://wttr.in/''${QUERY}?format=j1" > "$CACHE.tmp" && mv "$CACHE.tmp" "$CACHE"
-        ;;
-    esac
-
-    if [[ -f "$CACHE" ]]; then
-      temp=$(jq -r '.current_condition[0].temp_C' "$CACHE" 2>/dev/null || echo "?")
-      icon=$(jq -r '.current_condition[0].weatherDesc[0].value' "$CACHE" 2>/dev/null | tr '[:upper:]' '[:lower:]' || echo "")
-      sym="󰖙" # sunny
-      case "$icon" in
-        *snow*) sym="󰖘" ;;                 # snowy
-        *rain*|*drizzle*) sym="󰖖" ;;       # pouring
-        *cloud*|*overcast*) sym="󰖕" ;;     # cloudy
-        *fog*|*mist*|*haze*) sym="󰙿" ;;    # fog
-        *thunder*) sym="󰖓" ;;              # lightning
-        *clear*|*sun*) sym="󰖙" ;;          # sunny
-        *partly*|*broken*) sym="󰖗" ;;      # partly cloudy
-      esac
-      printf '{"text":"%s %s°C","tooltip":"%s • click to refresh","class":"weather"}\n' "$sym" "$temp" "$icon"
-    else
-      printf '{"text":"󰖙 --","tooltip":"Click to fetch weather","class":"weather"}\n'
-    fi
-  '';
-
-  cpuTempScript = pkgs.writeShellScript "waybar-cpu-temp" ''
-    #!/usr/bin/env bash
-    set -euo pipefail
-    temp_mC=""
-    for path in /sys/class/hwmon/hwmon*/temp*_input; do
-      labelFile=''${path%_*}_label
-      if [[ -r "$labelFile" ]] && grep -qiE 'package|cpu' "$labelFile"; then
-        temp_mC=$(cat "$path")
-        break
-      fi
-    done
-    if [[ -z "''${temp_mC:-}" ]]; then
-      temp_mC=$(for f in /sys/class/thermal/thermal_zone*/temp; do [[ -r "$f" ]] && cat "$f"; done | sort -nr | head -n1 || true)
-    fi
-    if [[ -z "''${temp_mC:-}" ]]; then
-      echo '{"text":"CPU ?°C","class":"temp cpu"}'
-      exit 0
-    fi
-    temp_C=$(( temp_mC / 1000 ))
-    printf '{"text":" %s°C","class":"temp cpu","tooltip":"CPU temp: %s°C"}\n' "$temp_C" "$temp_C"
-  '';
-
-  gpuTempScript = pkgs.writeShellScript "waybar-gpu-temp" ''
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if command -v nvidia-smi >/dev/null 2>&1; then
-      t=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n1 || true)
-      if [[ -n "''${t:-}" ]]; then
-        printf '{"text":"󰢮 %s°C","class":"temp gpu nvidia","tooltip":"NVIDIA GPU temp: %s°C"}\n' "$t" "$t"
-        exit 0
-      fi
-    fi
-    for hw in /sys/class/drm/card*/device/hwmon/hwmon*/temp1_input; do
-      if [[ -r "$hw" ]]; then
-        t_mC=$(cat "$hw")
-        t=$(( t_mC / 1000 ))
-        printf '{"text":"󰢮 %s°C","class":"temp gpu amd","tooltip":"GPU temp: %s°C"}\n' "$t" "$t"
-        exit 0
-      fi
-    done
-    echo '{"text":"GPU --","class":"temp gpu","tooltip":"GPU temperature unavailable"}'
-  '';
-in
 {
   programs.waybar = {
     enable = true;
@@ -148,23 +72,23 @@ in
         };
 
         "custom/cpu_temp" = {
-          exec = "${cpuTempScript}";
+          exec = "/home/km/nixy/home-manager/waybar/scripts/cpu_temp.sh";
           interval = 10;
           return-type = "json";
         };
 
         "custom/gpu_temp" = {
-          exec = "${gpuTempScript}";
+          exec = "/home/km/nixy/home-manager/waybar/scripts/gpu_temp.sh";
           interval = 10;
           return-type = "json";
         };
 
         "custom/weather" = {
-          exec = "${weatherScript} print";
+          exec = "/home/km/nixy/home-manager/waybar/scripts/weather.sh print";
           interval = 300;
           signal = 5;
           return-type = "json";
-          on-click = "${weatherScript} update && pkill -SIGRTMIN+5 waybar";
+          on-click = "/home/km/nixy/home-manager/waybar/scripts/weather.sh update && pkill -SIGRTMIN+5 waybar";
           tooltip = true;
         };
 
