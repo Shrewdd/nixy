@@ -113,10 +113,8 @@
     ghostty
     pavucontrol
     playerctl
-    rofi
     jq
     curl
-    lm_sensors
     brightnessctl
     libsecret
     seahorse
@@ -191,7 +189,6 @@
   services.gvfs.enable = true;
   services.printing = {
     enable = true;
-    startWhenNeeded = true;
     drivers = [ pkgs.cups-filters ];
   };
 }
