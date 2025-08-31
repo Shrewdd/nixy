@@ -13,6 +13,7 @@
     ./anytype/default.nix
     ./rofi/default.nix
     ./ghostty/default.nix
+    ./fastfetch/default.nix
   ];
 
   home.username = "km";
