@@ -102,16 +102,16 @@ configuration {
 
 /*****----- Global Properties -----*****/
 * {
-  background:       #1e1e2eCC;
-  foreground:       #cdd6f4FF;
-  accent:           #cba6f7FF;
-  background-tb:    #45475aFF;
-  border-tb:        #313244FF;
-  selected:         linear-gradient(to right, #313244FF, #cba6f7FF);
-  button:           linear-gradient(135deg, #89b4faFF, #b4befeFF);
-  button-selected:  linear-gradient(135deg, #b4befeFF, #cba6f7FF);
-  active:           linear-gradient(to right, #a6e3a1FF, #f38ba8FF);
-  urgent:           #f38ba8FF;
+  background:       #24273ACC;
+  foreground:       #CAD3F5FF;
+  accent:           #B7BDF869;
+  background-tb:    #494D64FF;
+  border-tb:        #363A4FFF;
+  selected:         linear-gradient(to right, #363A4FFF, #B7BDF869);
+  button:           linear-gradient(#939AB7FF);
+  button-selected:  linear-gradient(#B7BDF869);
+  active:           linear-gradient(to right, #8BD5CAFF, #A6DA95FF);
+  urgent:           #ED8796FF;
 }
 
 /*****----- Main Window -----*****/

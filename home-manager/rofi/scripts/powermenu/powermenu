@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # variables
-uptime="$(uptime -p | sed -e 's/up //g')"
+uptime="$(uptime | awk -F'up ' '{print $2}' | sed 's/, 0 users.*//')"
 shutdown='󰐥'
 reboot='󰜉'
 lock=''

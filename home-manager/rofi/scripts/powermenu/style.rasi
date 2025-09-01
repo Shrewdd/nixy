@@ -5,7 +5,18 @@ configuration {
   me-accept-entry:            [ MousePrimary, MouseSecondary, MouseDPrimary ];
 }
 
-@theme "/home/km/nixy/home-manager/rofi/theme.rasi"
+* {
+  background:       #24273ACC;
+  foreground:       #CAD3F5FF;
+  accent:           #B7BDF869;
+  background-tb:    #494D64FF;
+  border-tb:        #363A4FFF;
+  selected:         linear-gradient(to right, #363A4FFF, #B7BDF869);
+  button:           linear-gradient(#939AB7FF);
+  button-selected:  linear-gradient(#B7BDF869);
+  active:           linear-gradient(to right, #8BD5CAFF, #A6DA95FF);
+  urgent:           #ED8796FF;
+}
 
 // Main Window
 window {
@@ -59,7 +70,7 @@ dummy {
 }
 
 textbox-prompt-colon {
-  font:                        "Maple Mono NF 12";
+  font:                        "Symbols Nerd Font 12";
   enabled:                     false;
   expand:                      false;
   str:                         "";
@@ -74,7 +85,7 @@ textbox-prompt-colon {
 }
 
 prompt {
-  enabled:                     false;
+  enabled:                     true;
   padding:                     12px;
   border-radius:               10px;
   border-color:                @active;
@@ -85,7 +96,7 @@ prompt {
 
 // Message
 message {
-  enabled:                     false;
+  enabled:                     true;
   margin:                      0px;
   padding:                     12px;
   border:                      0px solid;
@@ -152,7 +163,7 @@ element {
 }
 
 element-text {
-  font:                        "Maple Mono NF 24";
+  font:                        "Symbols Nerd Font 24";
   background-color:            transparent;
   text-color:                  inherit;
   cursor:                      inherit;
