@@ -1,66 +1,34 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }: let
+  palette = {
+    bg = "1a1b26";          # sophisticated dark background
+    surface = "24283b";     # elevated professional surface
+    text = "c0caf5";        # crisp professional white
+    subtext = "a9b1d6";     # refined secondary text
+    accent = "bb9af7";      # premium purple accent
+    accentDark = "565f89";  # professional contrast
+    border = "414868";      # refined borders
+  };
+  fontMain = "SF Pro Display, Inter, JetBrainsMono Nerd Font";
+in {
   imports = [
-    ./swaync.nix
-    ./swayosd.nix
   ];
 
-  wayland.windowManager.hyprland.settings.exec-once = ["waybar" "${pkgs.networkmanagerapplet}/bin/nm-applet" "${pkgs.blueman}/bin/blueman-applet"];
 
   programs.waybar = {
     enable = true;
     systemd.enable = true;
     settings.mainBar = {
-      spacing = 5;
-      margin-bottom = -11;
+      spacing = 2;
+      margin-bottom = -3;
+      height = 28;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
-      modules-center = ["cava"];
+      modules-center = [];
       modules-right = [
-        "group/extras"
-        "pulseaudio"
-        "battery"
+        "network"
+        "wireplumber"
         "clock"
-        "custom/notification"
+        "custom/active_apps"
       ];
-
-      battery = {
-        states = {critical = 20;};
-        format = "{icon}";
-        format-icons = {
-          default = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
-          charging = ["󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅"];
-        };
-        format-full = "󱟢";
-        on-click = "powermode-toggle";
-        on-click-right = ''${pkgs.swayosd}/bin/swayosd-client --custom-message="Powermode is set to $(powerprofilesctl get)" --custom-icon="emblem-default"'';
-      };
-
-      "custom/vpn" = {
-        interval = 3;
-        format = "{}";
-        exec = ''
-          if ip add show | ${pkgs.ripgrep}/bin/rg -qF "proton"; then
-            echo '{"text":"󰖂   VPN On","class":"vpn-on"}'
-          else
-            echo '{"text":"󰖂   VPN Off","class":"vpn-off"}'
-          fi
-        '';
-        return-type = "json";
-        max-length = "100";
-        on-click = "protonvpn-app";
-      };
-
-      cava = {
-        framerate = 240;
-        bars = 20;
-        bar_delimiter = 0;
-        stereo = true;
-        input_delay = 4;
-        sleep_timer = 2;
-        hide_on_silence = true;
-        lower_cutoff_freq = 100;
-        higher_cutoff_freq = 8000;
-        format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
-      };
 
       clock = {
         timezone = "Europe/Paris";
@@ -76,42 +44,8 @@
         };
         interval = 60;
         max-length = 25;
-        on-click = "brave --profile-directory=Default --app-id=ojibjkjikcpjonjjngfkegflhmffeemk"; # Proton Calendar
-      };
-
-      "custom/arrow-toggle" = {
-        format = " {icon} ";
-        format-icons = {default = "";};
-        tooltip = false;
-      };
-
-      "custom/notification" = {
-        tooltip = false;
-        format = "{icon}";
-        format-icons = {
-          notification = "<span foreground='red'><sup></sup></span>";
-          none = "";
-          dnd-notification = "<span foreground='red'><sup></sup></span>";
-          dnd-none = "";
-          inhibited-notification = "<span foreground='red'><sup></sup></span>";
-          inhibited-none = "";
-          dnd-inhibited-notification = "<span foreground='red'><sup></sup></span>";
-          dnd-inhibited-none = "";
-        };
-        return-type = "json";
-        exec-if = "which swaync-client";
-        exec = "swaync-client -swb";
-        on-click = "swaync-client -t";
-        escape = true;
-      };
-
-      "group/extras" = {
-        orientation = "inherit";
-        drawer = {
-          transition-duration = 300;
-          transitition-left-to-right = false;
-        };
-        modules = ["custom/arrow-toggle" "tray" "custom/vpn"];
+        format = "{:%H:%M  %d/%m}";
+        format-alt = "{:%A, %d %B %Y}";
       };
 
       "hyprland/window" = {
@@ -128,203 +62,190 @@
         all-outputs = true;
       };
 
-      network = {
-        format = "{ifname}";
-        format-wifi = "{icon} {essid}";
-        format-ethernet = "󰈀 Ethernet";
-        format-disconnected = " 󰤭 Disconnected ";
-        tooltip-format = "{ipaddr}  {bandwidthUpBits}  {bandwidthDownBits}";
-        format-linked = "󰈁 {ifname} (No IP)";
-        format-icons = ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"];
-        on-click = "kitty --class nmtui-float-term nmtui";
-      };
-
-      pulseaudio = {
-        format = "{icon}";
-        format-muted = "󰖁";
+      wireplumber = {
+        format = "{icon} {volume}%";
+        format-muted = "󰖁 muted";
         format-icons = ["󰕿" "󰖀" "󰕾"];
         on-click = "sound-toggle";
-        scroll-step = 1;
+        scroll-step = 2;
+        tooltip-format = "Volume: {volume}%";
       };
 
-      tray = {spacing = 10;};
+      network = {
+        format-wifi = "󰤨 {signalStrength}%";
+        format-ethernet = "󰈀 {bandwidthDownBytes}";
+        format-disconnected = "󰤭 offline";
+        tooltip-format = "{ifname}: {ipaddr}";
+        tooltip-format-wifi = "{essid} ({signalStrength}%): {ipaddr}";
+        tooltip-format-ethernet = "{ifname}: {ipaddr}";
+        interval = 5;
+      };
+
+      "custom/active_apps" = {
+        exec = "${pkgs.bash}/bin/bash ${./modules/active_apps.sh}";
+        return-type = "json";
+        interval = 3;
+        tooltip = true;
+      };
     };
 
     style = ''
-      * {
-        font-family: ${config.stylix.fonts.serif.name}, sans-serif;
+      * { font-family: ${fontMain}, sans-serif; font-weight: 600; font-size: 12px; }
+      window#waybar { 
+        background: transparent; 
+        box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
       }
 
-      window#waybar {
-          background-color: transparent;
+      /* Workspace pills */
+      #workspaces { background: transparent; margin: 2px 6px 2px 12px; }
+      #workspaces button {
+        background: #${palette.surface};
+        color: #${palette.text};
+        border: 2px solid #${palette.border};
+        padding: 2px 12px;
+        margin: 0 3px 0 0;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      #workspaces button.empty { opacity: .3; }
+      #workspaces button.active { 
+        background: #${palette.surface}; 
+        color: #${palette.accent}; 
+        border: 2px solid #${palette.accent}; 
+        padding: 3px 14px; 
+      }
+      #workspaces button:hover { 
+        background: #${palette.surface}; 
+        color: #${palette.accent}; 
+        border-color: #${palette.accent};
+      }
+      #workspaces button:active { padding: 2px 11px; }
+
+      /* Clock with clean blue styling */
+      #clock {
+        background: #${palette.surface};
+        border: 2px solid #89b4fa;
+        color: #89b4fa;
+        font-weight: 700;
       }
 
-      #workspaces{
-          background-color: transparent;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 10px;
-          margin-left: 25px;
-      }
-      #workspaces button{
-          background-color: #${config.lib.stylix.colors.base05};
-          color: 	#${config.lib.stylix.colors.base00};
-          box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
-          border-radius: 15px;
-          padding-left: 10px;
-          padding-right: 10px;
-          margin-right: 10px;
-          padding-top: 4px;
-          padding-bottom: 2px;
-          padding-right: 10px;
-          font-weight: bolder;
-      }
-      .modules-left #workspaces button {
-          border-bottom: 0px;
-      }
-      #workspaces button.active{
-          padding-right: 20px;
-          box-shadow: rgba(0, 0, 0, 0.288) 2 2 5 2px;
-          text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
-          padding-left: 20px;
-          background: #${config.lib.stylix.colors.base0D};
-          color: #${config.lib.stylix.colors.base05};
-      }
-      .modules-left #workspaces button.focused,
-      .modules-left #workspaces button.active {
-          border-bottom: 0px;
-      }
-
+      /* Window module with clean orange styling */
       #window {
-        color: #${config.theme.textColorOnWallpaper};
+        background: #${palette.surface};
+        border: 2px solid #fab387;
+        color: #fab387;
+        font-weight: 600;
       }
 
-      #clock,
-      #battery,
-      #network,
-      #pulseaudio,
-      #tray,
-      #cava,
-      #custom-notification,
-      #custom-vpn,
-      #mpd {
-          padding: 0 10px;
-          border-radius: 15px;
-          background-color: #${config.lib.stylix.colors.base05};
-          color: 	#${config.lib.stylix.colors.base00};
-          box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 10px;
+      #wireplumber, #wireplumber.muted { 
+        background: #${palette.surface}; 
+        color: #${palette.accent}; 
+        border: 2px solid #${palette.accent}; 
+        font-weight: 800;
+      }
+      #wireplumber.muted { 
+        opacity: .6; 
+        color: #${palette.subtext};
+        border-color: #${palette.accentDark};
       }
 
-      #cava{
-          background: #${config.lib.stylix.colors.base0D};
-          color: #${config.lib.stylix.colors.base05};
-          text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
-          font-weight: 900;
-          padding-top: 0px;
-          margin-left: 10px;
+      /* Network module with green styling */
+      #network {
+        border: 2px solid #a6e3a1;
+        color: #a6e3a1;
+        font-weight: 700;
+      }
+      #network.disconnected {
+        border-color: #f38ba8;
+        color: #f38ba8;
       }
 
-      #pulseaudio,
-      #pulseaudio.muted{
-          background-color: #${config.lib.stylix.colors.base0D};
-          color: #${config.lib.stylix.colors.base05};
-          font-size: 20px;
-          font-weight:  bolder;
-          padding-left: 14px;
-          padding-right: 15px;
-          border-radius: 15px;
+      /* Active apps module with yellow styling */
+      #custom-active_apps {
+        border: 2px solid #f9e2af;
+        color: #f9e2af;
+        font-weight: 700;
+      }
+      #custom-active_apps:hover {
+        border-color: #fab387;
+        color: #fab387;
+      }      /* Shared module look */
+      #window, #clock, #wireplumber, #network, #custom-active_apps {
+        background: #${palette.surface};
+        color: #${palette.text};
+        padding: 2px 12px;
+        margin: 2px 3px 2px 0;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 12px;
+        border: 1px solid #${palette.border};
+        letter-spacing: 0.3px;
       }
 
-      #custom-notification {
-          background: #${config.lib.stylix.colors.base0D};
-          color: #${config.lib.stylix.colors.base05};
-          font-size: 20px;
-          font-weight: bolder;
-          padding-left: 20px;
-          padding-right: 24px;
+      #cava { 
+        background: #${palette.surface}; 
+        color: #${palette.accent}; 
+        font-weight: 800; 
+        letter-spacing: 1px; 
+        border: 2px solid #${palette.accent}; 
+        text-shadow: 0 0 8px rgba(187, 154, 247, 0.6);
+        box-shadow: 0 0 16px rgba(187, 154, 247, 0.4);
       }
 
-      #battery {
-          color: #86a381;
-          font-size: 17px;
-          padding-left: 15px;
-          padding-right: 15px;
-          border-radius: 15px;
+      /* Temperature modules with distinct modern styling */
+      #custom-cpu_temp {
+        background: #${palette.surface};
+        border: 2px solid #f38ba8;
+        color: #f38ba8;
+        font-weight: 700;
+        text-shadow: 0 0 6px rgba(243, 139, 168, 0.6);
+        box-shadow: 0 0 12px rgba(243, 139, 168, 0.3);
+      }
+      
+      #custom-gpu_temp {
+        background: #${palette.surface};
+        border: 2px solid #a6e3a1;
+        color: #a6e3a1;
+        font-weight: 700;
+        text-shadow: 0 0 6px rgba(166, 227, 161, 0.6);
+        box-shadow: 0 0 12px rgba(166, 227, 161, 0.3);
       }
 
-      @keyframes blink {
-          to {
-              background-color: #f9e2af;
-              color:#96804e;
-          }
+      /* Clock with modern blue styling */
+      #clock {
+        background: #${palette.surface};
+        border: 2px solid #89b4fa;
+        color: #89b4fa;
+        font-weight: 700;
+        text-shadow: 0 0 6px rgba(137, 180, 250, 0.6);
+        box-shadow: 0 0 12px rgba(137, 180, 250, 0.3);
       }
 
-      #custom-vpn.vpn-on {
-        color: #2ecc71;
+      /* Window module with refined styling */
+      #window {
+        background: #${palette.surface};
+        border: 2px solid #fab387;
+        color: #fab387;
+        font-weight: 600;
+        text-shadow: 0 0 6px rgba(250, 179, 135, 0.6);
+        box-shadow: 0 0 12px rgba(250, 179, 135, 0.3);
       }
 
-      #custom-vpn.vpn-off {
-          color: #e74c3c;
+      #wireplumber, #wireplumber.muted { 
+        background: #${palette.surface}; 
+        color: #${palette.accent}; 
+        border: 2px solid #${palette.accent}; 
+        font-weight: 800;
+        text-shadow: 0 0 8px rgba(187, 154, 247, 0.6);
+        box-shadow: 0 0 16px rgba(187, 154, 247, 0.5);
       }
-
-      #battery.critical:not(.charging) {
-          background-color:  #f38ba8;
-          color:#bf5673;
-          animation-name: blink;
-          animation-duration: 0.5s;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-          animation-direction: alternate;
-      }
-
-      #network{
-          color:#000;
-      }
-
-      #network.disabled{
-          background-color: #45475a;
-      }
-
-      #network.disconnected{
-          background: rgb(243,139,168);
-          color: #fff;
-          font-weight: bolder;
-      }
-
-      #network.linked, #network.wifi{
-          background-color: #a6e3a1 ;
-      }
-
-      #network.ethernet{
-          background-color:#f9e2af ;
-      }
-
-      #tray {
-          background-color: #1c1816;
-      }
-
-      #tray > .passive {
-          -gtk-icon-effect: dim;
-      }
-
-      #custom-arrow-toggle {
-          background-color: transparent;
-          color: #${config.lib.stylix.colors.base0D};
-          font-size: 16px;
-          color: #516079;
-          opacity: 1;
-          transition: opacity 0.2s ease-in-out;
-      }
-
-      #extras:hover #custom-arrow-toggle {
-          opacity: 0;
-      }
-
-      #extras:hover {
-          background-color: transparent;
+      #wireplumber.muted { 
+        opacity: .6; 
+        color: #${palette.subtext};
+        border-color: #${palette.accentDark};
+        box-shadow: 0 0 8px rgba(108, 112, 134, 0.3);
       }
     '';
   };
