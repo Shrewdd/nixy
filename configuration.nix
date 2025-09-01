@@ -130,6 +130,7 @@
   # Install Nerd Font system-wide (new nerd-fonts namespace)
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
   ];
 
   #######################
