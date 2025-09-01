@@ -23,10 +23,12 @@
       general = {
         layout = "dwindle";
         border_size = 3;
-
-        # Border colors live in `general` as `col.*`
         "col.active_border" = "rgba(167,139,250,1.0) rgba(124,58,237,1.0) 135deg"; # soft purple gradient
         "col.inactive_border" = "rgba(58,48,73,0.85)"; # muted, low-contrast purple
+      };
+
+      input = {
+        kb_layout = "pl";
       };
 
       dwindle = {
@@ -59,6 +61,7 @@
         "$mainMod, A, exec, $menu"
         "$mainMod, P, pseudo"
         "$mainMod, J, togglesplit"
+        "$mainMod, X, exec, bash /home/km/nixy/home-manager/rofi/scripts/powermenu/powermenu"
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
         "$mainMod, up, movefocus, u"
@@ -89,8 +92,8 @@
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
         # Screenshot keybinds
-        "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
-        ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
+        "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
+        ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
       ];
 
       bindm = [
@@ -100,14 +103,12 @@
 
       bindel = [
         # Volume Up
-        ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && notify-send -r 9991 \"Volume Up\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
+        ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && notify-send -r 9991 \" Volume Up\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
         # Volume Down
-        ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && notify-send -r 9991 \"Volume Down\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
+        ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && notify-send -r 9991 \" Volume Down\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\$2*100) \\\"%\\\"}\")\"'"
         # Volume Mute
-        ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && notify-send -r 9991 \"Volume Mute\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print (\$3==\"MUTED\"?\"Muted\":int(\$2*100) \\\"%\\\")}\")\"'"
+        ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && notify-send -r 9991 \" Volume Mute\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print (\$3==\"MUTED\"?\"Muted\":int(\$2*100) \\\"%\\\")}\")\"'"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
-        ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
       ];
 
       bindl = [
