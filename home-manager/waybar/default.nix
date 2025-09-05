@@ -15,19 +15,19 @@ in {
 
 
   programs.waybar = {
-    enable = true;
-    systemd.enable = true;
+    enable = false;
     settings.mainBar = {
       spacing = 2;
       margin-bottom = -3;
-      height = 28;
+      height = 36;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
       modules-center = [];
       modules-right = [
         "network"
+        "bluetooth"
         "wireplumber"
+        "tray"
         "clock"
-        "custom/active_apps"
       ];
 
       clock = {
@@ -81,11 +81,25 @@ in {
         interval = 5;
       };
 
-      "custom/active_apps" = {
-        exec = "${pkgs.bash}/bin/bash ${./modules/active_apps.sh}";
-        return-type = "json";
-        interval = 3;
-        tooltip = true;
+      bluetooth = {
+        format = "󰂯 {status}";
+        format-disabled = "󰂲";
+        format-off = "󰂲";
+        format-on = "󰂯";
+        format-connected = "󰂱 {device_alias}";
+        format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+        tooltip-format = "{controller_alias}\t{controller_address}";
+        tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+        tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+        tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+        on-click = "bluetoothctl power toggle";
+        max-length = 30;
+      };
+
+      tray = {
+        icon-size = 16;
+        spacing = 8;
+        show-passive-items = true;
       };
     };
 
@@ -151,28 +165,55 @@ in {
         border-color: #${palette.accentDark};
       }
 
-      /* Network module with green styling */
+      /* Network module with green neon styling */
       #network {
+        background: #${palette.surface};
         border: 2px solid #a6e3a1;
         color: #a6e3a1;
         font-weight: 700;
       }
       #network.disconnected {
-        border-color: #f38ba8;
+        background: #${palette.surface};
+        border: 2px solid #f38ba8;
         color: #f38ba8;
+        font-weight: 700;
       }
 
-      /* Active apps module with yellow styling */
-      #custom-active_apps {
+      /* Bluetooth module with purple neon styling */
+      /* Ensure container and common connected states show the neon outline */
+      #bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
+        background: #${palette.surface};
+        border: 2px solid #cba6f7;
+        color: #cba6f7;
+        font-weight: 700;
+  padding: 2px 10px;
+        border-radius: 12px;
+      }
+      #bluetooth.disabled, #bluetooth.off {
+        background: #${palette.surface};
+        border: 2px solid #${palette.accentDark};
+        color: #${palette.subtext};
+        opacity: 0.5;
+      }
+      /* Inner elements should not create additional borders; inherit container look */
+      #bluetooth > *, #bluetooth .text, #bluetooth .icon {
+        background: transparent;
+        color: inherit;
+        border: none;
+        padding: 0;
+        margin: 0 4px 0 0;
+      }
+
+      /* System tray with yellow neon styling */
+      #tray {
+        background: #${palette.surface};
         border: 2px solid #f9e2af;
         color: #f9e2af;
         font-weight: 700;
       }
-      #custom-active_apps:hover {
-        border-color: #fab387;
-        color: #fab387;
-      }      /* Shared module look */
-      #window, #clock, #wireplumber, #network, #custom-active_apps {
+
+      /* Shared module look */
+      #window, #clock, #wireplumber, #network, #bluetooth, #tray {
         background: #${palette.surface};
         color: #${palette.text};
         padding: 2px 12px;
@@ -180,19 +221,12 @@ in {
         font-size: 11px;
         font-weight: 600;
         border-radius: 12px;
-        border: 1px solid #${palette.border};
+        /* no base border here, modules set their own neon 2px borders above */
         letter-spacing: 0.3px;
+        box-shadow: 0 0 8px rgba(65, 72, 104, 0.3);
       }
 
-      #cava { 
-        background: #${palette.surface}; 
-        color: #${palette.accent}; 
-        font-weight: 800; 
-        letter-spacing: 1px; 
-        border: 2px solid #${palette.accent}; 
-        text-shadow: 0 0 8px rgba(187, 154, 247, 0.6);
-        box-shadow: 0 0 16px rgba(187, 154, 247, 0.4);
-      }
+  /* tray child items intentionally left unstyled so background service icons stay untouched */
 
       /* Temperature modules with distinct modern styling */
       #custom-cpu_temp {
@@ -200,8 +234,6 @@ in {
         border: 2px solid #f38ba8;
         color: #f38ba8;
         font-weight: 700;
-        text-shadow: 0 0 6px rgba(243, 139, 168, 0.6);
-        box-shadow: 0 0 12px rgba(243, 139, 168, 0.3);
       }
       
       #custom-gpu_temp {
@@ -209,8 +241,6 @@ in {
         border: 2px solid #a6e3a1;
         color: #a6e3a1;
         font-weight: 700;
-        text-shadow: 0 0 6px rgba(166, 227, 161, 0.6);
-        box-shadow: 0 0 12px rgba(166, 227, 161, 0.3);
       }
 
       /* Clock with modern blue styling */
@@ -219,8 +249,6 @@ in {
         border: 2px solid #89b4fa;
         color: #89b4fa;
         font-weight: 700;
-        text-shadow: 0 0 6px rgba(137, 180, 250, 0.6);
-        box-shadow: 0 0 12px rgba(137, 180, 250, 0.3);
       }
 
       /* Window module with refined styling */
@@ -229,8 +257,6 @@ in {
         border: 2px solid #fab387;
         color: #fab387;
         font-weight: 600;
-        text-shadow: 0 0 6px rgba(250, 179, 135, 0.6);
-        box-shadow: 0 0 12px rgba(250, 179, 135, 0.3);
       }
 
       #wireplumber, #wireplumber.muted { 
@@ -238,14 +264,11 @@ in {
         color: #${palette.accent}; 
         border: 2px solid #${palette.accent}; 
         font-weight: 800;
-        text-shadow: 0 0 8px rgba(187, 154, 247, 0.6);
-        box-shadow: 0 0 16px rgba(187, 154, 247, 0.5);
       }
       #wireplumber.muted { 
         opacity: .6; 
         color: #${palette.subtext};
         border-color: #${palette.accentDark};
-        box-shadow: 0 0 8px rgba(108, 112, 134, 0.3);
       }
     '';
   };
