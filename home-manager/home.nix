@@ -5,7 +5,6 @@
     ./hyprland/default.nix
     ./hyprland/hyprpaper/default.nix
     ./waybar/default.nix
-    ./eww/default.nix
     ./zen-browser/default.nix
     ./git/default.nix
     ./spicetify-nix/default.nix
@@ -15,6 +14,7 @@
     ./rofi/default.nix
     ./ghostty/default.nix
     ./fastfetch/default.nix
+    ./quickshell/default.nix
   ];
 
   home.username = "km";
