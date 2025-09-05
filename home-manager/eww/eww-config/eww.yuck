@@ -1,0 +1,90 @@
+(defpoll workspaces :interval "1s"
+  `hyprctl workspaces -j | jq '[.[] | {id: .id, active: (.id == ($active | tonumber))}]' --arg active "$(hyprctl activeworkspace -j | jq -r .id)"`)
+
+(defpoll window :interval "1s"
+  `hyprctl activewindow -j | jq -r '.title // "Desktop"' | sed 's/ — .*//' | cut -c1-30`)
+
+(defpoll clock :interval "60s"
+  `date '+%H:%M  %d/%m'`)
+
+(defpoll volume :interval "1s"
+  `wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{print int($2 * 100)}' || echo "0"`)
+
+(defpoll network :interval "5s"
+  `nmcli -t -f STATE general 2>/dev/null | grep -q connected && echo "connected" || echo "disconnected"`)
+
+(defpoll bluetooth :interval "5s"
+  `bluetoothctl show 2>/dev/null | grep -q "Powered: yes" && echo "on" || echo "off"`)
+
+(defpoll cpu_temp :interval "5s"
+  `bash /home/km/nixy/home-manager/waybar/modules/cpu_temp.sh 2>/dev/null | jq -r .text 2>/dev/null || echo "CPU --"`)
+
+(defpoll gpu_temp :interval "5s"
+  `bash /home/km/nixy/home-manager/waybar/modules/gpu_temp.sh 2>/dev/null | jq -r .text 2>/dev/null || echo "GPU --"`)
+
+(defwindow bar
+  :monitor 0
+  :geometry (geometry :x "0%"
+                    :y "0%"
+                    :width "100%"
+                    :height "36px"
+                    :anchor "top center")
+  :stacking "fg"
+  :windowtype "dock"
+  :wm-ignore false
+  (bar-layout))
+
+(defwidget bar-layout []
+  (centerbox :orientation "h"
+             :class "bar"
+    (box :class "left"
+      (workspaces-widget)
+      (window-widget))
+    (box :class "center")
+    (box :class "right"
+      (cpu-temp-widget)
+      (gpu-temp-widget)
+      (network-widget)
+      (bluetooth-widget)
+      (volume-widget)
+      (tray-widget)
+      (clock-widget))))
+
+(defwidget workspaces-widget []
+  (box :class "workspaces"
+    (for workspace in workspaces
+      (button :class "workspace ${workspace.active ? 'active' : 'inactive'}"
+              :onclick "hyprctl dispatch workspace ${workspace.id}"
+        "${workspace.id}"))))
+
+(defwidget window-widget []
+  (box :class "window"
+    (label :text window)))
+
+(defwidget clock-widget []
+  (box :class "clock"
+    (label :text clock)))
+
+(defwidget volume-widget []
+  (box :class "volume"
+    (label :text "󰕾 ${volume}%")))
+
+(defwidget network-widget []
+  (box :class "network"
+    (label :text "${network == 'connected' ? '󰤨' : '󰤭'}")))
+
+(defwidget bluetooth-widget []
+  (box :class "bluetooth"
+    (label :text "${bluetooth == 'on' ? '󰂯' : '󰂲'}")))
+
+(defwidget tray-widget []
+  (box :class "tray"
+    (label :text "Tray")))
+
+(defwidget cpu-temp-widget []
+  (box :class "cpu_temp"
+    (label :text cpu_temp)))
+
+(defwidget gpu-temp-widget []
+  (box :class "gpu_temp"
+    (label :text gpu_temp)))
