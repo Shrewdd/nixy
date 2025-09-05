@@ -5,6 +5,7 @@
     ./hyprland/default.nix
     ./hyprland/hyprpaper/default.nix
     ./waybar/default.nix
+    ./eww/default.nix
     ./zen-browser/default.nix
     ./git/default.nix
     ./spicetify-nix/default.nix
@@ -21,6 +22,7 @@
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
+    vesktop
     vscode
     hyprpolkitagent
   ];
