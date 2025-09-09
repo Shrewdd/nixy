@@ -120,6 +120,8 @@
     xarchiver
     appimage-run
     sixpair
+    veracrypt
+    kdePackages.gwenview
     # Notification utils
     libnotify
     # Screenshot utils
