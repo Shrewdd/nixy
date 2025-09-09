@@ -15,7 +15,7 @@ in {
 
 
   programs.waybar = {
-    enable = false;
+    enable = true;
     settings.mainBar = {
       spacing = 2;
       margin-bottom = -3;
