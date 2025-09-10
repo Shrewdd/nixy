@@ -20,7 +20,7 @@ in {
     settings.mainBar = {
       spacing = 2;
       margin-bottom = -3;
-      height = 40;
+      height = 35;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
       modules-center = ["bluetooth"];
       modules-right = [
@@ -62,6 +62,7 @@ in {
         format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'> {name} </span>";
         all-outputs = true;
         show-special = false;
+        swap-icon-label = false;
       };
 
       wireplumber = {
@@ -123,8 +124,8 @@ in {
         background: #${palette.surface};
         border: 2px solid #${palette.border};
         border-radius: 12px;
-        margin: 2px 6px 2px 12px;
-        padding: 2px 8px;
+        margin: 1px 6px 1px 12px;
+        padding: 1px 8px;
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 0.5px;
@@ -133,7 +134,7 @@ in {
         background: transparent;
         border: none;
         color: #${palette.subtext};
-        padding: 2px 6px;
+        padding: 1px 6px;
         margin: 0;
         border-radius: 8px;
         font-size: 11px;
@@ -185,7 +186,7 @@ in {
         border: 2px solid #${theme.lavender};
         color: #${theme.lavender};
         font-weight: 700;
-        padding: 2px 10px;
+        padding: 1px 10px;
         border-radius: 12px;
       }
       /* Inner elements should not create additional borders; inherit container look */
@@ -209,8 +210,8 @@ in {
       #window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
         background: #${palette.surface};
         color: #${palette.text};
-        padding: 2px 12px;
-        margin: 2px 3px 2px 0;
+        padding: 1px 12px;
+        margin: 1px 3px 1px 0;
         font-size: 11px;
         font-weight: 600;
         border-radius: 12px;
