@@ -20,7 +20,7 @@ in {
     settings.mainBar = {
       spacing = 2;
       margin-bottom = -3;
-      height = 42;
+      height = 40;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
       modules-center = ["bluetooth"];
       modules-right = [
