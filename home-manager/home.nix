@@ -8,7 +8,6 @@
     ./zen-browser/default.nix
     ./git/default.nix
     ./spicetify-nix/default.nix
-    ./vesktop/default.nix
     ./dunst/default.nix
     ./btop/default.nix
     ./anytype/default.nix
