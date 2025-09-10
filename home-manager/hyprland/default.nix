@@ -1,4 +1,7 @@
 { pkgs, lib, ... }:
+let
+  theme = import ../../themes/catppuccin-macchiato.nix;
+in
 {
   wayland.windowManager.hyprland = {
     enable = true;
@@ -24,34 +27,37 @@
       general = {
         layout = "dwindle";
         border_size = 3;
-        "col.active_border" = "rgba(167,139,250,1.0) rgba(124,58,237,1.0) 135deg"; # soft purple gradient
-        "col.inactive_border" = "rgba(58,48,73,0.85)"; # muted, low-contrast purple
+        "col.active_border" = "${theme.rgb.mauve} ${theme.rgb.lavender} 135deg"; # gradient with mauve and lavender
+        "col.inactive_border" = theme.rgb.base;
       };
 
-      input = {
-        kb_layout = "pl";
+      group = {
+        "col.border_active" = "${theme.rgb.blue} ${theme.rgb.teal} 135deg"; # blue to teal
+        "col.border_inactive" = theme.rgb.surface1;
+        "col.border_locked_active" = "${theme.rgb.yellow} ${theme.rgb.peach} 135deg"; # yellow to peach
+        "col.border_locked_inactive" = theme.rgb.surface1;
+        groupbar = {
+          font_size = 11;
+          gradients = false;
+        };
       };
 
-      dwindle = {
-        preserve_split = true;
+      decoration = {
+        rounding = 10;
+        blur = {
+          enabled = true;
+          size = 3;
+          passes = 1;
+          new_optimizations = true;
+        };
+        shadow = {
+          enabled = true;
+          range = 4;
+          render_power = 3;
+          color = "rgba(1a1a1a80)"; # semi-transparent dark shadow
+          color_inactive = "rgba(00000060)"; # semi-transparent inactive shadow
+        };
       };
-
-      animations = {
-        enabled = true;
-        bezier = [
-          "fast, 0.7, 0.9, 0.2, 1.0"
-        ];
-        animation = [
-          "windows, 1, 5, fast, slide"
-          "windowsOut, 1, 5, fast, slide"
-          "border, 1, 5, fast"
-          "fade, 1, 5, fast"
-          "workspaces, 1, 5, fast, slide"
-        ];
-      };
-
-      # Remove the invalid keys from `decoration` (keep empty or add blur/rounding later)
-      decoration = { };
 
       bind = [
         "$mainMod, RETURN, exec, $terminal"
@@ -122,7 +128,29 @@
       windowrule = [
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        # Catppuccin-themed window rules
+        "bordercolor ${theme.rgb.blue}, class:(firefox)" # blue
+        "bordercolor ${theme.rgb.green}, class:(code)" # green
+        "bordercolor ${theme.rgb.yellow}, class:(.*terminal.*)" # yellow
+        "bordercolor ${theme.rgb.pink}, class:(.*discord.*)" # pink
+        "bordercolor ${theme.rgb.teal}, class:(.*spotify.*)" # teal
       ];
+
+      windowrulev2 = [
+        # More specific window rules with Catppuccin colors
+        "bordercolor ${theme.rgb.red}, class:(.*steam.*)" # red
+        "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)" # peach
+        "opacity 0.9 0.9, class:(.*terminal.*)"
+        "opacity 0.95 0.95, class:(.*)"
+      ];
+
+      misc = {
+        force_default_wallpaper = 0;
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
+        mouse_move_enables_dpms = true;
+        key_press_enables_dpms = true;
+      };
     };
   };
 }
