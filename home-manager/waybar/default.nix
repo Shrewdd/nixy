@@ -1,12 +1,13 @@
 { config, pkgs, ... }: let
+  theme = import ../../themes/catppuccin-macchiato.nix;
   palette = {
-    bg = "1a1b26";          # sophisticated dark background
-    surface = "24283b";     # elevated professional surface
-    text = "c0caf5";        # crisp professional white
-    subtext = "a9b1d6";     # refined secondary text
-    accent = "bb9af7";      # premium purple accent
-    accentDark = "565f89";  # professional contrast
-    border = "414868";      # refined borders
+    bg = theme.base;
+    surface = theme.surface0;
+    text = theme.text;
+    subtext = theme.subtext1;
+    accent = theme.mauve;
+    accentDark = theme.overlay0;
+    border = theme.surface1;
   };
   fontMain = "SF Pro Display, Inter, JetBrainsMono Nerd Font";
 in {
@@ -19,12 +20,12 @@ in {
     settings.mainBar = {
       spacing = 2;
       margin-bottom = -3;
-      height = 36;
+      height = 42;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
-      modules-center = [];
+      modules-center = ["bluetooth"];
       modules-right = [
-        "network"
-        "bluetooth"
+        "custom/cpu_temp"
+        "custom/gpu_temp"
         "wireplumber"
         "tray"
         "clock"
@@ -57,9 +58,10 @@ in {
       };
 
       "hyprland/workspaces" = {
-        format = "{icon}";
-        format-active = " {icon} ";
+        format = "{name}";
+        format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'> {name} </span>";
         all-outputs = true;
+        show-special = false;
       };
 
       wireplumber = {
@@ -71,21 +73,11 @@ in {
         tooltip-format = "Volume: {volume}%";
       };
 
-      network = {
-        format-wifi = "󰤨 {signalStrength}%";
-        format-ethernet = "󰈀 {bandwidthDownBytes}";
-        format-disconnected = "󰤭 offline";
-        tooltip-format = "{ifname}: {ipaddr}";
-        tooltip-format-wifi = "{essid} ({signalStrength}%): {ipaddr}";
-        tooltip-format-ethernet = "{ifname}: {ipaddr}";
-        interval = 5;
-      };
-
       bluetooth = {
         format = "󰂯 {status}";
-        format-disabled = "󰂲";
-        format-off = "󰂲";
-        format-on = "󰂯";
+        format-disabled = "";
+        format-off = "";
+        format-on = "";
         format-connected = "󰂱 {device_alias}";
         format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
         tooltip-format = "{controller_alias}\t{controller_address}";
@@ -101,6 +93,22 @@ in {
         spacing = 8;
         show-passive-items = true;
       };
+
+      "custom/cpu_temp" = {
+        exec = "${./modules/cpu_temp.sh}";
+        return-type = "json";
+        interval = 5;
+        format = "{}";
+        tooltip = true;
+      };
+
+      "custom/gpu_temp" = {
+        exec = "${./modules/gpu_temp.sh}";
+        return-type = "json";
+        interval = 5;
+        format = "{}";
+        tooltip = true;
+      };
     };
 
     style = ''
@@ -110,46 +118,51 @@ in {
         box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
       }
 
-      /* Workspace pills */
-      #workspaces { background: transparent; margin: 2px 6px 2px 12px; }
-      #workspaces button {
+      /* Clustered workspace display */
+      #workspaces {
         background: #${palette.surface};
-        color: #${palette.text};
         border: 2px solid #${palette.border};
-        padding: 2px 12px;
-        margin: 0 3px 0 0;
         border-radius: 12px;
+        margin: 2px 6px 2px 12px;
+        padding: 2px 8px;
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 0.5px;
       }
-      #workspaces button.empty { opacity: .3; }
-      #workspaces button.active { 
-        background: #${palette.surface}; 
-        color: #${palette.accent}; 
-        border: 2px solid #${palette.accent}; 
-        padding: 3px 14px; 
+      #workspaces button {
+        background: transparent;
+        border: none;
+        color: #${palette.subtext};
+        padding: 2px 6px;
+        margin: 0;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        min-width: 20px;
       }
-      #workspaces button:hover { 
-        background: #${palette.surface}; 
-        color: #${palette.accent}; 
-        border-color: #${palette.accent};
+      #workspaces button.active {
+        background: #${theme.mauve};
+        color: #${theme.base};
+        font-weight: bold;
       }
-      #workspaces button:active { padding: 2px 11px; }
+      #workspaces button:hover {
+        background: #${palette.surface};
+        color: #${palette.text};
+      }
 
       /* Clock with clean blue styling */
       #clock {
         background: #${palette.surface};
-        border: 2px solid #89b4fa;
-        color: #89b4fa;
+        border: 2px solid #${theme.blue};
+        color: #${theme.blue};
         font-weight: 700;
       }
 
       /* Window module with clean orange styling */
       #window {
         background: #${palette.surface};
-        border: 2px solid #fab387;
-        color: #fab387;
+        border: 2px solid #${theme.peach};
+        color: #${theme.peach};
         font-weight: 600;
       }
 
@@ -165,35 +178,15 @@ in {
         border-color: #${palette.accentDark};
       }
 
-      /* Network module with green neon styling */
-      #network {
-        background: #${palette.surface};
-        border: 2px solid #a6e3a1;
-        color: #a6e3a1;
-        font-weight: 700;
-      }
-      #network.disconnected {
-        background: #${palette.surface};
-        border: 2px solid #f38ba8;
-        color: #f38ba8;
-        font-weight: 700;
-      }
-
       /* Bluetooth module with purple neon styling */
-      /* Ensure container and common connected states show the neon outline */
+      /* Only shows when connected - positioned in center */
       #bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
         background: #${palette.surface};
-        border: 2px solid #cba6f7;
-        color: #cba6f7;
+        border: 2px solid #${theme.lavender};
+        color: #${theme.lavender};
         font-weight: 700;
-  padding: 2px 10px;
+        padding: 2px 10px;
         border-radius: 12px;
-      }
-      #bluetooth.disabled, #bluetooth.off {
-        background: #${palette.surface};
-        border: 2px solid #${palette.accentDark};
-        color: #${palette.subtext};
-        opacity: 0.5;
       }
       /* Inner elements should not create additional borders; inherit container look */
       #bluetooth > *, #bluetooth .text, #bluetooth .icon {
@@ -207,13 +200,13 @@ in {
       /* System tray with yellow neon styling */
       #tray {
         background: #${palette.surface};
-        border: 2px solid #f9e2af;
-        color: #f9e2af;
+        border: 2px solid #${theme.yellow};
+        color: #${theme.yellow};
         font-weight: 700;
       }
 
       /* Shared module look */
-      #window, #clock, #wireplumber, #network, #bluetooth, #tray {
+      #window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
         background: #${palette.surface};
         color: #${palette.text};
         padding: 2px 12px;
@@ -230,32 +223,30 @@ in {
 
       /* Temperature modules with distinct modern styling */
       #custom-cpu_temp {
-        background: #${palette.surface};
-        border: 2px solid #f38ba8;
-        color: #f38ba8;
+        border: 2px solid #${theme.red};
+        color: #${theme.red};
         font-weight: 700;
       }
       
       #custom-gpu_temp {
-        background: #${palette.surface};
-        border: 2px solid #a6e3a1;
-        color: #a6e3a1;
+        border: 2px solid #${theme.green};
+        color: #${theme.green};
         font-weight: 700;
       }
 
       /* Clock with modern blue styling */
       #clock {
         background: #${palette.surface};
-        border: 2px solid #89b4fa;
-        color: #89b4fa;
+        border: 2px solid #${theme.blue};
+        color: #${theme.blue};
         font-weight: 700;
       }
 
       /* Window module with refined styling */
       #window {
         background: #${palette.surface};
-        border: 2px solid #fab387;
-        color: #fab387;
+        border: 2px solid #${theme.peach};
+        color: #${theme.peach};
         font-weight: 600;
       }
 
