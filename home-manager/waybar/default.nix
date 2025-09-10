@@ -27,8 +27,8 @@ in {
         "custom/cpu_temp"
         "custom/gpu_temp"
         "wireplumber"
-        "tray"
         "clock"
+        "tray"
       ];
 
       clock = {
