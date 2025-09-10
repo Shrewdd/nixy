@@ -54,6 +54,8 @@ in {
         rewrite = {"^(.*?)[[:space:]]*[-—|].*?$" = "$1";};
         icon = true;
         icon-size = 20;
+  # Waybar expects a boolean here; being explicit avoids warnings
+  swap-icon-label = false;
         max-length = 30;
       };
 
@@ -62,7 +64,6 @@ in {
         format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'> {name} </span>";
         all-outputs = true;
         show-special = false;
-        swap-icon-label = false;
       };
 
       wireplumber = {
@@ -71,6 +72,8 @@ in {
         format-icons = ["󰕿" "󰖀" "󰕾"];
         on-click = "sound-toggle";
         scroll-step = 2;
+  # Ensure correct type for Waybar's icon/label swap option
+  swap-icon-label = false;
         tooltip-format = "Volume: {volume}%";
       };
 
@@ -86,6 +89,8 @@ in {
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
         tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
         on-click = "bluetoothctl power toggle";
+  # Explicitly set to a boolean to satisfy Waybar's type requirements
+  swap-icon-label = false;
         max-length = 30;
       };
 
