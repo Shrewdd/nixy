@@ -1,0 +1,121 @@
+* { font-family: SF Pro Display, Inter, JetBrainsMono Nerd Font, sans-serif; font-weight: 600; font-size: 12px; }
+window#waybar { 
+  background: transparent; 
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+/* Clustered workspace display */
+#workspaces {
+  background: #363a4f;
+  border: 2px solid #494d64;
+  border-radius: 12px;
+  margin: 1px 6px 1px 12px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+#workspaces button {
+  background: transparent;
+  border: none;
+  color: #b8c0e0;
+  padding: 1px 6px;
+  margin: 0;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+}
+#workspaces button.active {
+  background: #c6a0f6;
+  color: #24273a;
+  font-weight: bold;
+}
+#workspaces button:hover {
+  background: #363a4f;
+  color: #cad3f5;
+}
+
+/* Bluetooth module with purple neon styling */
+/* Only shows when connected - positioned in center */
+#bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
+  background: #363a4f;
+  border: 2px solid #b7bdf8;
+  color: #b7bdf8;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 12px;
+}
+/* Inner elements should not create additional borders; inherit container look */
+#bluetooth > *, #bluetooth .text, #bluetooth .icon {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0 4px 0 0;
+}
+
+/* System tray with yellow neon styling */
+#tray {
+  background: #363a4f;
+  border: 2px solid #eed49f;
+  color: #eed49f;
+  font-weight: 700;
+}
+
+/* Shared module look */
+#window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
+  background: #363a4f;
+  color: #cad3f5;
+  padding: 1px 12px;
+  margin: 1px 3px 1px 0;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  /* no base border here, modules set their own neon 2px borders above */
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 8px rgba(65, 72, 104, 0.3);
+}
+
+/* tray child items intentionally left unstyled so background service icons stay untouched */
+
+/* Temperature modules with distinct modern styling */
+#custom-cpu_temp {
+  border: 2px solid #ed8796;
+  color: #ed8796;
+  font-weight: 700;
+}
+
+#custom-gpu_temp {
+  border: 2px solid #a6da95;
+  color: #a6da95;
+  font-weight: 700;
+}
+
+/* Clock with modern blue styling */
+#clock {
+  background: #363a4f;
+  border: 2px solid #8aadf4;
+  color: #8aadf4;
+  font-weight: 700;
+}
+
+/* Window module with refined styling */
+#window {
+  background: #363a4f;
+  border: 2px solid #f5a97f;
+  color: #f5a97f;
+  font-weight: 600;
+}
+
+#wireplumber, #wireplumber.muted { 
+  background: #363a4f; 
+  color: #c6a0f6; 
+  border: 2px solid #c6a0f6; 
+  font-weight: 800;
+}
+#wireplumber.muted { 
+  opacity: .6; 
+  color: #b8c0e0;
+  border-color: #6e738d;
+}

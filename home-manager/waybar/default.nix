@@ -1,19 +1,10 @@
 { config, pkgs, ... }: let
+  # Import Catppuccin Macchiato theme
   theme = import ../../themes/catppuccin-macchiato.nix;
-  palette = {
-    bg = theme.base;
-    surface = theme.surface0;
-    text = theme.text;
-    subtext = theme.subtext1;
-    accent = theme.mauve;
-    accentDark = theme.overlay0;
-    border = theme.surface1;
-  };
   fontMain = "SF Pro Display, Inter, JetBrainsMono Nerd Font";
 in {
   imports = [
   ];
-
 
   programs.waybar = {
     enable = true;
@@ -54,8 +45,7 @@ in {
         rewrite = {"^(.*?)[[:space:]]*[-—|].*?$" = "$1";};
         icon = true;
         icon-size = 20;
-  # Waybar expects a boolean here; being explicit avoids warnings
-  swap-icon-label = false;
+        swap-icon-label = false;
         max-length = 30;
       };
 
@@ -72,8 +62,7 @@ in {
         format-icons = ["󰕿" "󰖀" "󰕾"];
         on-click = "sound-toggle";
         scroll-step = 2;
-  # Ensure correct type for Waybar's icon/label swap option
-  swap-icon-label = false;
+        swap-icon-label = false;
         tooltip-format = "Volume: {volume}%";
       };
 
@@ -89,8 +78,7 @@ in {
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
         tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
         on-click = "bluetoothctl power toggle";
-  # Explicitly set to a boolean to satisfy Waybar's type requirements
-  swap-icon-label = false;
+        swap-icon-label = false;
         max-length = 30;
       };
 
@@ -115,158 +103,12 @@ in {
         format = "{}";
         tooltip = true;
       };
+
     };
 
-    style = ''
-      * { font-family: ${fontMain}, sans-serif; font-weight: 600; font-size: 12px; }
-      window#waybar { 
-        background: transparent; 
-        box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
-      }
+    # Load CSS from separate file
+    style = builtins.readFile ./style.css;
 
-      /* Clustered workspace display */
-      #workspaces {
-        background: #${palette.surface};
-        border: 2px solid #${palette.border};
-        border-radius: 12px;
-        margin: 1px 6px 1px 12px;
-        padding: 1px 8px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-      }
-      #workspaces button {
-        background: transparent;
-        border: none;
-        color: #${palette.subtext};
-        padding: 1px 6px;
-        margin: 0;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        min-width: 20px;
-      }
-      #workspaces button.active {
-        background: #${theme.mauve};
-        color: #${theme.base};
-        font-weight: bold;
-      }
-      #workspaces button:hover {
-        background: #${palette.surface};
-        color: #${palette.text};
-      }
-
-      /* Clock with clean blue styling */
-      #clock {
-        background: #${palette.surface};
-        border: 2px solid #${theme.blue};
-        color: #${theme.blue};
-        font-weight: 700;
-      }
-
-      /* Window module with clean orange styling */
-      #window {
-        background: #${palette.surface};
-        border: 2px solid #${theme.peach};
-        color: #${theme.peach};
-        font-weight: 600;
-      }
-
-      #wireplumber, #wireplumber.muted { 
-        background: #${palette.surface}; 
-        color: #${palette.accent}; 
-        border: 2px solid #${palette.accent}; 
-        font-weight: 800;
-      }
-      #wireplumber.muted { 
-        opacity: .6; 
-        color: #${palette.subtext};
-        border-color: #${palette.accentDark};
-      }
-
-      /* Bluetooth module with purple neon styling */
-      /* Only shows when connected - positioned in center */
-      #bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
-        background: #${palette.surface};
-        border: 2px solid #${theme.lavender};
-        color: #${theme.lavender};
-        font-weight: 700;
-        padding: 1px 10px;
-        border-radius: 12px;
-      }
-      /* Inner elements should not create additional borders; inherit container look */
-      #bluetooth > *, #bluetooth .text, #bluetooth .icon {
-        background: transparent;
-        color: inherit;
-        border: none;
-        padding: 0;
-        margin: 0 4px 0 0;
-      }
-
-      /* System tray with yellow neon styling */
-      #tray {
-        background: #${palette.surface};
-        border: 2px solid #${theme.yellow};
-        color: #${theme.yellow};
-        font-weight: 700;
-      }
-
-      /* Shared module look */
-      #window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
-        background: #${palette.surface};
-        color: #${palette.text};
-        padding: 1px 12px;
-        margin: 1px 3px 1px 0;
-        font-size: 11px;
-        font-weight: 600;
-        border-radius: 12px;
-        /* no base border here, modules set their own neon 2px borders above */
-        letter-spacing: 0.3px;
-        box-shadow: 0 0 8px rgba(65, 72, 104, 0.3);
-      }
-
-  /* tray child items intentionally left unstyled so background service icons stay untouched */
-
-      /* Temperature modules with distinct modern styling */
-      #custom-cpu_temp {
-        border: 2px solid #${theme.red};
-        color: #${theme.red};
-        font-weight: 700;
-      }
-      
-      #custom-gpu_temp {
-        border: 2px solid #${theme.green};
-        color: #${theme.green};
-        font-weight: 700;
-      }
-
-      /* Clock with modern blue styling */
-      #clock {
-        background: #${palette.surface};
-        border: 2px solid #${theme.blue};
-        color: #${theme.blue};
-        font-weight: 700;
-      }
-
-      /* Window module with refined styling */
-      #window {
-        background: #${palette.surface};
-        border: 2px solid #${theme.peach};
-        color: #${theme.peach};
-        font-weight: 600;
-      }
-
-      #wireplumber, #wireplumber.muted { 
-        background: #${palette.surface}; 
-        color: #${palette.accent}; 
-        border: 2px solid #${palette.accent}; 
-        font-weight: 800;
-      }
-      #wireplumber.muted { 
-        opacity: .6; 
-        color: #${palette.subtext};
-        border-color: #${palette.accentDark};
-      }
-    '';
   };
+
 }
