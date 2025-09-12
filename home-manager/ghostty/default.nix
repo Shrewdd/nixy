@@ -3,9 +3,6 @@
 {
   programs.ghostty = {
     enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-    enableZshIntegration = true;
     settings = {
       theme = "catppuccin-macchiato";
       background-blur-radius = 20;
@@ -13,7 +10,7 @@
       font-feature = [ "+ss02" "+ss03" "+ss05" "+ss07" ];
       font-size = 14;
       adjust-cell-height = "28%";
-      cursor-style = "block";
+      cursor-style = "bar";
       cursor-style-blink = true;
       cursor-invert-fg-bg = false;
       gtk-single-instance = true;
@@ -30,7 +27,8 @@
       window-padding-balance = true;
       auto-update = "check";
       auto-update-channel = "stable";
-      shell-integration-features = "cursor,no-sudo,no-title";
+      shell-integration-features = "no-cursor,no-sudo,no-title";
+      shell-integration = "fish";
     };
   };
 }

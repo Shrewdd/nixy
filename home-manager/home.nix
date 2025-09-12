@@ -9,12 +9,12 @@
     ./git/default.nix
     ./spicetify-nix/default.nix
     ./dunst/default.nix
-    ./btop/default.nix
+    ./shell/btop/default.nix
     ./anytype/default.nix
     ./rofi/default.nix
     ./ghostty/default.nix
-    ./fish/default.nix
-    ./fastfetch/default.nix
+    ./shell/fish/default.nix
+    ./shell/fastfetch/default.nix
     ./shell/starship/default.nix
   ];
 
