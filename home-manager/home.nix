@@ -15,6 +15,7 @@
     ./ghostty/default.nix
     ./fish/default.nix
     ./fastfetch/default.nix
+    ./shell/starship/default.nix
   ];
 
   home.username = "km";
