@@ -129,7 +129,7 @@
     wl-clipboard
   ];
 
-  # Install Nerd Font system-wide (new nerd-fonts namespace)
+  # Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.symbols-only

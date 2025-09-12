@@ -13,7 +13,7 @@
     ./anytype/default.nix
     ./rofi/default.nix
     ./ghostty/default.nix
-    ./bash/default.nix
+    ./fish/default.nix
     ./fastfetch/default.nix
   ];
 
