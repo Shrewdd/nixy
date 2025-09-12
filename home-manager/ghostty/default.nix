@@ -30,8 +30,7 @@
       window-padding-balance = true;
       auto-update = "check";
       auto-update-channel = "stable";
-      shell-integration-features = "no-cursor";
-      copy-on-select = "clipboard";
+      shell-integration-features = "cursor,no-sudo,no-title";
     };
   };
 }
