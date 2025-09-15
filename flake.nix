@@ -10,23 +10,23 @@
   };
 
   outputs = { self, nixpkgs, home-manager, spicetify-nix, anytype, ... }:
-  let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
-  in
-  {
-    nixosConfigurations.nixy = nixpkgs.lib.nixosSystem {
-      system = system;
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        { home-manager.extraSpecialArgs = { inputs = self.inputs; }; }
-        {
-          home-manager.users.km = {
-            imports = [ ./home-manager/home.nix ];
-          };
-        }
-      ];
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in {
+      # Defines NixOS configurations for different hosts
+      nixosConfigurations.monsoon = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ./hosts/monsoon/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs = { inputs = self.inputs; };
+            home-manager.users.km = {
+              imports = [ ./hosts/monsoon/home.nix ];
+            };
+          }
+        ];
+      };
     };
-  };
 }
