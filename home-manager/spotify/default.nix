@@ -6,7 +6,7 @@ in
   imports = [ inputs.spotify.homeManagerModules.spicetify ];
 
   programs.spicetify = {
-    enable = false;
+    enable = true;
 
     # Catppuccin theme with Macchiato colors
     theme = spicePkgs.themes.catppuccin;
