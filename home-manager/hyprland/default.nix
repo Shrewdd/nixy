@@ -29,6 +29,8 @@ in
         border_size = 3;
         "col.active_border" = "${theme.rgb.mauve} ${theme.rgb.lavender} 135deg"; # gradient with mauve and lavender
         "col.inactive_border" = theme.rgb.base;
+        gaps_in = 2;
+        gaps_out = 8;
       };
 
       group = {
