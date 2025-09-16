@@ -1,4 +1,3 @@
-# Catppuccin Macchiato color palette
 {
   # Base colors
   rosewater = "f4dbd6";
