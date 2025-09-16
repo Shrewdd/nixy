@@ -50,6 +50,13 @@ in
       };
 
       # ===================================
+      # DWINDLE LAYOUT SETTINGS
+      # ===================================
+      dwindle = {
+        preserve_split = true;        # Makes togglesplit work.
+      };
+
+      # ===================================
       # WINDOW GROUPING
       # ===================================
       # Configuration for grouped windows (tabbed containers)
