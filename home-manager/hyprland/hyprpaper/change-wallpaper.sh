@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # dirs / monitors
-WALL_DIR="$HOME/nixy/home-manager/hyprland/hyprpaper/wallpapers"
+WALL_DIR="$HOME/nixy/shared/wallpapers"
 PRIMARY="desc:Samsung Electric Company LS24C33xG H9TX501846"
 SECONDARY="desc:Samsung Electric Company LS24C33xG H9TX501795"
 # mode / target screens

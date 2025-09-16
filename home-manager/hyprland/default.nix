@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  theme = import ../../shared/theme/catppuccin/macchiato.nix;
+  theme = import ../../shared/theme/macchiato.nix;
 in
 {
   wayland.windowManager.hyprland = {

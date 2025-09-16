@@ -1,6 +1,6 @@
 { config, pkgs, ... }: let
   # Import Catppuccin Macchiato theme
-  theme = import ../../shared/theme/catppuccin/macchiato.nix;
+  theme = import ../../shared/theme/macchiato.nix;
   fontMain = "SF Pro Display, Inter, JetBrainsMono Nerd Font";
 in {
   imports = [
