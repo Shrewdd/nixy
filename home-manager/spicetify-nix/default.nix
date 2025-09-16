@@ -1,7 +1,6 @@
 { pkgs, lib, inputs, ... }:
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.system};
-  theme = import ../../themes/catppuccin-macchiato.nix;
 in
 {
   imports = [ inputs.spicetify-nix.homeManagerModules.spicetify ];
@@ -19,7 +18,6 @@ in
       shuffle
       copyToClipboard
       powerBar
-      volumePercentage
     ];
   };
 }
