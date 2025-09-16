@@ -7,7 +7,7 @@
     ./../../home-manager/waybar/default.nix
     ./../../home-manager/zen-browser/default.nix
     ./../../home-manager/git/default.nix
-    ./../../home-manager/spicetify-nix/default.nix
+    ./../../home-manager/spotify/default.nix
     ./../../home-manager/dunst/default.nix
     ./../../home-manager/shell/btop/default.nix
     ./../../home-manager/anytype/default.nix
