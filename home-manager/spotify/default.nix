@@ -1,12 +1,12 @@
 { pkgs, lib, inputs, ... }:
 let
-  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.system};
+  spicePkgs = inputs.spotify.legacyPackages.${pkgs.stdenv.system};
 in
 {
-  imports = [ inputs.spicetify-nix.homeManagerModules.spicetify ];
+  imports = [ inputs.spotify.homeManagerModules.spicetify ];
 
   programs.spicetify = {
-    enable = true;
+    enable = false;
 
     # Catppuccin theme with Macchiato colors
     theme = spicePkgs.themes.catppuccin;
