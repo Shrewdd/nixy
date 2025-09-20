@@ -84,17 +84,13 @@
   # Desktop Environment / WM
   #######################
   security.pam.services.greetd.enableGnomeKeyring = true;
-  # security.pam.services.login.enableGnomeKeyring = true;
 
-   services.greetd = {
-     enable = true;
-     settings = {
-       default_session = {
-         command = "tuigreet --time --remember --remember-session --asterisks";
-         user = "greeter";
-       };
-     };
-   };
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    theme = "catppuccin-mocha-mauve";
+    package = pkgs.kdePackages.sddm;
+  };
 
   programs.hyprland = {
     enable = true;
@@ -109,7 +105,6 @@
 
   # System-wide core apps
   environment.systemPackages = with pkgs; [
-    tuigreet
     pavucontrol
     playerctl
     jq
@@ -127,6 +122,14 @@
     # Screenshot utils
     grimblast
     wl-clipboard
+    where-is-my-sddm-theme
+    (pkgs.catppuccin-sddm.override {
+      flavor = "mocha";
+      accent = "mauve";
+      font  = "Noto Sans";
+      fontSize = "9";
+      loginBackground = true;
+    })
   ];
 
   # Fonts
