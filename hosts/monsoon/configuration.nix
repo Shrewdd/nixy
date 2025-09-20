@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -88,8 +87,13 @@
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    theme = "catppuccin-mocha-mauve";
+    theme = "sddm-astronaut-theme";
     package = pkgs.kdePackages.sddm;
+    extraPackages = with pkgs; [
+      qt6Packages.qtmultimedia
+      qt6Packages.qtsvg
+      qt6Packages.qtvirtualkeyboard
+    ];
   };
 
   programs.hyprland = {
@@ -122,14 +126,7 @@
     # Screenshot utils
     grimblast
     wl-clipboard
-    where-is-my-sddm-theme
-    (pkgs.catppuccin-sddm.override {
-      flavor = "mocha";
-      accent = "mauve";
-      font  = "Noto Sans";
-      fontSize = "9";
-      loginBackground = true;
-    })
+    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
   # Fonts
