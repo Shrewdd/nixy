@@ -11,7 +11,7 @@ in {
     settings.mainBar = {
       spacing = 1;
       margin-bottom = -2;
-      height = 28;
+      height = 30;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
       modules-center = ["bluetooth"];
       modules-right = [
@@ -35,8 +35,8 @@ in {
           };
         };
         interval = 60;
-        max-length = 25;
-        format = "{:%H:%M  %d/%m}";
+        max-length = 30;
+        format = "{:%H:%M  %d/%m/%y}";
         format-alt = "{:%A, %d %B %Y}";
       };
 
@@ -60,14 +60,15 @@ in {
         format = "{icon} {volume}%";
         format-muted = "󰖁 muted";
         format-icons = ["󰕿" "󰖀" "󰕾"];
-        on-click = "sound-toggle";
         scroll-step = 2;
         swap-icon-label = false;
         tooltip-format = "Volume: {volume}%";
+        max-volume = 100;
+        ignored-sinks = [];
       };
 
       bluetooth = {
-        format = "󰂯 {status}";
+        format = "";
         format-disabled = "";
         format-off = "";
         format-on = "";
@@ -77,7 +78,6 @@ in {
         tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
         tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
-        on-click = "bluetoothctl power toggle";
         swap-icon-label = false;
         max-length = 30;
       };

@@ -7,7 +7,7 @@ window#waybar {
 /* Workspace display - minimal dots */
 #workspaces {
   background: transparent;
-  margin: 0 6px 0 12px;
+  margin: 0 4px 0 8px;
   padding: 0;
   font-size: 11px;
   font-weight: 600;
@@ -15,7 +15,7 @@ window#waybar {
 #workspaces button {
   background: transparent;
   color: #475258;
-  padding: 3px 6px;
+  padding: 3px 4px;
   margin: 0 1px;
   font-size: 11px;
   font-weight: 500;
@@ -38,6 +38,7 @@ window#waybar {
   color: #d699b6;
   font-weight: 600;
   padding: 3px 8px;
+  margin: 0 1px;
 }
 #bluetooth > *, #bluetooth .text, #bluetooth .icon {
   background: transparent;
@@ -53,6 +54,7 @@ window#waybar {
   color: #dbbc7f;
   font-weight: 600;
   padding: 3px 6px;
+  margin: 0 1px;
 }
 
 /* Shared module styling */
@@ -60,7 +62,7 @@ window#waybar {
   background: #343f44;
   color: #d3c6aa;
   padding: 3px 8px;
-  margin: 0 2px;
+  margin: 0 1px;
   font-size: 11px;
   font-weight: 500;
 }
