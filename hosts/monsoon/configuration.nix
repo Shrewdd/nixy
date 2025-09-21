@@ -2,7 +2,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/graphics.nix
+    ./modules/display.nix
   ];
 
   #######################
@@ -57,13 +57,6 @@
   };
 
   #######################
-  # Keyboard
-  #######################
-  services.xserver.xkb.layout = "pl";
-  services.xserver.xkb.variant = "";
-  console.keyMap = "pl2";
-
-  #######################
   # Users
   #######################
   users.users.km = {
@@ -78,29 +71,6 @@
   #######################
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
-
-  #######################
-  # Desktop Environment / WM
-  #######################
-  security.pam.services.greetd.enableGnomeKeyring = true;
-
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    theme = "sddm-astronaut-theme";
-    package = pkgs.kdePackages.sddm;
-    extraPackages = with pkgs; [
-      qt6Packages.qtmultimedia
-      qt6Packages.qtsvg
-      qt6Packages.qtvirtualkeyboard
-    ];
-  };
-
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
 
   #######################
   # Software Packages
