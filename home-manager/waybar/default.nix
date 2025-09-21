@@ -1,6 +1,6 @@
 { config, pkgs, ... }: let
-  # Import Catppuccin Macchiato theme
-  theme = import ../../shared/theme/macchiato.nix;
+  # Import Everforest theme
+  theme = import ../../shared/theme/everforest.nix;
   fontMain = "SF Pro Display, Inter, JetBrainsMono Nerd Font";
 in {
   imports = [
@@ -9,9 +9,9 @@ in {
   programs.waybar = {
     enable = true;
     settings.mainBar = {
-      spacing = 2;
-      margin-bottom = -3;
-      height = 35;
+      spacing = 1;
+      margin-bottom = -2;
+      height = 28;
       modules-left = ["hyprland/workspaces" "hyprland/window"];
       modules-center = ["bluetooth"];
       modules-right = [
@@ -50,8 +50,8 @@ in {
       };
 
       "hyprland/workspaces" = {
-        format = "{name}";
-        format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'> {name} </span>";
+        format = "●";
+        format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'>●</span>";
         all-outputs = true;
         show-special = false;
       };

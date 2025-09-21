@@ -1,47 +1,113 @@
-* { font-family: SF Pro Display, Inter, JetBrainsMono Nerd Font, sans-serif; font-weight: 600; font-size: 12px; }
-window#waybar { 
-  background: transparent; 
-  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
+* { font-family: SF Pro Display, Inter, JetBrainsMono Nerd Font, sans-serif; font-weight: 500; font-size: 11px; }
+window#waybar {
+  background: #2d353b;
+  margin: 0;
 }
 
-/* Clustered workspace display */
+/* Workspace display - minimal dots */
 #workspaces {
-  background: #363a4f;
-  border: 2px solid #494d64;
-  border-radius: 12px;
-  margin: 1px 6px 1px 12px;
-  padding: 1px 8px;
+  background: transparent;
+  margin: 0 6px 0 12px;
+  padding: 0;
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 #workspaces button {
   background: transparent;
-  border: none;
-  color: #b8c0e0;
-  padding: 1px 6px;
-  margin: 0;
-  border-radius: 8px;
+  color: #475258;
+  padding: 3px 6px;
+  margin: 0 1px;
   font-size: 11px;
-  font-weight: 700;
-  min-width: 20px;
+  font-weight: 500;
+  min-width: 12px;
+  border: none;
 }
 #workspaces button.active {
-  background: #c6a0f6;
-  color: #24273a;
-  font-weight: bold;
+  background: transparent;
+  color: #d699b6;
+  font-weight: 600;
 }
 #workspaces button:hover {
-  background: #363a4f;
-  color: #cad3f5;
+  background: transparent;
+  color: #859289;
 }
 
-/* Bluetooth module with purple neon styling */
+/* Bluetooth module */
+#bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
+  background: #343f44;
+  color: #d699b6;
+  font-weight: 600;
+  padding: 3px 8px;
+}
+#bluetooth > *, #bluetooth .text, #bluetooth .icon {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0 3px 0 0;
+}
+
+/* System tray */
+#tray {
+  background: #343f44;
+  color: #dbbc7f;
+  font-weight: 600;
+  padding: 3px 6px;
+}
+
+/* Shared module styling */
+#window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
+  background: #343f44;
+  color: #d3c6aa;
+  padding: 3px 8px;
+  margin: 0 2px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Temperature modules */
+#custom-cpu_temp {
+  background: #514045;
+  color: #e67e80;
+  font-weight: 600;
+}
+
+#custom-gpu_temp {
+  background: #425047;
+  color: #a7c080;
+  font-weight: 600;
+}
+
+/* Clock */
+#clock {
+  background: #3a515d;
+  color: #7fbbb3;
+  font-weight: 600;
+}
+
+/* Window title */
+#window {
+  background: #543a48;
+  color: #e69875;
+  font-weight: 500;
+}
+
+/* Volume control */
+#wireplumber, #wireplumber.muted {
+  background: #4a444e;
+  color: #d699b6;
+  font-weight: 600;
+}
+#wireplumber.muted {
+  opacity: 0.7;
+  color: #859289;
+}
+
+/* Bluetooth module with purple styling */
 /* Only shows when connected - positioned in center */
 #bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
-  background: #363a4f;
-  border: 2px solid #b7bdf8;
-  color: #b7bdf8;
+  background: #2d353b;
+  color: #d699b6;
   font-weight: 700;
   padding: 1px 10px;
   border-radius: 12px;
@@ -55,24 +121,22 @@ window#waybar {
   margin: 0 4px 0 0;
 }
 
-/* System tray with yellow neon styling */
+/* System tray with yellow styling */
 #tray {
-  background: #363a4f;
-  border: 2px solid #eed49f;
-  color: #eed49f;
+  background: #2d353b;
+  color: #dbbc7f;
   font-weight: 700;
 }
 
 /* Shared module look */
 #window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
-  background: #363a4f;
-  color: #cad3f5;
+  background: #2d353b;
+  color: #d3c6aa;
   padding: 1px 12px;
   margin: 1px 3px 1px 0;
   font-size: 11px;
   font-weight: 600;
   border-radius: 12px;
-  /* no base border here, modules set their own neon 2px borders above */
   letter-spacing: 0.3px;
   box-shadow: 0 0 8px rgba(65, 72, 104, 0.3);
 }
@@ -81,41 +145,33 @@ window#waybar {
 
 /* Temperature modules with distinct modern styling */
 #custom-cpu_temp {
-  border: 2px solid #ed8796;
-  color: #ed8796;
+  color: #e67e80;
   font-weight: 700;
 }
 
 #custom-gpu_temp {
-  border: 2px solid #a6da95;
-  color: #a6da95;
+  color: #a7c080;
   font-weight: 700;
 }
 
 /* Clock with modern blue styling */
 #clock {
-  background: #363a4f;
-  border: 2px solid #8aadf4;
-  color: #8aadf4;
+  color: #7fbbb3;
   font-weight: 700;
 }
 
 /* Window module with refined styling */
 #window {
-  background: #363a4f;
-  border: 2px solid #f5a97f;
-  color: #f5a97f;
+  color: #e69875;
   font-weight: 600;
 }
 
 #wireplumber, #wireplumber.muted { 
-  background: #363a4f; 
-  color: #c6a0f6; 
-  border: 2px solid #c6a0f6; 
+  background: #2d353b; 
+  color: #d699b6; 
   font-weight: 800;
 }
 #wireplumber.muted { 
   opacity: .6; 
-  color: #b8c0e0;
-  border-color: #6e738d;
+  color: #9da9a0;
 }
