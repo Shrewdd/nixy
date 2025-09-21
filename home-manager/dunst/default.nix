@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  theme = import ../../shared/theme/macchiato.nix;
+  theme = import ../../shared/theme/everforest.nix;
 in
 {
   services.dunst = {
@@ -10,69 +10,77 @@ in
       # GLOBAL NOTIFICATION SETTINGS
       # ===================================
       global = {
-        # Appearance and styling
-        font = "Fira Sans Medium 11";              # Font family and size
-        frame_color = "${theme.rgb.mauve}";        # Border color using theme
-        separator_color = "auto";                  # Automatic separator color
-        background = "#24273aE6";                # Semi-transparent background
-        foreground = "${theme.rgb.text}";          # Text color from theme
+        # Display
+        monitor = 0;
+        follow = "mouse";
         
-        # Size and positioning
-        width = "(250, 350)";                      # Dynamic width range
-        height = 80;                               # Fixed notification height
-        offset = "20x50";                          # Position from top-right corner
-        origin = "top-right";                      # Anchor point for positioning
-        corner_radius = 10;                        # Rounded corner radius
+        # Geometry
+        width = 350;
+        height = 300;
+        origin = "top-right";
+        offset = "20x50";
+        scale = 0;
+        notification_limit = 5;
+        indicate_hidden = true;
         
-        # Spacing and padding
-        padding = 16;                              # Internal padding
-        horizontal_padding = 20;                   # Horizontal padding
-        text_icon_padding = 12;                    # Space between icon and text
-        frame_width = 2;                           # Border thickness
-        gap_size = 8;                              # Gap between multiple notifications
+        # Progress bar
+        progress_bar = true;
+        progress_bar_height = 10;
+        progress_bar_frame_width = 1;
+        progress_bar_min_width = 150;
+        progress_bar_max_width = 300;
         
-        # Behavior settings
-        monitor = 0;                               # Display on primary monitor
-        follow = "mouse";                          # Follow mouse cursor
-        sort = true;                               # Sort notifications by urgency
-        idle_threshold = 120;                      # Hide after idle time (seconds)
-        show_age_threshold = 60;                   # Show age after threshold
+        # Appearance
+        transparency = 5;
+        separator_height = 2;
+        padding = 12;
+        horizontal_padding = 12;
+        text_icon_padding = 8;
+        frame_width = 2;
+        frame_color = "#${theme.surface1}";
+        separator_color = "frame";
+        corner_radius = 8;
+        gap_size = 8;
         
-        # Text formatting
-        line_height = 4;                           # Line spacing
-        markup = "full";                           # Enable markup formatting
-        format = "<b>%s</b>\\n<span size='small' alpha='80%'>%b</span>";  # Title and body format
-        alignment = "left";                        # Text alignment
-        vertical_alignment = "center";             # Vertical text alignment
-        word_wrap = true;                          # Enable word wrapping
-        ignore_newline = false;                    # Preserve line breaks
+        # Text
+        font = "SF Pro Display 11";
+        line_height = 0;
+        markup = "full";
+        format = "<b>%s</b>\n%b";
+        alignment = "left";
+        vertical_alignment = "center";
+        show_age_threshold = 60;
+        ellipsize = "middle";
+        ignore_newline = "no";
+        stack_duplicates = true;
+        hide_duplicate_count = false;
+        show_indicators = "yes";
+        word_wrap = true;
         
-        # Icon settings
-        icon_position = "left";                    # Icon position
-        max_icon_size = 32;                        # Maximum icon size
-        icon_theme = "Papirus-Dark";               # Icon theme
-        enable_recursive_icon_lookup = true;       # Enhanced icon searching
+        # Icons
+        enable_recursive_icon_lookup = true;
+        icon_theme = "Adwaita";
+        icon_position = "left";
+        min_icon_size = 32;
+        max_icon_size = 48;
+        icon_path = "/usr/share/icons/Adwaita/16x16/status/:/usr/share/icons/Adwaita/16x16/devices/";
         
-        # Mouse interaction
-        mouse_left_click = "close_current";       # Left click action
-        mouse_middle_click = "do_action";          # Middle click action
-        mouse_right_click = "close_all";           # Right click action
+        # History
+        sticky_history = "yes";
+        history_length = 20;
         
-        # Advanced features
-        notification_limit = 5;                   # Maximum visible notifications
-        indicate_hidden = true;                    # Show hidden notification indicator
-        transparency = 8;                          # Global transparency level
-        separator_height = 2;                      # Separator line thickness
-        always_run_script = true;                  # Always execute notification scripts
-        title = "Dunst";                          # Window title
-        class = "Dunst";                           # Window class
+        # Behavior
+        sort = true;
+        idle_threshold = 120;
+        always_run_script = true;
+        title = "Dunst";
+        class = "Dunst";
+        ignore_dbusclose = false;
         
-        # Progress bar styling
-        progress_bar = true;                       # Enable progress bars
-        progress_bar_height = 4;                   # Progress bar thickness
-        progress_bar_frame_width = 0;              # No frame around progress bar
-        progress_bar_min_width = 150;              # Minimum progress bar width
-        progress_bar_max_width = 300;              # Maximum progress bar width
+        # Mouse
+        mouse_left_click = "close_current";
+        mouse_middle_click = "do_action, close_current";
+        mouse_right_click = "close_all";
       };
       
       # ===================================
@@ -80,76 +88,76 @@ in
       # ===================================
       # Low urgency notifications (info, success)
       urgency_low = {
-        background = "#24273aE6";                  # Semi-transparent background
-        foreground = "${theme.rgb.subtext1}";      # Muted text color
-        frame_color = "${theme.rgb.green}";        # Green border for low urgency
-        timeout = 4;                               # Auto-dismiss timeout
-        default_icon = "dialog-information";       # Default icon
+        background = "#${theme.base}E6";
+        foreground = "#${theme.subtext1}";
+        frame_color = "#${theme.green}";
+        timeout = 4;
+        default_icon = "dialog-information";
       };
       
       # Normal urgency notifications (default)
       urgency_normal = {
-        background = "#24273aE6";                  # Semi-transparent background
-        foreground = "${theme.rgb.text}";          # Normal text color
-        frame_color = "${theme.rgb.blue}";         # Blue border for normal urgency
-        timeout = 8;                               # Standard timeout
-        default_icon = "dialog-information";       # Default icon
+        background = "#${theme.base}E6";
+        foreground = "#${theme.text}";
+        frame_color = "#${theme.blue}";
+        timeout = 8;
+        default_icon = "dialog-information";
       };
       
       # Critical urgency notifications (errors, warnings)
       urgency_critical = {
-        background = "#ed87961A";                  # Subtle red-tinted background
-        foreground = "${theme.rgb.text}";          # High contrast text
-        frame_color = "${theme.rgb.red}";          # Red border for critical urgency
-        timeout = 0;                               # Never auto-dismiss
-        default_icon = "dialog-error";             # Error icon
-        format = "<b><u>URGENT</u></b>\\n<b>%s</b>\\n%b";  # Special urgent formatting
+        background = "#${theme.base}F0";
+        foreground = "#${theme.text}";
+        frame_color = "#${theme.red}";
+        timeout = 0;
+        default_icon = "dialog-error";
+        format = "<b><u>URGENT</u></b>\n<b>%s</b>\n%b";
       };
       
       # ===================================
       # APPLICATION-SPECIFIC RULES
       # ===================================
-      # Volume notifications with centered display and progress bar
+      # Volume notifications
       volume = {
-        appname = "Volume";                        # Match volume notifications
-        urgency = "low";                           # Low urgency level
-        timeout = 2;                               # Quick dismissal
-        format = "<b>%s</b>";                      # Simple format: just the volume text
-        frame_color = "${theme.rgb.teal}";         # Teal border for volume
-        background = "#24273aF0";                  # More opaque for visibility
-        foreground = "${theme.rgb.text}";          # Standard text color
-        icon_position = "off";                     # No icon for cleaner appearance
-        width = 350;                               # Fixed width for consistency
-        height = 80;                               # Compact height
-        horizontal_padding = 24;                   # Generous horizontal padding
-        padding = 16;                              # Internal padding
-        corner_radius = 15;                        # More rounded corners
-        offset = "0x0";                            # Perfect center positioning
-        origin = "center";                         # Center anchor point
-        alignment = "center";                      # Center text alignment
-        progress_bar = true;                       # Enable volume progress bar
-        progress_bar_height = 6;                   # Progress bar thickness
-        progress_bar_frame_width = 0;              # Clean progress bar
-        progress_bar_min_width = 300;              # Progress bar width
-        progress_bar_max_width = 300;              # Fixed progress bar width
+        appname = "Volume";
+        urgency = "low";
+        timeout = 2;
+        format = "<b>%s</b>";
+        frame_color = "#${theme.teal}";
+        background = "#${theme.base}F0";
+        foreground = "#${theme.text}";
+        icon_position = "off";
+        width = 350;
+        height = 80;
+        horizontal_padding = 24;
+        padding = 16;
+        corner_radius = 15;
+        offset = "0x0";
+        origin = "center";
+        alignment = "center";
+        progress_bar = true;
+        progress_bar_height = 6;
+        progress_bar_frame_width = 0;
+        progress_bar_min_width = 300;
+        progress_bar_max_width = 300;
       };
       
-      # Screenshot notifications with preview support
+      # Screenshot notifications
       screenshot = {
-        appname = "Screenshot*";                   # Match screenshot notifications
-        urgency = "low";                           # Low urgency level
-        timeout = 5;                               # Longer timeout for file operations
-        frame_color = "${theme.rgb.lavender}";     # Lavender border for screenshots
-        format = "<b>%s</b>\\n%b";                 # Standard title and body format
+        appname = "Screenshot*";
+        urgency = "low";
+        timeout = 5;
+        frame_color = "#${theme.lavender}";
+        format = "<b>%s</b>\n%b";
       };
       
       # Media player notifications
       media = {
-        appname = "Spotify";                       # Match Spotify notifications
-        urgency = "low";                           # Low urgency level
-        timeout = 3;                               # Quick dismissal
-        frame_color = "${theme.rgb.green}";        # Green border for media
-        format = "<b>♫ %s</b>\\n%b";               # Music note prefix
+        appname = "Spotify";
+        urgency = "low";
+        timeout = 3;
+        frame_color = "#${theme.green}";
+        format = "<b>♫ %s</b>\n%b";
       };
     };
   };
