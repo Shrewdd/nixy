@@ -11,11 +11,6 @@
 					Value = true;
 					Status = "locked";
 				};
-				# Enables custom stylesheets (userChrome.css and userContent.css) for UI customization
-				"toolkit.legacyUserProfileCustomizations.stylesheets" = {
-					Value = true;
-					Status = "locked";
-				};
 			};
 		};
 	};

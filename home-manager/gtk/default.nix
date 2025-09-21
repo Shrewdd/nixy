@@ -9,12 +9,6 @@ in
   gtk = {
     enable = true;
     
-    # Global settings for all GTK versions
-    font = {
-      name = "SF Pro Display";
-      package = pkgs.sf-pro;
-      size = 11;
-    };
     
     # Use dark color scheme to match Everforest
     colorScheme = "dark";
@@ -68,9 +62,9 @@ in
         headerbar,
         .titlebar,
         toolbar {
-          background-color: #${theme.surface1};
+          background-color: #${theme.surface2};
           background-image: none;
-          border-color: #${theme.surface2};
+          border-color: #${theme.overlay0};
           color: #${theme.text};
         }
         
@@ -219,7 +213,7 @@ in
         
         /* Header bars */
         headerbar {
-          background-color: #${theme.surface1};
+          background-color: #${theme.surface2};
           color: #${theme.text};
           border-radius: 0;
         }
@@ -332,7 +326,6 @@ in
       extraConfig = ''
         gtk-theme-name="Adwaita-dark"
         gtk-icon-theme-name="Adwaita"
-        gtk-font-name="SF Pro Display 11"
         gtk-cursor-theme-name="Adwaita"
         gtk-cursor-theme-size=24
         gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
