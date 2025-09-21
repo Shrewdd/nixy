@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  theme = import ../../shared/theme/macchiato.nix;
+  theme = import ../../shared/theme/everforest.nix;
 in
 {
   wayland.windowManager.hyprland = {
@@ -41,10 +41,10 @@ in
       general = {
         layout = "dwindle";           # Window layout algorithm
         border_size = 3;              # Border thickness in pixels
-        # Active window border: gradient from mauve to lavender
-        "col.active_border" = "${theme.rgb.mauve} ${theme.rgb.lavender} 135deg";
-        # Inactive window border: base theme color
-        "col.inactive_border" = theme.rgb.base;
+        # Active window border: gradient from green to teal (Everforest nature theme)
+        "col.active_border" = "${theme.rgb.green} ${theme.rgb.teal} 135deg";
+        # Inactive window border: surface color
+        "col.inactive_border" = theme.rgb.surface1;
         gaps_in = 2;                  # Inner gaps between windows
         gaps_out = 8;                 # Outer gaps around screen edges
       };
@@ -61,10 +61,10 @@ in
       # ===================================
       # Configuration for grouped windows (tabbed containers)
       group = {
-        # Active group border: gradient from blue to teal
-        "col.border_active" = "${theme.rgb.blue} ${theme.rgb.teal} 135deg";
+        # Active group border: gradient from blue to sky (cool forest colors)
+        "col.border_active" = "${theme.rgb.blue} ${theme.rgb.sky} 135deg";
         "col.border_inactive" = theme.rgb.surface1;
-        # Locked group border: gradient from yellow to peach
+        # Locked group border: gradient from yellow to peach (warm forest colors)
         "col.border_locked_active" = "${theme.rgb.yellow} ${theme.rgb.peach} 135deg";
         "col.border_locked_inactive" = theme.rgb.surface1;
         groupbar = {
@@ -204,11 +204,11 @@ in
         # Ignore empty XWayland windows that sometimes appear
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
         
-        # Application-specific border colors using Catppuccin theme
-        "bordercolor ${theme.rgb.blue}, class:(firefox)"        # Firefox: blue
+        # Application-specific border colors using Everforest theme
+        "bordercolor ${theme.rgb.blue}, class:(.*zen.*)"        # Zen Browser: blue
         "bordercolor ${theme.rgb.green}, class:(code)"          # VS Code: green
-        "bordercolor ${theme.rgb.yellow}, class:(.*terminal.*)" # Terminals: yellow
-        "bordercolor ${theme.rgb.pink}, class:(.*discord.*)"    # Discord: pink
+        "bordercolor ${theme.rgb.yellow}, class:(.*ghostty.*)"  # Ghostty terminal: yellow
+        "bordercolor ${theme.rgb.mauve}, class:(.*vesktop.*)"   # Vesktop: mauve
         "bordercolor ${theme.rgb.teal}, class:(.*spotify.*)"    # Spotify: teal
       ];
 
@@ -218,8 +218,8 @@ in
       # More specific window rules with additional properties
       windowrulev2 = [
         # Additional application border colors
-        "bordercolor ${theme.rgb.red}, class:(.*steam.*)"    # Steam: red
-        "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)" # Thunar: peach
+        "bordercolor ${theme.rgb.red}, class:(.*steam.*)"      # Steam: red
+        "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)"   # Thunar: peach
         
         # Opacity settings for different window types
         "opacity 0.9 0.9, class:(.*terminal.*)"              # Slightly transparent terminals
