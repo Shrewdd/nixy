@@ -4,7 +4,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      theme = "catppuccin-macchiato";
+      theme = "Everforest Dark   Hard";
       background-blur-radius = 20;
       font-family = "Maple Mono NF";
       font-feature = [ "+ss02" "+ss03" "+ss05" "+ss07" ];
@@ -17,7 +17,6 @@
       window-theme = "system";
       gtk-titlebar = false;
       gtk-wide-tabs = false;
-      gtk-adwaita = false;
       macos-titlebar-style = "hidden";
       macos-option-as-alt = true;
       mouse-hide-while-typing = true;
