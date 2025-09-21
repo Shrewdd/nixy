@@ -16,6 +16,7 @@
     ./../../home-manager/shell/fish/default.nix
     ./../../home-manager/shell/fastfetch/default.nix
     ./../../home-manager/shell/starship/default.nix
+    ./../../home-manager/gtk/default.nix
   ];
 
   home.username = "km";
