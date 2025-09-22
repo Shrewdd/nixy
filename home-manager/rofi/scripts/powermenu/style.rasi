@@ -6,16 +6,17 @@ configuration {
 }
 
 * {
-  background:       #24273ACC;
-  foreground:       #CAD3F5FF;
-  accent:           #B7BDF869;
-  background-tb:    #494D64FF;
-  border-tb:        #363A4FFF;
-  selected:         linear-gradient(to right, #363A4FFF, #B7BDF869);
-  button:           linear-gradient(#939AB7FF);
-  button-selected:  linear-gradient(#B7BDF869);
-  active:           linear-gradient(to right, #8BD5CAFF, #A6DA95FF);
-  urgent:           #ED8796FF;
+  background:       #2d353b;
+  foreground:       #d3c6aa;
+  accent:           #a7c080;
+  background-tb:    #343f44;
+  border-tb:        #475258;
+  selected:         #343f44;
+  button:           #859289;
+  button-selected:  #a7c080;
+  active:           #83c092;
+  urgent:           #e67e80;
+  transparent:      transparent;
 }
 
 // Main Window
@@ -24,16 +25,16 @@ window {
   location:                    center;
   anchor:                      center;
   fullscreen:                  false;
-  width:                       450px;
+  width:                       400px;
   x-offset:                    0px;
   y-offset:                    0px;
 
   enabled:                     true;
   margin:                      0px;
   padding:                     0px;
-  border:                      2px solid;
-  border-radius:               10px;
-  border-color:                @accent;
+  border:                      0px solid;
+  border-radius:               8px;
+  border-color:                @transparent;
   cursor:                      "default";
   background-color:            @background;
 }
@@ -41,12 +42,12 @@ window {
 // Main Box
 mainbox {
   enabled:                     true;
-  spacing:                     15px;
+  spacing:                     16px;
   margin:                      0px;
-  padding:                     30px;
+  padding:                     20px;
   border:                      0px solid;
   border-radius:               5px;
-  border-color:                @selected;
+  border-color:                @transparent;
   background-color:            transparent;
   children:                    [ "message", "listview" ];
 }
@@ -98,10 +99,10 @@ prompt {
 message {
   enabled:                     true;
   margin:                      0px;
-  padding:                     12px;
+  padding:                     8px 12px;
   border:                      0px solid;
-  border-radius:               10px;
-  border-color:                @selected;
+  border-radius:               6px;
+  border-color:                @transparent;
   background-color:            @background-tb;
   text-color:                  @foreground;
 }
@@ -114,6 +115,7 @@ textbox {
   placeholder-color:           @foreground;
   blink:                       true;
   markup:                      true;
+  font:                        "SF Pro Display 11";
 }
 
 error-message {
@@ -137,12 +139,12 @@ listview {
   reverse:                     false;
   fixed-height:                true;
   fixed-columns:               true;
-  spacing:                     15px;
+  spacing:                     8px;
   margin:                      0px;
   padding:                     0px;
   border:                      0px solid;
   border-radius:               0px;
-  border-color:                @selected;
+  border-color:                @transparent;
   background-color:            transparent;
   text-color:                  @foreground;
   cursor:                      "default";
@@ -153,17 +155,17 @@ element {
   enabled:                     true;
   spacing:                     0px;
   margin:                      0px;
-  padding:                     10px;
+  padding:                     12px;
   border:                      0px solid;
-  border-radius:               10px;
-  border-color:                @accent;
+  border-radius:               6px;
+  border-color:                @transparent;
   background-color:            transparent;
   text-color:                  @foreground;
   cursor:                      pointer;
 }
 
 element-text {
-  font:                        "Symbols Nerd Font 24";
+  font:                        "Symbols Nerd Font 20";
   background-color:            transparent;
   text-color:                  inherit;
   cursor:                      inherit;
@@ -172,8 +174,7 @@ element-text {
 }
 
 element selected.normal {
-  background-color:            var(foreground);
-  border-color:                var(selected);
-  border:                      0px solid;
-  text-color:                  var(background);
+  background-color:            @selected;
+  text-color:                  @foreground;
+  border-radius:               6px;
 }

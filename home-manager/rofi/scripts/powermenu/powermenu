@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # variables
-uptime="$(uptime | awk -F'up ' '{print $2}' | sed 's/, 0 users.*//')"
 shutdown='󰐥'
 reboot='󰜉'
 lock=''
@@ -12,8 +11,9 @@ no='󱎘'
 
 rofi_cmd() {
   rofi -dmenu \
-    -p "Uptime: $uptime" \
-    -mesg "Uptime: $uptime" \
+    -p "" \
+    -mesg "" \
+    -theme-str 'prompt { font: "SF Pro Display 12"; }' \
     -theme /home/km/nixy/home-manager/rofi/scripts/powermenu/style.rasi
 }
 

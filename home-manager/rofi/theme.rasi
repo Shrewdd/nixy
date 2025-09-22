@@ -10,7 +10,7 @@
 /*****----- Configuration -----*****/
 configuration {
   // General Settings
-  modi: "drun,filebrowser";
+  modi: "drun";
   case-sensitive: false;
   cycle: false;
   filter: "";
@@ -76,22 +76,15 @@ configuration {
   display-window: "Windows";
   display-windowcd: "Window CD";
   display-ssh: "SSH";
-  display-drun: "Apps";
+  display-drun: "";
   display-combi: "Combi";
   display-keys: "Keys";
-  display-filebrowser: "Files";
 
   // Misc setting
   terminal: "rofi-sensible-terminal";
   sort: false;
   threads: 0;
   click-to-exit: true;
-
-  // File browser settings
-  filebrowser {
-    directories-first: true;
-    sorting-method:    "name";
-  }
 
   // Other settings
   timeout {
@@ -102,16 +95,17 @@ configuration {
 
 /*****----- Global Properties -----*****/
 * {
-  background:       #24273ACC;
-  foreground:       #CAD3F5FF;
-  accent:           #B7BDF869;
-  background-tb:    #494D64FF;
-  border-tb:        #363A4FFF;
-  selected:         linear-gradient(to right, #363A4FFF, #B7BDF869);
-  button:           linear-gradient(#939AB7FF);
-  button-selected:  linear-gradient(#B7BDF869);
-  active:           linear-gradient(to right, #8BD5CAFF, #A6DA95FF);
-  urgent:           #ED8796FF;
+  background:       #2d353b;
+  foreground:       #d3c6aa;
+  accent:           #a7c080;
+  background-tb:    #343f44;
+  border-tb:        #475258;
+  selected:         #343f44;
+  button:           #859289;
+  button-selected:  #a7c080;
+  active:           #83c092;
+  urgent:           #e67e80;
+  transparent:      transparent;
 }
 
 /*****----- Main Window -----*****/
@@ -119,16 +113,15 @@ window {
   location:                    center;
   anchor:                      center;
   fullscreen:                  false;
-  border:                      2px;
-  border-radius:               6px;
-  border-color:                @accent;
-  width:                       420px;
+  border:                      0px;
+  border-radius:               8px;
+  border-color:                @transparent;
+  width:                       600px;
   x-offset:                    0px;
   y-offset:                    0px;
   enabled:                     true;
   margin:                      0px;
   padding:                     0px;
-  border-radius:               6px;
   cursor:                      "default";
   transparency:                "real";
   background-color:            @background;
@@ -137,10 +130,10 @@ window {
 /*****----- Main Box -----*****/
 mainbox {
   enabled:                     true;
-  spacing:                     10px;
-  padding:                     20px;
+  spacing:                     0px;
+  padding:                     16px;
   background-color:            transparent;
-  children:                    [ "inputbar", "mode-switcher", "listview" ];
+  children:                    [ "inputbar", "listview" ];
 }
 
 /*****----- Inputbar -----*****/
@@ -149,7 +142,7 @@ inputbar {
   spacing:                     10px;
   margin:                      0px;
   background-color:            transparent;
-  children:                    [ "textbox-prompt-colon", "entry" ];
+  children:                    [ "entry" ];
 }
 
 textbox-prompt-colon {
@@ -166,24 +159,25 @@ textbox-prompt-colon {
 
 entry {
   enabled:                     true;
-  padding:                     10px 12px;
+  padding:                     12px 16px;
   border:                      0px;
-  border-radius:               4px;
+  border-radius:               6px;
   border-color:                @border-tb;
   background-color:            @background-tb;
   text-color:                  @foreground;
   cursor:                      text;
-  placeholder:                 "Search...";
-  placeholder-color:           inherit;
+  placeholder:                 "Search applications...";
+  placeholder-color:           @button;
   vertical-align:              0.5;
   horizontal-align:            0.0;
+  font:                        "SF Pro Display 12";
 }
 
 /*****----- Listview -----*****/
 listview {
   enabled:                     true;
   columns:                     1;
-  lines:                       5;
+  lines:                       8;
   cycle:                       true;
   dynamic:                     true;
   scrollbar:                   false;
@@ -191,7 +185,8 @@ listview {
   reverse:                     false;
   fixed-height:                true;
   fixed-columns:               true;
-  spacing:                     5px;
+  spacing:                     2px;
+  margin:                      12px 0px 0px 0px;
   background-color:            transparent;
   cursor:                      "default";
 }
@@ -199,44 +194,49 @@ listview {
 /*****----- Elements -----*****/
 element {
   enabled:                     true;
-  spacing:                     16px;
-  margin:                      2px 0px;
-  padding:                     12px;
+  spacing:                     8px;
+  margin:                      0px;
+  padding:                     8px 12px;
   border:                      0px solid;
   border-radius:               4px;
+  border-color:                @accent;
   background-color:            transparent;
   text-color:                  @foreground;
   cursor:                      pointer;
 }
 
-element normal.active {
-  background-image:            @active;
-  text-color:                  @foreground;
-}
-
-element selected.normal {
-  border-radius:               4px;
-  background-image:            @selected;
-  text-color:                  @foreground;
-}
-
-element selected.active {
-  background-image:            @urgent;
-  text-color:                  @foreground;
-}
-
 element-icon {
   background-color:            transparent;
-  size:                        28px;
+  text-color:                  inherit;
+  size:                        18px;
   cursor:                      inherit;
 }
 
 element-text {
-  background-color:            inherit;
+  background-color:            transparent;
   text-color:                  inherit;
   cursor:                      inherit;
   vertical-align:              0.5;
   horizontal-align:            0.0;
+  font:                        "SF Pro Display 11";
+  font-weight:                 500;
+}
+
+element selected.normal {
+  background-color:            @selected;
+  text-color:                  @foreground;
+  border-radius:               4px;
+}
+
+element.active,
+element.selected.urgent {
+  background-color:            @active;
+  text-color:                  @background;
+}
+
+element.selected.urgent {
+  background-color:            @urgent;
+  text-color:                  @background;
 }
 
 /*****----- Mode Switcher -----*****/
