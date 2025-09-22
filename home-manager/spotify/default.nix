@@ -8,9 +8,9 @@ in
   programs.spicetify = {
     enable = true;
 
-    # Catppuccin theme with Macchiato colors
-    theme = spicePkgs.themes.catppuccin;
-    colorScheme = "macchiato";
+    # Everforest theme
+    theme = spicePkgs.themes.text;
+    colorScheme = "EverforestDarkMedium";
 
     enabledExtensions = with spicePkgs.extensions; [
       adblockify
