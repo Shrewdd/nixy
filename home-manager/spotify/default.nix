@@ -16,7 +16,6 @@ in
       adblockify
       fullAppDisplay
       shuffle
-      copyToClipboard
       powerBar
     ];
   };
