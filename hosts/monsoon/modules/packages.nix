@@ -1,0 +1,49 @@
+{ pkgs, ... }:
+
+{
+  #######################
+  # FONTS
+  #######################
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
+  ];
+
+  #######################
+  # SYSTEM PACKAGES
+  #######################
+  environment.systemPackages = with pkgs; [
+    pavucontrol                # Audio control
+    playerctl                  # Media player control
+    jq                         # JSON processor
+    curl                       # Data transfer tool
+    brightnessctl              # Screen brightness
+    libsecret                  # Secret storage
+    seahorse                   # GNOME key manager
+    xarchiver                  # Archive manager
+    appimage-run               # AppImage support
+    sixpair                    # PS3 controller pairing
+    veracrypt                  # Disk encryption
+    kdePackages.gwenview       # Image viewer
+    libnotify                  # Desktop notifications
+    grimblast                  # Screenshot utility
+    wl-clipboard               # Wayland clipboard
+    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
+  ];
+
+  #######################
+  # PROGRAMS
+  #######################
+  programs.localsend = {
+    enable = true;
+    openFirewall = true;
+  };
+
+  programs.steam = {
+    enable = true;
+  };
+
+  programs.thunar = {
+    enable = true;
+  };
+}

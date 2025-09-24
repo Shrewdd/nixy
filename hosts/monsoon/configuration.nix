@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/display.nix
+    ./modules/packages.nix
   ];
 
   #######################
@@ -77,34 +78,6 @@
   #######################
   nixpkgs.config.allowUnfree = true;
 
-  # System-wide core apps
-  environment.systemPackages = with pkgs; [
-    pavucontrol
-    playerctl
-    jq
-    curl
-    brightnessctl
-    libsecret
-    seahorse
-    xarchiver
-    appimage-run
-    sixpair
-    veracrypt
-    kdePackages.gwenview
-    # Notification utils
-    libnotify
-    # Screenshot utils
-    grimblast
-    wl-clipboard
-    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
-  ];
-
-  # Fonts
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.symbols-only
-  ];
-
   #######################
   # Services & Programs
   #######################
@@ -149,14 +122,6 @@
   # GNOME Keyring (password/key storage)
   services.gnome.gnome-keyring.enable = true;
 
-  programs.localsend = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  programs.steam.enable = true;
-  # Thunar utils
-  programs.thunar.enable = true;
   services.tumbler.enable = true;
   services.gvfs.enable = true;
   services.printing = {
