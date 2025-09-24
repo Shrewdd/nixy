@@ -55,11 +55,4 @@
   services.xserver.xkb.layout = "pl";
   services.xserver.xkb.variant = "";
   console.keyMap = "pl2";
-
-  # ===================================
-  # AUTHENTICATION
-  # ===================================
-  # PAM configuration for display manager
-  security.pam.services.sddm.enableGnomeKeyring = true;
-  security.pam.services.login.enableGnomeKeyring = true;
 }
