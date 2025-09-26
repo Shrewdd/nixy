@@ -4,6 +4,7 @@
     ./hardware-configuration.nix
     ./modules/display.nix
     ./modules/packages.nix
+    ./modules/audio.nix
   ];
 
   #######################
@@ -82,42 +83,7 @@
   # Services & Programs
   #######################
   services.flatpak.enable = true;
-
-  security.rtkit.enable = true; # realtime scheduling for low-latency audio
-  services.pulseaudio.enable = false;
-  services.pipewire = {
-    enable = true;          # master switch for PipeWire
-    audio.enable = true;    # ensure audio (can be implicit, made explicit here)
-    alsa.enable = true;     # ALSA clients
-    alsa.support32Bit = true; # 32‑bit (Steam / older games)
-    pulse.enable = true;    # PulseAudio compatibility layer (keep for desktop apps)
-    jack.enable = false;    # Disable JACK (can re-enable if doing pro audio)
-    wireplumber = {
-      enable = true; # session manager
-      extraConfig."10-bluetooth" = {
-        "monitor.bluez.properties" = {
-          # bt audio: sbc + sbc_xq = stable + low-ish delay for my oppo buds; aac = fallback
-          # removed ldac (felt slower). allow default roles again (fix "no audio endpoints" issue)
-          # need mic? msbc true later. crackles loud? drop sbc_xq or raise quantum
-          "bluez5.codecs" = [ "sbc" "sbc_xq" "aac" ];
-          "bluez5.enable-msbc" = false;
-          "bluez5.enable-hw-volume" = true;
-          "bluez5.enable-sbc-xq" = true;
-        };
-      };
-    };
-    # Extra tuning: correct option paths per `services.pipewire.extraConfig.*` / `services.pipewire.wireplumber.extraConfig`.
-    extraConfig.pipewire."10-low-latency" = {
-      "context.properties" = {
-        "default.clock.rate" = 48000;
-        "default.clock.allowed-rates" = [ 48000 44100 ];
-        "default.clock.quantum" = 128;      # was 64
-        "default.clock.min-quantum" = 64;   # was 32
-        "default.clock.max-quantum" = 256;  # was 128
-        "resample.quality" = 4; # 0..10 (higher = better qual, more latency)
-      };
-    };
-  };
+  # Audio stack moved to ./modules/audio.nix
 
   # GNOME Keyring (password/key storage)
   services.gnome.gnome-keyring.enable = true;
