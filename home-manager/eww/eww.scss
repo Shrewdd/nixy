@@ -1,0 +1,15 @@
+$bg: #1e2326;
+$fg: #d3c6aa;
+$accent: #a7c080;
+$accent2: #e67e80;
+$radius: 14px;
+$mono: "JetBrainsMono Nerd Font", monospace;
+
+* { all: unset; font-family: "SF Pro Display", "Inter", $mono; }
+window { background: transparent; }
+.dashboard { padding: 10px; }
+.card { background: rgba(30,35,38,0.9); border: 1px solid mix($accent,$bg,60%); border-radius: $radius; padding: 16px 20px; box-shadow: 0 4px 18px -6px rgba(0,0,0,0.55); min-width: 240px; }
+.time { font-size: 48px; font-weight: 600; color: $accent; }
+.date { margin-top: 4px; font-size: 15px; color: $fg; }
+.stats { display: flex; flex-direction: column; gap: 6px; }
+.stat { font-family: $mono; font-size: 20px; color: $accent2; }

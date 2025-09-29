@@ -1,0 +1,28 @@
+;; Eww dashboard config via Home Manager configDir
+(defpoll time :interval "30s" "date '+%H:%M'")
+(defpoll date :interval "60s" "date '+%a %d %b %Y'")
+(defpoll cpu :interval "5s" "bash ~/.config/eww/scripts/cpu.sh")
+(defpoll mem :interval "8s" "bash ~/.config/eww/scripts/mem.sh")
+
+(defwidget clock-box []
+  (box :class "card clock"
+    (label :class "time" :text time)
+    (label :class "date" :text date)))
+
+(defwidget stats-box []
+  (box :class "card stats" :orientation "v" :spacing 6
+    (box :class "stat" (label :text ("CPU  " cpu "%")))
+    (box :class "stat" (label :text ("RAM  " mem "%")))))
+
+(defwidget dashboard-root []
+  (box :class "dashboard" :orientation "v" :spacing 12
+    (box :class "row" :spacing 12
+      (clock-box)
+      (stats-box))))
+
+(defwindow dashboard
+  :geometry (geometry :x "50%" :y "50%" :width 520 :height 210 :anchor "center")
+  :stacking "fg"
+  :exclusive false
+  :focusable false
+  (dashboard-root))
