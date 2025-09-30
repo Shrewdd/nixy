@@ -24,6 +24,7 @@ in
       "exec-once" = [
         "systemctl --user start hyprpolkitagent"  # Polkit authentication agent
         "waybar"                                   # Status bar
+        "quickshell"                              # QuickShell dashboard
       ];
 
       # ===================================
@@ -148,6 +149,8 @@ in
         
         # Special workspace (scratchpad)
         "$mainMod, S, togglespecialworkspace, magic"                                     # Toggle special workspace
+        
+
         "$mainMod SHIFT, S, movetoworkspace, special:magic"                              # Move to special workspace
         
         # Mouse wheel workspace switching
@@ -192,6 +195,12 @@ in
         ", XF86AudioPause, exec, playerctl play-pause" # Pause/unpause
         ", XF86AudioPlay, exec, playerctl play-pause"  # Play/pause
         ", XF86AudioPrev, exec, playerctl previous"    # Previous track
+      ];
+
+      # Key release bindings
+      bindr = [
+        # QuickShell dashboard toggle on Super key release
+        "$mainMod, SUPER_L, exec, bash -c 'qs -c dashboard ipc call dashboard toggle'"  # Toggle dashboard with Super release
       ];
 
       # ===================================
