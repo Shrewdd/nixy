@@ -3,9 +3,7 @@
   programs.quickshell = {
     enable = true;
     package = pkgs.quickshell;
-    activeConfig = "dashboard";
-    configs.dashboard = ./shell.qml;
+    activeConfig = "dashboard"; # directory based config
+    configs.dashboard = ./dashboard; # contains shell.qml
   };
-
-  programs.waybar.enable = false;
 }
