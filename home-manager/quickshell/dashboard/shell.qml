@@ -42,6 +42,12 @@ ShellRoot {
   property string gpuTempRaw: "--"
   property string cpuTemp: "-- °C"
   property string cpuTempRaw: "--"
+  
+  // Disk usage monitoring
+  property string diskUsageRoot: "--"
+  property string diskUsageHome: "--"
+  property int diskPercentRoot: 0
+  property int diskPercentHome: 0
 
   // Weather (Opole coordinates ~50.6751N, 17.9213E)
   property string weatherTemp: "--°C"
@@ -233,6 +239,40 @@ ShellRoot {
     }
   }
 
+  // Disk usage monitoring
+  Process {
+    id: diskProcess
+    command: ["sh", "-c", "df -h / /home 2>/dev/null | tail -n 2 | awk '{print $5, $3, $2}'"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var lines = text.trim().split('\n')
+        if (lines.length >= 1) {
+          var parts = lines[0].trim().split(/\s+/)
+          if (parts.length >= 3) {
+            root.diskPercentRoot = parseInt(parts[0]) || 0
+            root.diskUsageRoot = parts[1] + " / " + parts[2]
+          }
+        }
+        if (lines.length >= 2) {
+          var parts = lines[1].trim().split(/\s+/)
+          if (parts.length >= 3) {
+            root.diskPercentHome = parseInt(parts[0]) || 0
+            root.diskUsageHome = parts[1] + " / " + parts[2]
+          }
+        }
+      }
+    }
+  }
+  
+  Timer {
+    interval: 5000 // Update every 5 seconds
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { if (!diskProcess.running) diskProcess.running = true }
+  }
+
   // CPU Temperature monitoring via thermal zone - robust implementation
   FileView {
     id: cpuTempFile
@@ -315,80 +355,131 @@ ShellRoot {
       anchors.centerIn: parent
       spacing: dashboardWindow.cardSpacing
 
-      // Left: Vertical Weather Widget
+      // Left: Vertical Weather Widget - Sci-fi design
       Rectangle { // Weather Card
         id: weatherCard
         Layout.preferredWidth: 120
         Layout.preferredHeight: timeCard.height + dashboardWindow.cardSpacing + cpuGpuRow.height
-        radius: 12
-        color: root.surfaceColor
-        border.width: 1
-        border.color: Qt.rgba(0.498, 0.733, 0.702, 0.2) // blueColor with transparency
-        Rectangle { 
+        radius: 4
+        color: root.primaryColor
+        border.width: 0
+        
+        // Sci-fi gradient border effect
+        Rectangle {
           anchors.fill: parent
+          anchors.margins: -2
           radius: parent.radius
-          gradient: Gradient { 
-            GradientStop { position: 0.0; color: Qt.rgba(1,1,1,0.05) } 
-            GradientStop { position: 1.0; color: Qt.rgba(1,1,1,0.01) } 
-          } 
+          z: -1
+          gradient: Gradient {
+            orientation: Gradient.Vertical
+            GradientStop { position: 0.0; color: Qt.rgba(0.498, 0.733, 0.702, 0.6) }
+            GradientStop { position: 0.5; color: Qt.rgba(0.651, 0.753, 0.575, 0.5) }
+            GradientStop { position: 1.0; color: Qt.rgba(0.843, 0.6, 0.714, 0.4) }
+          }
+        }
+        
+        // Corner accents - geometric sci-fi detail
+        Repeater {
+          model: 4
+          Rectangle {
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 0 : parent.width - width
+            y: corner < 2 ? 0 : parent.height - height
+            width: 12
+            height: 2
+            color: root.tealColor
+            opacity: 0.7
+          }
+        }
+        Repeater {
+          model: 4
+          Rectangle {
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 0 : parent.width - width
+            y: corner < 2 ? 0 : parent.height - height
+            width: 2
+            height: 12
+            color: root.tealColor
+            opacity: 0.7
+          }
         }
         
         ColumnLayout {
           anchors.fill: parent
-          anchors.margins: 20
-          spacing: 16
+          anchors.margins: 18
+          spacing: 14
+          
+          // Label header
+          Label {
+            text: "WEATHER"
+            font.pixelSize: 9
+            font.weight: Font.Bold
+            font.family: "JetBrains Mono"
+            font.letterSpacing: 1.2
+            color: root.tealColor
+            opacity: 0.8
+            Layout.alignment: Qt.AlignHCenter
+          }
           
           // Weather icon
           Label {
             text: root.weatherIcon
-            font.pixelSize: 48
-            font.family: "JetBrainsMono Nerd Font, Noto Color Emoji"
+            font.pixelSize: 44
+            font.family: "JetBrainsMono Nerd Font"
             color: root.blueColor
-            opacity: weatherDescription === "Loading…" ? 0.6 : 1
+            opacity: weatherDescription === "Loading…" ? 0.5 : 1
             Layout.alignment: Qt.AlignHCenter
           }
           
           // Temperature
           Label {
             text: root.weatherTemp
-            font.pixelSize: 28
+            font.pixelSize: 26
             font.weight: Font.Bold
-            font.family: "SF Pro Display, Inter, system-ui"
+            font.family: "JetBrains Mono"
             color: root.textColor
             Layout.alignment: Qt.AlignHCenter
           }
           
-          // Separator line
-          Rectangle {
-            Layout.preferredWidth: 60
-            Layout.preferredHeight: 1
-            color: root.borderColor
-            opacity: 0.3
+          // Geometric separator
+          Row {
             Layout.alignment: Qt.AlignHCenter
+            spacing: 4
+            Repeater {
+              model: 3
+              Rectangle {
+                width: 6
+                height: 2
+                color: root.tealColor
+                opacity: 0.4
+              }
+            }
           }
           
           Item { Layout.fillHeight: true }
           
-          // City name (vertical)
+          // City name
           Label {
-            text: "Opole"
-            font.pixelSize: 16
-            font.weight: Font.Medium
-            font.family: "SF Pro Display, Inter, system-ui"
+            text: "OPOLE"
+            font.pixelSize: 11
+            font.weight: Font.Bold
+            font.family: "JetBrains Mono"
+            font.letterSpacing: 1
             color: root.subTextColor
             Layout.alignment: Qt.AlignHCenter
           }
           
-          // Weather description (vertical, rotated or wrapped)
+          // Weather description
           Label {
-            text: root.weatherDescription
-            font.pixelSize: 13
-            font.family: "SF Pro Display, Inter, system-ui"
+            text: root.weatherDescription.toUpperCase()
+            font.pixelSize: 10
+            font.family: "JetBrains Mono"
             color: root.subTextColor
+            opacity: 0.7
             Layout.alignment: Qt.AlignHCenter
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
-            Layout.preferredWidth: 80
+            Layout.preferredWidth: 84
           }
         }
       }
@@ -397,47 +488,67 @@ ShellRoot {
       ColumnLayout {
         spacing: dashboardWindow.cardSpacing
         
-      // Top wide time card
+      // Top wide time card - Sci-fi design
       Rectangle { // Time Card
         id: timeCard
         Layout.preferredWidth: Math.max(cpuGpuRow.implicitWidth, 800)
         Layout.preferredHeight: 180
-        radius: 12
-        color: root.surfaceColor
-        border.width: 1
-        border.color: Qt.rgba(1, 1, 1, 0.06)
-        Rectangle { anchors.fill: parent; radius: parent.radius; gradient: Gradient { GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.05) } GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.01) } } }
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.651, 0.753, 0.575, 0.4) // accentColor
+        
+        // Corner brackets - technical aesthetic
+        Repeater {
+          model: 4
+          Item {
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 4 : parent.width - 20
+            y: corner < 2 ? 4 : parent.height - 20
+            Rectangle {
+              width: 16
+              height: 2
+              color: root.accentColor
+            }
+            Rectangle {
+              width: 2
+              height: 16
+              color: root.accentColor
+            }
+          }
+        }
         RowLayout {
           anchors.fill: parent
           anchors.margins: 28
           spacing: 48
           RowLayout { // Left: time
             Layout.alignment: Qt.AlignVCenter
-            spacing: 8
+            spacing: 10
             Label {
               text: root.hourText
               font.pixelSize: 84
-              font.weight: Font.Black
-              font.family: "SF Pro Display, Inter, system-ui"
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
               color: root.textColor
             }
             Label {
               text: ":"
               font.pixelSize: 84
-              font.weight: Font.Black
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
               color: root.accentColor
               SequentialAnimation on opacity {
                 running: true
                 loops: Animation.Infinite
-                NumberAnimation { to: 0.3; duration: 900 }
-                NumberAnimation { to: 1.0; duration: 900 }
+                NumberAnimation { to: 0.4; duration: 800 }
+                NumberAnimation { to: 1.0; duration: 800 }
               }
             }
             Label {
               text: root.minuteText
               font.pixelSize: 84
-              font.weight: Font.Black
-              font.family: "SF Pro Display, Inter, system-ui"
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
               color: root.textColor
             }
           }
@@ -446,10 +557,11 @@ ShellRoot {
             Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
             spacing: 8
             Label {
-              text: root.dayText
-              font.pixelSize: 22
-              font.weight: Font.DemiBold
-              font.family: "SF Pro Display, Inter, system-ui"
+              text: root.dayText.toUpperCase()
+              font.pixelSize: 18
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 0.5
               color: root.subTextColor
               horizontalAlignment: Text.AlignRight
             }
@@ -461,114 +573,366 @@ ShellRoot {
         id: cpuGpuRow
         spacing: dashboardWindow.cardSpacing
 
-        Rectangle { // CPU Card
+        Rectangle { // CPU Card - Sci-fi lab design
         id: cpuCard
         Layout.preferredWidth: 260
         Layout.preferredHeight: 220
-        radius: 12
-        color: root.surfaceColor
-        border.width: 1
-        border.color: Qt.rgba(0.902, 0.494, 0.502, 0.2) // redColor with transparency
-        // Fallback shadow (DropShadow effect not available in current Qt build)
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.902, 0.494, 0.502, 0.5) // redColor
+        
+        // Technical shadow
         Rectangle {
           anchors.fill: parent
-          radius: parent.radius + 2
+          radius: parent.radius
           color: "black"
-          opacity: 0.15
+          opacity: 0.3
           y: 3
-          scale: 1.01
           z: -1
         }
-        Rectangle { anchors.fill: parent; radius: parent.radius; gradient: Gradient { GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.05) } GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.01) } } }
+        
+        // Corner indicators
+        Repeater {
+          model: 4
+          Rectangle {
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 4 : parent.width - 12
+            y: corner < 2 ? 4 : parent.height - 12
+            width: corner === 0 || corner === 3 ? 8 : 8
+            height: corner < 2 ? 8 : 8
+            color: "transparent"
+            border.width: 2
+            border.color: root.redColor
+            opacity: 0.6
+          }
+        }
         ColumnLayout {
           anchors.centerIn: parent; spacing: 16
-          Rectangle {
-            width: 80
-            height: 80
-            radius: 40
-            color: root.cardColor
+          ColumnLayout {
+            spacing: 4
             Layout.alignment: Qt.AlignHCenter
-            Rectangle {
-              anchors.fill: parent
-              radius: parent.radius
-              gradient: Gradient {
-                GradientStop { position: 0.0; color: root.redColor }
-                GradientStop { position: 1.0; color: "#e69875" }
-              }
-              opacity: 0.15
-            }
+            
             Label {
-              anchors.centerIn: parent
-              text: "󰻠"
-              font.pixelSize: 38
-              font.family: "JetBrainsMono Nerd Font, Noto Color Emoji"
+              text: "CPU"
+              font.pixelSize: 10
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 2
               color: root.redColor
+              opacity: 0.8
+              Layout.alignment: Qt.AlignHCenter
+            }
+            
+            Rectangle {
+              width: 72
+              height: 72
+              radius: 2
+              color: Qt.rgba(0.902, 0.494, 0.502, 0.1)
+              Layout.alignment: Qt.AlignHCenter
+              
+              border.width: 2
+              border.color: Qt.rgba(0.902, 0.494, 0.502, 0.4)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰻠"
+                font.pixelSize: 36
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.redColor
+              }
             }
           }
           Label {
             text: root.cpuTemp
-            font.pixelSize: 42
+            font.pixelSize: 38
             font.weight: Font.Bold
-            font.family: "SF Pro Display, Inter, system-ui"
+            font.family: "JetBrains Mono"
             color: root.cpuColor(root.cpuTempRaw)
             Layout.alignment: Qt.AlignHCenter
           }
-          Label { text: "CPU"; font.pixelSize: 18; font.weight: Font.Medium; font.family: "SF Pro Display, Inter, system-ui"; color: root.subTextColor; Layout.alignment: Qt.AlignHCenter }
+          Label { 
+            text: "TEMPERATURE"
+            font.pixelSize: 9
+            font.weight: Font.Bold
+            font.family: "JetBrains Mono"
+            font.letterSpacing: 1
+            color: root.subTextColor
+            opacity: 0.6
+            Layout.alignment: Qt.AlignHCenter
+          }
         }
         }
 
-        Rectangle { // GPU Card
+        Rectangle { // GPU Card - Sci-fi lab design
         id: gpuCard
         Layout.preferredWidth: 260
         Layout.preferredHeight: 220
-        radius: 12
-        color: root.surfaceColor
-        border.width: 1
-        border.color: Qt.rgba(0.843, 0.6, 0.714, 0.2) // purpleColor with transparency
-        // Fallback shadow (DropShadow effect not available in current Qt build)
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.843, 0.6, 0.714, 0.5) // purpleColor
+        
+        // Technical shadow
         Rectangle {
           anchors.fill: parent
-          radius: parent.radius + 2
+          radius: parent.radius
           color: "black"
-          opacity: 0.15
+          opacity: 0.3
           y: 3
-          scale: 1.01
           z: -1
         }
-        Rectangle { anchors.fill: parent; radius: parent.radius; gradient: Gradient { GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.05) } GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.01) } } }
-        ColumnLayout { anchors.centerIn: parent; spacing: 16
+        
+        // Corner indicators
+        Repeater {
+          model: 4
           Rectangle {
-            width: 80
-            height: 80
-            radius: 40
-            color: root.cardColor
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 4 : parent.width - 12
+            y: corner < 2 ? 4 : parent.height - 12
+            width: 8
+            height: 8
+            color: "transparent"
+            border.width: 2
+            border.color: root.purpleColor
+            opacity: 0.6
+          }
+        }
+        ColumnLayout { anchors.centerIn: parent; spacing: 16
+          ColumnLayout {
+            spacing: 4
             Layout.alignment: Qt.AlignHCenter
-            Rectangle {
-              anchors.fill: parent
-              radius: parent.radius
-              gradient: Gradient {
-                GradientStop { position: 0.0; color: root.purpleColor }
-                GradientStop { position: 1.0; color: root.tealColor }
-              }
-              opacity: 0.15
-            }
+            
             Label {
-              anchors.centerIn: parent
-              text: "󰢮"
-              font.pixelSize: 38
-              font.family: "JetBrainsMono Nerd Font, Noto Color Emoji"
+              text: "GPU"
+              font.pixelSize: 10
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 2
               color: root.purpleColor
+              opacity: 0.8
+              Layout.alignment: Qt.AlignHCenter
+            }
+            
+            Rectangle {
+              width: 72
+              height: 72
+              radius: 2
+              color: Qt.rgba(0.843, 0.6, 0.714, 0.1)
+              Layout.alignment: Qt.AlignHCenter
+              
+              border.width: 2
+              border.color: Qt.rgba(0.843, 0.6, 0.714, 0.4)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰢮"
+                font.pixelSize: 36
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.purpleColor
+              }
             }
           }
           Label {
             text: root.gpuTemp
-            font.pixelSize: 42
+            font.pixelSize: 38
             font.weight: Font.Bold
-            font.family: "SF Pro Display, Inter, system-ui"
-            color: root.gpuColor(root.gpuTempRaw)
+            font.family: "JetBrains Mono"
+            color: root.textColor
             Layout.alignment: Qt.AlignHCenter
           }
-          Label { text: "GPU"; font.pixelSize: 18; font.weight: Font.Medium; font.family: "SF Pro Display, Inter, system-ui"; color: root.subTextColor; Layout.alignment: Qt.AlignHCenter }
+          Label { 
+            text: "TEMPERATURE"
+            font.pixelSize: 9
+            font.weight: Font.Bold
+            font.family: "JetBrains Mono"
+            font.letterSpacing: 1
+            color: root.subTextColor
+            opacity: 0.6
+            Layout.alignment: Qt.AlignHCenter
+          }
+        }
+        }
+        
+        Rectangle { // Disk Usage Panel - Sci-fi geometric design
+        id: diskCard
+        Layout.preferredWidth: 260
+        Layout.preferredHeight: 220
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.859, 0.737, 0.498, 0.5) // yellowColor
+        
+        // Technical shadow
+        Rectangle {
+          anchors.fill: parent
+          radius: parent.radius
+          color: "black"
+          opacity: 0.3
+          y: 3
+          z: -1
+        }
+        
+        // Corner indicators
+        Repeater {
+          model: 4
+          Rectangle {
+            property int corner: index
+            x: corner === 0 || corner === 3 ? 4 : parent.width - 12
+            y: corner < 2 ? 4 : parent.height - 12
+            width: 8
+            height: 8
+            color: "transparent"
+            border.width: 2
+            border.color: root.yellowColor
+            opacity: 0.6
+          }
+        }
+        
+        ColumnLayout { 
+          anchors.centerIn: parent
+          spacing: 18
+          
+          // Header
+          ColumnLayout {
+            spacing: 4
+            Layout.alignment: Qt.AlignHCenter
+            
+            Label {
+              text: "STORAGE"
+              font.pixelSize: 10
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 2
+              color: root.yellowColor
+              opacity: 0.8
+              Layout.alignment: Qt.AlignHCenter
+            }
+            
+            // Icon with geometric shape
+            Rectangle {
+              width: 72
+              height: 72
+              radius: 2
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.1)
+              Layout.alignment: Qt.AlignHCenter
+              
+              border.width: 2
+              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.4)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰋊"
+                font.pixelSize: 36
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.yellowColor
+              }
+            }
+          }
+          
+          // Root disk usage
+          ColumnLayout {
+            spacing: 6
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: parent.width - 40
+            
+            RowLayout {
+              spacing: 8
+              Layout.fillWidth: true
+              
+              Label {
+                text: "ROOT"
+                font.pixelSize: 9
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+              }
+              
+              Item { Layout.fillWidth: true }
+              
+              Label {
+                text: root.diskUsageRoot
+                font.pixelSize: 9
+                font.family: "JetBrains Mono"
+                color: root.textColor
+                opacity: 0.8
+              }
+            }
+            
+            // Progress bar - geometric
+            Rectangle {
+              Layout.preferredWidth: 220
+              Layout.preferredHeight: 8
+              Layout.alignment: Qt.AlignHCenter
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
+              border.width: 1
+              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.3)
+              
+              Rectangle {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: parent.width * (root.diskPercentRoot / 100.0)
+                color: root.diskPercentRoot > 90 ? root.redColor : root.diskPercentRoot > 75 ? root.yellowColor : root.accentColor
+                opacity: 0.7
+                
+                Behavior on width { NumberAnimation { duration: 300 } }
+              }
+            }
+          }
+          
+          // Home disk usage
+          ColumnLayout {
+            spacing: 6
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: parent.width - 40
+            
+            RowLayout {
+              spacing: 8
+              Layout.fillWidth: true
+              
+              Label {
+                text: "HOME"
+                font.pixelSize: 9
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+              }
+              
+              Item { Layout.fillWidth: true }
+              
+              Label {
+                text: root.diskUsageHome
+                font.pixelSize: 9
+                font.family: "JetBrains Mono"
+                color: root.textColor
+                opacity: 0.8
+              }
+            }
+            
+            // Progress bar - geometric
+            Rectangle {
+              Layout.preferredWidth: 220
+              Layout.preferredHeight: 8
+              Layout.alignment: Qt.AlignHCenter
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
+              border.width: 1
+              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.3)
+              
+              Rectangle {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: parent.width * (root.diskPercentHome / 100.0)
+                color: root.diskPercentHome > 90 ? root.redColor : root.diskPercentHome > 75 ? root.yellowColor : root.accentColor
+                opacity: 0.7
+                
+                Behavior on width { NumberAnimation { duration: 300 } }
+              }
+            }
+          }
         }
         }
       }
