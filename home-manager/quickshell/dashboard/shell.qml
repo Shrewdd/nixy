@@ -22,6 +22,134 @@ ShellRoot {
   readonly property string blueColor: "#7fbbb3"       // blue (weather accent)
   readonly property string purpleColor: "#d699b6"     // purple (GPU accent)
 
+  readonly property string appCatalogLoaderScript: [
+    "from __future__ import annotations",
+    "",
+    "import configparser",
+    "import glob",
+    "import json",
+    "import os",
+    "import re",
+    "import shlex",
+    "import sys",
+    "",
+    "SPECIFIER_PATTERN = re.compile(r'%(?:[fFuUdDnNickvm]|c|i|k|s)')",
+    "FLATPAK_PLACEHOLDER_PATTERN = re.compile(r'@@\\w*')",
+    "",
+    "def env_user_home():",
+    "    return os.path.expanduser('~')",
+    "",
+    "def collect_application_dirs():",
+    "    home = env_user_home()",
+    "    username = os.path.basename(home.rstrip(os.sep)) or os.environ.get('USER', '')",
+    "    xdg_data_home = os.environ.get('XDG_DATA_HOME', os.path.join(home, '.local', 'share'))",
+    "",
+    "    base_dirs = {",
+    "        os.path.join(home, '.local', 'share', 'applications'),",
+    "        os.path.join(home, '.nix-profile', 'share', 'applications'),",
+    "        os.path.join(xdg_data_home, 'applications'),",
+    "        '/usr/share/applications',",
+    "        '/usr/local/share/applications',",
+    "        '/run/current-system/sw/share/applications',",
+    "    }",
+    "",
+    "    xdg_data_dirs = os.environ.get('XDG_DATA_DIRS', '')",
+    "    for part in xdg_data_dirs.split(':'):",
+    "        part = part.strip()",
+    "        if part:",
+    "            base_dirs.add(os.path.join(part, 'applications'))",
+    "",
+    "    if username:",
+    "        base_dirs.add(os.path.join('/etc/profiles/per-user', username, 'share', 'applications'))",
+    "",
+    "    return sorted({os.path.realpath(d) for d in base_dirs if d})",
+    "",
+    "def clean_specifiers(value):",
+    "    value = value.replace('%%', '%')",
+    "    value = SPECIFIER_PATTERN.sub('', value)",
+    "    value = FLATPAK_PLACEHOLDER_PATTERN.sub('', value)",
+    "    return re.sub(r'\\s+', ' ', value).strip()",
+    "",
+    "def clean_token(token):",
+    "    token = clean_specifiers(token)",
+    "    return token.strip()",
+    "",
+    "def split_exec(exec_cmd):",
+    "    try:",
+    "        parts = shlex.split(exec_cmd, posix=True)",
+    "    except Exception:",
+    "        parts = exec_cmd.split()",
+    "    cleaned = []",
+    "    for part in parts:",
+    "        token = clean_token(part)",
+    "        if token:",
+    "            cleaned.append(token)",
+    "    return cleaned",
+    "",
+    "def desktop_id_from_path(path):",
+    "    basename = os.path.basename(path)",
+    "    if basename.endswith('.desktop'):",
+    "        return basename[:-8]",
+    "    return basename",
+    "",
+    "def iter_desktop_entries(directories):",
+    "    seen_paths = set()",
+    "    for directory in directories:",
+    "        if not os.path.isdir(directory):",
+    "            continue",
+    "        pattern = os.path.join(directory, '**', '*.desktop')",
+    "        for path in glob.iglob(pattern, recursive=True):",
+    "            real_path = os.path.realpath(path)",
+    "            if real_path in seen_paths:",
+    "                continue",
+    "            seen_paths.add(real_path)",
+    "",
+    "            parser = configparser.ConfigParser(interpolation=None)",
+    "            try:",
+    "                parser.read(real_path, encoding='utf-8')",
+    "            except Exception:",
+    "                continue",
+    "            if 'Desktop Entry' not in parser:",
+    "                continue",
+    "            entry = parser['Desktop Entry']",
+    "            if entry.get('NoDisplay', '').lower() == 'true':",
+    "                continue",
+    "",
+    "            name = entry.get('Name', '').strip()",
+    "            exec_cmd = entry.get('Exec', '').strip()",
+    "            if not name or not exec_cmd:",
+    "                continue",
+    "",
+    "            comment = entry.get('Comment', '').strip()",
+    "            icon = entry.get('Icon', '').strip()",
+    "            desktop_id = entry.get('X-Flatpak', '').strip() or entry.get('X-Desktop-File-Name', '').strip()",
+    "            if not desktop_id:",
+    "                desktop_id = desktop_id_from_path(real_path)",
+    "",
+    "            yield {",
+    "                'name': name,",
+    "                'comment': comment,",
+    "                'icon': icon,",
+    "                'path': real_path,",
+    "                'directory': directory,",
+    "                'desktopId': desktop_id,",
+    "                'exec': exec_cmd,",
+    "                'cleanExec': clean_specifiers(exec_cmd),",
+    "                'argv': split_exec(exec_cmd),",
+    "                'terminal': entry.get('Terminal', 'false').lower() == 'true',",
+    "                'categories': [c.strip() for c in entry.get('Categories', '').split(';') if c.strip()],",
+    "            }",
+    "",
+    "def main():",
+    "    directories = collect_application_dirs()",
+    "    data = list(iter_desktop_entries(directories))",
+    "    print(json.dumps(data))",
+    "    return 0",
+    "",
+    "if __name__ == '__main__':",
+    "    sys.exit(main())",
+  ].join("\n")
+
   // Helper functions for temperature-based colors
   function cpuColor(tempRaw) {
     if (tempRaw === "--") return subTextColor
@@ -101,6 +229,157 @@ ShellRoot {
   onAppSearchTermChanged: updateAppFilter()
   onAppCatalogChanged: updateAppFilter()
 
+  function shellEscape(str) {
+    if (str === undefined || str === null) return "''"
+    var value = String(str)
+    return "'" + value.replace(/'/g, "'\\''") + "'"
+  }
+
+  function commandTokensForApp(app) {
+    if (!app) return []
+    if (Array.isArray(app.argv) && app.argv.length > 0) {
+      var cleaned = []
+      for (var i = 0; i < app.argv.length; i++) {
+        var token = app.argv[i]
+        if (token !== undefined && token !== null) {
+          var trimmed = String(token)
+          if (trimmed.length > 0) cleaned.push(trimmed)
+        }
+      }
+      if (cleaned.length > 0) {
+        return cleaned
+      }
+    }
+
+    var execStr = app.cleanExec || app.cleanedExec || cleanExecCommand(app.exec)
+    if (!execStr || typeof execStr !== "string") return []
+    var parts = execStr.split(/\s+/)
+    var tokens = []
+    for (var j = 0; j < parts.length; j++) {
+      if (parts[j] && parts[j].length > 0) tokens.push(parts[j])
+    }
+    return tokens
+  }
+
+  function hideAllDashboardPanels() {
+    if (appDiscoveryWindow && appDiscoveryWindow.visible) appDiscoveryWindow.hide()
+    if (dashboardWindow && dashboardWindow.visible) dashboardWindow.hide()
+  }
+
+  function buildLaunchSteps(app) {
+    if (!app) return []
+    var steps = []
+    var seen = {}
+
+    function pushStep(label, command, details) {
+      if (!command || command.length === 0) return
+      var key = label + "::" + JSON.stringify(command)
+      if (seen[key]) return
+      seen[key] = true
+      steps.push({ label: label, command: command, details: details })
+    }
+
+    var desktopId = app.desktopId || ""
+    var desktopPath = app.path || ""
+    var cleanExecValue = app.cleanExec || app.cleanedExec || cleanExecCommand(app.exec)
+    var commandTokens = commandTokensForApp(app)
+    var commandQuoted = commandTokens.length > 0 ? commandTokens.map(shellEscape).join(" ") : ""
+    var hyprCommandString = cleanExecValue && cleanExecValue.length > 0 ? cleanExecValue : commandTokens.join(" ")
+
+    var scriptParts = ["set +e"]
+
+    if (desktopId !== "") {
+      scriptParts.push("if command -v gtk-launch >/dev/null 2>&1; then gtk-launch " + shellEscape(desktopId) + " >/dev/null 2>&1 && exit 0; fi")
+    }
+    if (desktopPath !== "") {
+      scriptParts.push("if command -v gio >/dev/null 2>&1; then gio launch " + shellEscape(desktopPath) + " >/dev/null 2>&1 && exit 0; fi")
+    }
+
+    var hasCommand = commandQuoted.length > 0
+    if (hasCommand) {
+      if (hyprCommandString && hyprCommandString.length > 0) {
+        scriptParts.push("if command -v hyprctl >/dev/null 2>&1; then hyprctl dispatch exec " + shellEscape(hyprCommandString) + " >/dev/null 2>&1 && exit 0; fi")
+      }
+      scriptParts.push("if command -v systemd-run >/dev/null 2>&1; then systemd-run --user --scope -- " + commandQuoted + " >/dev/null 2>&1 && exit 0; fi")
+      scriptParts.push("if command -v setsid >/dev/null 2>&1; then setsid -f -- " + commandQuoted + " >/dev/null 2>&1 && exit 0; fi")
+      if (app.terminal === true) {
+        scriptParts.push("( " + commandQuoted + " )")
+        scriptParts.push("launch_status=$?")
+        scriptParts.push("if [ $launch_status -eq 0 ]; then exit 0; fi")
+      } else {
+        scriptParts.push("( " + commandQuoted + " ) >/dev/null 2>&1 &")
+        scriptParts.push("launch_status=$?")
+        scriptParts.push("if [ $launch_status -eq 0 ]; then exit 0; fi")
+      }
+    }
+
+    scriptParts.push("exit 1")
+
+    var script = scriptParts.join("\n")
+    pushStep("multi-launch", ["sh", "-c", script], { script: script, commandTokens: commandTokens })
+
+    return steps
+  }
+
+  function startLaunchSequence(app) {
+    if (!app) return
+    var steps = buildLaunchSteps(app)
+    if (!steps || steps.length === 0) {
+      console.log("[app-discovery] no launch steps available for", app.name)
+      return
+    }
+
+    hideAllDashboardPanels()
+
+    if (appLaunchProcess.running) {
+      try {
+        appLaunchProcess.kill()
+      } catch(e) {
+        console.log("[app-discovery] kill previous launch process failed:", e)
+      }
+    }
+
+    appLaunchProcess.resetLaunchState()
+    appLaunchProcess.pendingApp = app
+    appLaunchProcess.pendingSteps = steps.slice ? steps.slice() : steps
+    appLaunchProcess.currentStepIndex = -1
+    appLaunchProcess.launchAttemptCount = 0
+    console.log("[app-discovery] prepared", steps.length, "launch strategies for", app.name)
+    if (steps.length > 0 && steps[0] && steps[0].details && steps[0].details.script) {
+      console.log("[app-discovery] multi-launch script:\n" + steps[0].details.script)
+    }
+    Qt.callLater(function() { tryLaunchNextStep("initial") })
+  }
+
+  function tryLaunchNextStep(reason) {
+    if (!appLaunchProcess.pendingSteps || appLaunchProcess.pendingSteps.length === 0) {
+      console.log("[app-discovery] launch sequence finished (" + reason + ")")
+      appLaunchProcess.resetLaunchState()
+      return
+    }
+
+    if (appLaunchProcess.running) {
+      console.log("[app-discovery] launch process still running, skipping next step")
+      return
+    }
+
+    var nextIndex = appLaunchProcess.currentStepIndex + 1
+    if (nextIndex >= appLaunchProcess.pendingSteps.length) {
+      var appName = appLaunchProcess.pendingApp ? appLaunchProcess.pendingApp.name : "unknown"
+      console.log("[app-discovery] all launch strategies failed for", appName, "reason:", reason)
+      appLaunchProcess.resetLaunchState()
+      return
+    }
+
+    var step = appLaunchProcess.pendingSteps[nextIndex]
+    appLaunchProcess.currentStepIndex = nextIndex
+    appLaunchProcess.launchAttemptCount += 1
+    appLaunchProcess.command = step.command.slice ? step.command.slice() : step.command
+    var appLabel = appLaunchProcess.pendingApp ? appLaunchProcess.pendingApp.name : "unknown"
+    console.log("[app-discovery] launch attempt #" + appLaunchProcess.launchAttemptCount + " using " + step.label + " -> " + appLabel)
+    appLaunchProcess.running = true
+  }
+
   function mapWeather(code) {
     switch(code) {
       case 0: return { d: "Clear sky", i: "" }
@@ -149,20 +428,12 @@ ShellRoot {
     if ((root.appDataLoaded && root.appCatalog.length > 0) || appDiscoveryLoader.running) return
     root.appDataLoaded = false
     appDiscoveryLoader.running = true
-    console.log("[app-discovery] loading desktop entries")
+    console.log("[app-discovery] loading desktop entries (inline python)")
   }
 
   function launchApp(app) {
     if (!app) return
-    var command = app.cleanedExec || cleanExecCommand(app.exec)
-    if (!command) {
-      console.log("[app-discovery] missing exec for", app.name)
-      return
-    }
-    appLaunchProcess.command = ["sh", "-c", command]
-    appLaunchProcess.running = true
-    console.log("[app-discovery] launching", app.name)
-    appDiscoveryWindow.hide()
+    startLaunchSequence(app)
   }
 
   function fetchWeather() {
@@ -695,48 +966,7 @@ ShellRoot {
     command: [
       "python3",
       "-c",
-      "import json, os, glob, configparser\n"
-        + "home = os.path.expanduser('~')\n"
-        + "username = os.path.basename(home.rstrip(os.sep)) or os.environ.get('USER', '')\n"
-        + "xdg_data_home = os.environ.get('XDG_DATA_HOME', os.path.join(home, '.local', 'share'))\n"
-        + "base_dirs = set([\n"
-        + "    os.path.join(home, '.local', 'share', 'applications'),\n"
-        + "    os.path.join(home, '.nix-profile', 'share', 'applications'),\n"
-        + "    os.path.join(xdg_data_home, 'applications'),\n"
-        + "    '/usr/share/applications',\n"
-        + "    '/usr/local/share/applications',\n"
-        + "    '/run/current-system/sw/share/applications'\n"
-        + "])\n"
-        + "xdg_data_dirs = os.environ.get('XDG_DATA_DIRS', '')\n"
-        + "for part in xdg_data_dirs.split(':'):\n"
-        + "    part = part.strip()\n"
-        + "    if part:\n"
-        + "        base_dirs.add(os.path.join(part, 'applications'))\n"
-        + "if username:\n"
-        + "    base_dirs.add(os.path.join('/etc/profiles/per-user', username, 'share', 'applications'))\n"
-        + "entries = []\n"
-        + "for d in sorted(base_dirs):\n"
-        + "    if not os.path.isdir(d):\n"
-        + "        continue\n"
-        + "    for path in glob.glob(os.path.join(d, '**', '*.desktop'), recursive=True):\n"
-        + "        parser = configparser.ConfigParser(interpolation=None)\n"
-        + "        try:\n"
-        + "            parser.read(path, encoding='utf-8')\n"
-        + "        except Exception:\n"
-        + "            continue\n"
-        + "        if 'Desktop Entry' not in parser:\n"
-        + "            continue\n"
-        + "        entry = parser['Desktop Entry']\n"
-        + "        if entry.get('NoDisplay', '').lower() == 'true':\n"
-        + "            continue\n"
-        + "        name = entry.get('Name')\n"
-        + "        exec_cmd = entry.get('Exec')\n"
-        + "        if not name or not exec_cmd:\n"
-        + "            continue\n"
-        + "        comment = entry.get('Comment', '')\n"
-        + "        icon = entry.get('Icon', '')\n"
-        + "        entries.append({'name': name, 'exec': exec_cmd, 'comment': comment, 'icon': icon, 'path': path, 'directory': d})\n"
-        + "print(json.dumps(entries))"
+      root.appCatalogLoaderScript
     ]
 
     stdout: StdioCollector {
@@ -753,21 +983,33 @@ ShellRoot {
         try {
           var parsed = JSON.parse(raw)
           var mapped = []
+          var seen = {}
           for (var i = 0; i < parsed.length; i++) {
             var entry = parsed[i] || {}
-            var name = entry.name || entry.Name || ""
-            var exec = entry.exec || entry.Exec || ""
-            if (!name || !exec) continue
-            var comment = entry.comment || entry.Comment || ""
+            var name = entry.name || ""
+            var exec = entry.exec || ""
+            var cleanExec = entry.cleanExec || root.cleanExecCommand(exec)
+            if (!name || (!exec && !cleanExec)) continue
+            var comment = entry.comment || ""
+            var desktopId = entry.desktopId || ""
+            var uniqueKey = desktopId || entry.path || (name + "::" + exec)
+            if (uniqueKey && seen[uniqueKey]) continue
+            if (uniqueKey) seen[uniqueKey] = true
             mapped.push({
               name: name,
               lowerName: name.toLowerCase(),
               exec: exec,
-              cleanedExec: root.cleanExecCommand(exec),
+              cleanExec: cleanExec,
+              cleanedExec: cleanExec,
               comment: comment,
               lowerComment: comment ? comment.toLowerCase() : "",
-              icon: entry.icon || entry.Icon || "",
-              path: entry.path || entry.Path || ""
+              icon: entry.icon || "",
+              path: entry.path || "",
+              desktopId: desktopId,
+              argv: entry.argv || [],
+              terminal: entry.terminal === true,
+              categories: entry.categories || [],
+              directory: entry.directory || ""
             })
           }
           mapped.sort(function(a, b) { return a.lowerName.localeCompare(b.lowerName) })
@@ -784,19 +1026,76 @@ ShellRoot {
       }
     }
 
+    stderr: StdioCollector {
+      onStreamFinished: {
+        var output = text.trim()
+        if (output !== "") {
+          console.log("[app-discovery] loader stderr:", output)
+        }
+      }
+    }
+
     onExited: function(exitCode, exitStatus) {
       if (exitCode !== 0) {
-        console.log("[app-discovery] loader exited with code " + exitCode)
+        console.log("[app-discovery] loader exited with code " + exitCode + (exitStatus !== 0 ? (" status " + exitStatus) : ""))
         if (!root.appDataLoaded) {
           root.appDataLoaded = true
           root.updateAppFilter()
         }
+      } else {
+        console.log("[app-discovery] loader finished successfully")
       }
     }
   }
 
   Process {
     id: appLaunchProcess
+    property var pendingApp: null
+    property var pendingSteps: []
+    property int currentStepIndex: -1
+    property int launchAttemptCount: 0
+
+    function resetLaunchState() {
+      pendingApp = null
+      pendingSteps = []
+      currentStepIndex = -1
+      launchAttemptCount = 0
+    }
+
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var output = text.trim()
+        if (output !== "") {
+          console.log("[app-discovery] launch stdout:", output)
+        }
+      }
+    }
+
+    stderr: StdioCollector {
+      onStreamFinished: {
+        var output = text.trim()
+        if (output !== "") {
+          console.log("[app-discovery] launch stderr:", output)
+        }
+      }
+    }
+
+    onExited: function(exitCode, exitStatus) {
+      var step = pendingSteps && pendingSteps.length > currentStepIndex && currentStepIndex >= 0 ? pendingSteps[currentStepIndex] : null
+      var label = step ? step.label : "unknown"
+      if (exitCode === 0) {
+        var appName = pendingApp ? pendingApp.name : "unknown"
+        console.log("[app-discovery] launch succeeded for", appName, "via", label)
+        resetLaunchState()
+      } else {
+        var exitInfo = "exit " + exitCode
+        if (exitStatus && exitStatus !== 0) {
+          exitInfo += " status=" + exitStatus
+        }
+        console.log("[app-discovery] launch step", label, "failed (" + exitInfo + ")")
+        Qt.callLater(function() { root.tryLaunchNextStep(exitInfo) })
+      }
+    }
   }
 
   // CPU Temperature monitoring via thermal zone - robust implementation
