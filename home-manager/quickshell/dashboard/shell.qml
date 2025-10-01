@@ -499,23 +499,68 @@ ShellRoot {
         border.color: Qt.rgba(0.651, 0.753, 0.575, 0.4) // accentColor
         
         // Corner brackets - technical aesthetic
-        Repeater {
-          model: 4
-          Item {
-            property int corner: index
-            x: corner === 0 || corner === 3 ? 4 : parent.width - 20
-            y: corner < 2 ? 4 : parent.height - 20
-            Rectangle {
-              width: 16
-              height: 2
-              color: root.accentColor
-            }
-            Rectangle {
-              width: 2
-              height: 16
-              color: root.accentColor
-            }
-          }
+        // Top-left (0): L shape
+        Rectangle {
+          x: 4
+          y: 4
+          width: 16
+          height: 2
+          color: root.accentColor
+        }
+        Rectangle {
+          x: 4
+          y: 4
+          width: 2
+          height: 16
+          color: root.accentColor
+        }
+        
+        // Top-right (1): ⌐ shape
+        Rectangle {
+          x: parent.width - 20
+          y: 4
+          width: 16
+          height: 2
+          color: root.accentColor
+        }
+        Rectangle {
+          x: parent.width - 6
+          y: 4
+          width: 2
+          height: 16
+          color: root.accentColor
+        }
+        
+        // Bottom-right (2): ┘ shape
+        Rectangle {
+          x: parent.width - 20
+          y: parent.height - 6
+          width: 16
+          height: 2
+          color: root.accentColor
+        }
+        Rectangle {
+          x: parent.width - 6
+          y: parent.height - 20
+          width: 2
+          height: 16
+          color: root.accentColor
+        }
+        
+        // Bottom-left (3): └ shape
+        Rectangle {
+          x: 4
+          y: parent.height - 6
+          width: 16
+          height: 2
+          color: root.accentColor
+        }
+        Rectangle {
+          x: 4
+          y: parent.height - 20
+          width: 2
+          height: 16
+          color: root.accentColor
         }
         RowLayout {
           anchors.fill: parent
@@ -790,12 +835,13 @@ ShellRoot {
         }
         
         ColumnLayout { 
-          anchors.centerIn: parent
-          spacing: 18
+          anchors.fill: parent
+          anchors.margins: 16
+          spacing: 10
           
           // Header
           ColumnLayout {
-            spacing: 4
+            spacing: 3
             Layout.alignment: Qt.AlignHCenter
             
             Label {
@@ -811,8 +857,8 @@ ShellRoot {
             
             // Icon with geometric shape
             Rectangle {
-              width: 72
-              height: 72
+              width: 56
+              height: 56
               radius: 2
               color: Qt.rgba(0.859, 0.737, 0.498, 0.1)
               Layout.alignment: Qt.AlignHCenter
@@ -823,7 +869,7 @@ ShellRoot {
               Label {
                 anchors.centerIn: parent
                 text: "󰋊"
-                font.pixelSize: 36
+                font.pixelSize: 28
                 font.family: "JetBrainsMono Nerd Font"
                 color: root.yellowColor
               }
@@ -832,9 +878,9 @@ ShellRoot {
           
           // Root disk usage
           ColumnLayout {
-            spacing: 6
+            spacing: 4
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: parent.width - 40
+            Layout.fillWidth: true
             
             RowLayout {
               spacing: 8
@@ -862,8 +908,8 @@ ShellRoot {
             
             // Progress bar - geometric
             Rectangle {
-              Layout.preferredWidth: 220
-              Layout.preferredHeight: 8
+              Layout.fillWidth: true
+              Layout.preferredHeight: 6
               Layout.alignment: Qt.AlignHCenter
               color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
               border.width: 1
@@ -884,9 +930,9 @@ ShellRoot {
           
           // Home disk usage
           ColumnLayout {
-            spacing: 6
+            spacing: 4
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: parent.width - 40
+            Layout.fillWidth: true
             
             RowLayout {
               spacing: 8
@@ -914,8 +960,8 @@ ShellRoot {
             
             // Progress bar - geometric
             Rectangle {
-              Layout.preferredWidth: 220
-              Layout.preferredHeight: 8
+              Layout.fillWidth: true
+              Layout.preferredHeight: 6
               Layout.alignment: Qt.AlignHCenter
               color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
               border.width: 1
