@@ -48,12 +48,24 @@ ShellRoot {
   property string diskUsageHome: "--"
   property int diskPercentRoot: 0
   property int diskPercentHome: 0
+  
+  // Network monitoring
+  property string networkSSID: "--"
+  property string networkSpeed: "-- KB/s"
+  property string networkIP: "--"
+  
+  // Volume monitoring
+  property string volumeLevel: "--"
+  property bool volumeMuted: false
 
   // Weather (Opole coordinates ~50.6751N, 17.9213E)
   property string weatherTemp: "--°C"
   property int weatherCode: -1
   property string weatherDescription: "Loading…"
   property string weatherIcon: "" // Nerd Font / Emoji placeholder
+  
+  // Weather forecast (7 days)
+  property var forecastData: []
 
   function mapWeather(code) {
     switch(code) {
@@ -80,7 +92,7 @@ ShellRoot {
         return
       }
       var xhr = new XMLHttpRequest()
-      var url = "https://api.open-meteo.com/v1/forecast?latitude=50.6751&longitude=17.9213&current=temperature_2m,weather_code&timezone=auto"
+      var url = "https://api.open-meteo.com/v1/forecast?latitude=50.6751&longitude=17.9213&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&forecast_days=7"
       xhr.open("GET", url)
       xhr.timeout = 10000 // 10 second timeout
       xhr.onreadystatechange = function() {
@@ -97,6 +109,22 @@ ShellRoot {
                 weatherDescription = mapped.d
                 weatherIcon = mapped.i
                 console.log("[weather] updated: " + weatherTemp + ", " + weatherDescription)
+                
+                // Parse forecast
+                if (data.daily && data.daily.time && data.daily.time.length > 0) {
+                  var forecast = []
+                  for (var i = 1; i < Math.min(data.daily.time.length, 7); i++) {
+                    var dayData = {
+                      date: data.daily.time[i],
+                      maxTemp: Math.round(data.daily.temperature_2m_max[i]),
+                      minTemp: Math.round(data.daily.temperature_2m_min[i]),
+                      code: data.daily.weather_code[i]
+                    }
+                    forecast.push(dayData)
+                  }
+                  forecastData = forecast
+                  console.log("[weather] forecast updated: " + forecast.length + " days")
+                }
               } else {
                 weatherDescription = 'Invalid data'
                 weatherIcon = "󰔗"
@@ -239,6 +267,65 @@ ShellRoot {
     }
   }
 
+  // Network monitoring
+  Process {
+    id: networkProcess
+    command: ["sh", "-c", "nmcli -t -f active,ssid,type dev wifi | grep '^yes' | cut -d: -f2,3 && ip -4 addr show | grep inet | grep -v '127.0.0.1' | awk '{print $2}' | cut -d/ -f1 | head -n1"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var lines = text.trim().split('\n')
+        if (lines.length >= 1 && lines[0] !== '') {
+          var parts = lines[0].split(':')
+          if (parts.length >= 2) {
+            root.networkSSID = parts[0]
+          } else if (lines[0].indexOf('ethernet') > -1 || lines[0].indexOf('wired') > -1) {
+            root.networkSSID = "Ethernet"
+          } else {
+            root.networkSSID = lines[0] || "Connected"
+          }
+        }
+        if (lines.length >= 2 && lines[1] !== '') {
+          root.networkIP = lines[1]
+        }
+      }
+    }
+  }
+  
+  Timer {
+    interval: 5000
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { if (!networkProcess.running) networkProcess.running = true }
+  }
+  
+  // Volume monitoring
+  Process {
+    id: volumeProcess
+    command: ["sh", "-c", "pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+%' | head -1 && pactl get-sink-mute @DEFAULT_SINK@ | grep -oP '(yes|no)'"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var lines = text.trim().split('\n')
+        if (lines.length >= 1) {
+          root.volumeLevel = lines[0] || "--"
+        }
+        if (lines.length >= 2) {
+          root.volumeMuted = lines[1] === 'yes'
+        }
+      }
+    }
+  }
+  
+  Timer {
+    interval: 2000
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { if (!volumeProcess.running) volumeProcess.running = true }
+  }
+
   // Disk usage monitoring
   Process {
     id: diskProcess
@@ -359,7 +446,7 @@ ShellRoot {
       Rectangle { // Weather Card
         id: weatherCard
         Layout.preferredWidth: 120
-        Layout.preferredHeight: timeCard.height + dashboardWindow.cardSpacing + cpuGpuRow.height
+        Layout.preferredHeight: timeCard.height + dashboardWindow.cardSpacing + infoBar.height + dashboardWindow.cardSpacing + cpuGpuRow.height
         radius: 4
         color: root.primaryColor
         border.width: 0
@@ -456,8 +543,6 @@ ShellRoot {
             }
           }
           
-          Item { Layout.fillHeight: true }
-          
           // City name
           Label {
             text: "OPOLE"
@@ -472,7 +557,7 @@ ShellRoot {
           // Weather description
           Label {
             text: root.weatherDescription.toUpperCase()
-            font.pixelSize: 10
+            font.pixelSize: 9
             font.family: "JetBrains Mono"
             color: root.subTextColor
             opacity: 0.7
@@ -480,6 +565,89 @@ ShellRoot {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             Layout.preferredWidth: 84
+          }
+          
+          // Separator
+          Rectangle {
+            Layout.preferredWidth: 60
+            Layout.preferredHeight: 1
+            color: root.tealColor
+            opacity: 0.3
+            Layout.alignment: Qt.AlignHCenter
+          }
+          
+          // Forecast scroll area
+          Flickable {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.preferredHeight: 200
+            contentHeight: forecastColumn.height
+            clip: true
+            
+            ColumnLayout {
+              id: forecastColumn
+              width: parent.width
+              spacing: 8
+              
+              Label {
+                text: "FORECAST"
+                font.pixelSize: 8
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.tealColor
+                opacity: 0.6
+                Layout.alignment: Qt.AlignHCenter
+              }
+              
+              Repeater {
+                model: root.forecastData
+                
+                ColumnLayout {
+                  spacing: 3
+                  Layout.fillWidth: true
+                  Layout.alignment: Qt.AlignHCenter
+                  
+                  Label {
+                    text: {
+                      var date = new Date(modelData.date)
+                      return Qt.formatDate(date, "ddd")
+                    }
+                    font.pixelSize: 9
+                    font.weight: Font.Bold
+                    font.family: "JetBrains Mono"
+                    color: root.subTextColor
+                    Layout.alignment: Qt.AlignHCenter
+                  }
+                  
+                  Label {
+                    text: root.mapWeather(modelData.code).i
+                    font.pixelSize: 24
+                    font.family: "JetBrainsMono Nerd Font"
+                    color: root.blueColor
+                    opacity: 0.8
+                    Layout.alignment: Qt.AlignHCenter
+                  }
+                  
+                  Label {
+                    text: modelData.maxTemp + "°/" + modelData.minTemp + "°"
+                    font.pixelSize: 8
+                    font.family: "JetBrains Mono"
+                    color: root.textColor
+                    opacity: 0.8
+                    Layout.alignment: Qt.AlignHCenter
+                  }
+                  
+                  Rectangle {
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: 1
+                    color: root.tealColor
+                    opacity: 0.2
+                    Layout.alignment: Qt.AlignHCenter
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -609,6 +777,226 @@ ShellRoot {
               font.letterSpacing: 0.5
               color: root.subTextColor
               horizontalAlignment: Text.AlignRight
+            }
+          }
+        }
+      }
+      
+      // Info Summary Bar
+      Rectangle {
+        id: infoBar
+        Layout.preferredWidth: timeCard.width
+        Layout.preferredHeight: 70
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.651, 0.753, 0.575, 0.3)
+        
+        // Technical shadow
+        Rectangle {
+          anchors.fill: parent
+          radius: parent.radius
+          color: "black"
+          opacity: 0.2
+          y: 2
+          z: -1
+        }
+        
+        RowLayout {
+          anchors.fill: parent
+          anchors.margins: 16
+          spacing: 20
+          
+          // CPU Temp Summary
+          RowLayout {
+            spacing: 8
+            Layout.alignment: Qt.AlignVCenter
+            
+            Rectangle {
+              width: 36
+              height: 36
+              radius: 2
+              color: Qt.rgba(0.902, 0.494, 0.502, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.902, 0.494, 0.502, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰻠"
+                font.pixelSize: 18
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.redColor
+              }
+            }
+            
+            ColumnLayout {
+              spacing: 0
+              Label {
+                text: "CPU"
+                font.pixelSize: 8
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+                opacity: 0.7
+              }
+              Label {
+                text: root.cpuTemp
+                font.pixelSize: 14
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.cpuColor(root.cpuTempRaw)
+              }
+            }
+          }
+          
+          Rectangle {
+            width: 1
+            height: 40
+            color: root.borderColor
+            opacity: 0.3
+          }
+          
+          // GPU Temp Summary
+          RowLayout {
+            spacing: 8
+            Layout.alignment: Qt.AlignVCenter
+            
+            Rectangle {
+              width: 36
+              height: 36
+              radius: 2
+              color: Qt.rgba(0.843, 0.6, 0.714, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.843, 0.6, 0.714, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰢮"
+                font.pixelSize: 18
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.purpleColor
+              }
+            }
+            
+            ColumnLayout {
+              spacing: 0
+              Label {
+                text: "GPU"
+                font.pixelSize: 8
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+                opacity: 0.7
+              }
+              Label {
+                text: root.gpuTemp
+                font.pixelSize: 14
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.textColor
+              }
+            }
+          }
+          
+          Rectangle {
+            width: 1
+            height: 40
+            color: root.borderColor
+            opacity: 0.3
+          }
+          
+          // Network Summary
+          RowLayout {
+            spacing: 8
+            Layout.alignment: Qt.AlignVCenter
+            
+            Rectangle {
+              width: 36
+              height: 36
+              radius: 2
+              color: Qt.rgba(0.498, 0.733, 0.702, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.498, 0.733, 0.702, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰖩"
+                font.pixelSize: 18
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.blueColor
+              }
+            }
+            
+            ColumnLayout {
+              spacing: 0
+              Label {
+                text: root.networkSSID
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.textColor
+                elide: Text.ElideRight
+                Layout.preferredWidth: 100
+              }
+              Label {
+                text: root.networkIP
+                font.pixelSize: 8
+                font.family: "JetBrains Mono"
+                color: root.subTextColor
+                opacity: 0.8
+              }
+            }
+          }
+          
+          Rectangle {
+            width: 1
+            height: 40
+            color: root.borderColor
+            opacity: 0.3
+          }
+          
+          // Volume Summary
+          RowLayout {
+            spacing: 8
+            Layout.alignment: Qt.AlignVCenter
+            
+            Rectangle {
+              width: 36
+              height: 36
+              radius: 2
+              color: Qt.rgba(0.651, 0.753, 0.575, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.651, 0.753, 0.575, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: root.volumeMuted ? "󰖁" : "󰕾"
+                font.pixelSize: 18
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.volumeMuted ? root.subTextColor : root.accentColor
+              }
+            }
+            
+            ColumnLayout {
+              spacing: 0
+              Label {
+                text: "VOLUME"
+                font.pixelSize: 8
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+                opacity: 0.7
+              }
+              Label {
+                text: root.volumeLevel
+                font.pixelSize: 14
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.volumeMuted ? root.subTextColor : root.textColor
+              }
             }
           }
         }
