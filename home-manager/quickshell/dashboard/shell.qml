@@ -57,6 +57,30 @@ ShellRoot {
   // Volume monitoring
   property string volumeLevel: "--"
   property bool volumeMuted: false
+  
+  // Bluetooth monitoring
+  property bool bluetoothEnabled: false
+  property var bluetoothDevices: []
+  
+  // Hyprland workspace monitoring
+  property int currentWorkspace: 1
+  property int totalWorkspaces: 10
+
+  // System uptime
+  property string uptimeDays: "0"
+  property string uptimeHours: "0"
+  property string uptimeMinutes: "0"
+
+  // Media player (MPRIS)
+  property string mediaTitle: "No media playing"
+  property string mediaArtist: ""
+  property string mediaPlayer: ""
+  property bool mediaPlaying: false
+  property var mediaPlayers: [] // List of all available players
+  property int currentPlayerIndex: 0
+
+  // Clipboard monitoring with cliphist
+  property var clipboardHistory: [] // Array of {id: string, type: "text"|"image", content: string, fullContent: string, time: string}
 
   // Weather (Opole coordinates ~50.6751N, 17.9213E)
   property string weatherTemp: "--°C"
@@ -300,19 +324,25 @@ ShellRoot {
     onTriggered: { if (!networkProcess.running) networkProcess.running = true }
   }
   
-  // Volume monitoring
+  // Volume monitoring (WirePlumber)
   Process {
     id: volumeProcess
-    command: ["sh", "-c", "pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+%' | head -1 && pactl get-sink-mute @DEFAULT_SINK@ | grep -oP '(yes|no)'"]
+    command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@"]
     
     stdout: StdioCollector {
       onStreamFinished: {
-        var lines = text.trim().split('\n')
-        if (lines.length >= 1) {
-          root.volumeLevel = lines[0] || "--"
-        }
-        if (lines.length >= 2) {
-          root.volumeMuted = lines[1] === 'yes'
+        var output = text.trim()
+        // Output format: "Volume: 0.55" or "Volume: 0.55 [MUTED]"
+        var match = output.match(/Volume:\s+([\d.]+)(\s+\[MUTED\])?/)
+        if (match) {
+          var volume = parseFloat(match[1])
+          var percentage = Math.round(volume * 100)
+          root.volumeLevel = percentage + "%"
+          root.volumeMuted = match[2] !== undefined
+          console.log("[volume] " + percentage + "% muted:" + root.volumeMuted)
+        } else {
+          root.volumeLevel = "--"
+          console.log("[volume] parse failed: " + output)
         }
       }
     }
@@ -324,6 +354,90 @@ ShellRoot {
     running: true
     triggeredOnStart: true
     onTriggered: { if (!volumeProcess.running) volumeProcess.running = true }
+  }
+  
+  // Bluetooth monitoring
+  Process {
+    id: bluetoothStatusProcess
+    command: ["sh", "-c", "bluetoothctl show | grep 'Powered:' | awk '{print $2}'"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var powered = text.trim()
+        root.bluetoothEnabled = (powered === "yes")
+        console.log("[bluetooth] powered: " + root.bluetoothEnabled)
+      }
+    }
+  }
+  
+  Process {
+    id: bluetoothDevicesProcess
+    command: ["sh", "-c", "bluetoothctl devices | while read -r line; do mac=$(echo $line | awk '{print $2}'); name=$(echo $line | cut -d' ' -f3-); connected=$(bluetoothctl info $mac | grep 'Connected:' | awk '{print $2}'); paired=$(bluetoothctl info $mac | grep 'Paired:' | awk '{print $2}'); echo \"$mac|$name|$connected|$paired\"; done"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var lines = text.trim().split('\n')
+        var devices = []
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i] === '') continue
+          var parts = lines[i].split('|')
+          if (parts.length >= 4) {
+            devices.push({
+              mac: parts[0],
+              name: parts[1],
+              connected: parts[2] === 'yes',
+              paired: parts[3] === 'yes'
+            })
+          }
+        }
+        root.bluetoothDevices = devices
+        console.log("[bluetooth] devices: " + devices.length)
+      }
+    }
+  }
+  
+  Timer {
+    id: bluetoothTimer
+    interval: 3000
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { 
+      if (!bluetoothStatusProcess.running) bluetoothStatusProcess.running = true
+      if (!bluetoothDevicesProcess.running) bluetoothDevicesProcess.running = true
+    }
+  }
+  
+  // Function to force immediate Bluetooth refresh
+  function refreshBluetooth() {
+    bluetoothTimer.stop()
+    if (!bluetoothStatusProcess.running) bluetoothStatusProcess.running = true
+    if (!bluetoothDevicesProcess.running) bluetoothDevicesProcess.running = true
+    Qt.callLater(function() { bluetoothTimer.start() })
+  }
+  
+  // Hyprland workspace monitoring
+  Process {
+    id: hyprlandWorkspaceProcess
+    command: ["sh", "-c", "hyprctl activeworkspace | grep 'workspace ID' | awk '{print $3}'"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var ws = parseInt(text.trim())
+        if (!isNaN(ws) && ws > 0) {
+          root.currentWorkspace = ws
+          console.log("[hyprland] workspace: " + ws)
+        }
+      }
+    }
+  }
+  
+  Timer {
+    interval: 500
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { if (!hyprlandWorkspaceProcess.running) hyprlandWorkspaceProcess.running = true }
   }
 
   // Disk usage monitoring
@@ -358,6 +472,164 @@ ShellRoot {
     running: true
     triggeredOnStart: true
     onTriggered: { if (!diskProcess.running) diskProcess.running = true }
+  }
+
+  // System uptime monitoring
+  Process {
+    id: uptimeProcess
+    command: ["sh", "-c", "awk '{print int($1/86400), int(($1%86400)/3600), int(($1%3600)/60)}' /proc/uptime"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var uptimeText = text.trim()
+        if (uptimeText && uptimeText !== "") {
+          var parts = uptimeText.split(/\s+/)
+          if (parts.length >= 3) {
+            root.uptimeDays = parts[0]
+            root.uptimeHours = parts[1]
+            root.uptimeMinutes = parts[2]
+            console.log("[uptime] " + parts[0] + "d " + parts[1] + "h " + parts[2] + "m")
+          }
+        }
+      }
+    }
+  }
+  
+  Timer {
+    interval: 60000 // Update every minute
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: { if (!uptimeProcess.running) uptimeProcess.running = true }
+  }
+
+  // List all available media players
+  Process {
+    id: mediaListProcess
+    command: ["sh", "-c", "playerctl -l"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var data = text.trim()
+        if (data && data !== "") {
+          var players = data.split('\n').filter(function(p) { return p.length > 0 })
+          root.mediaPlayers = players
+          if (root.currentPlayerIndex >= players.length) {
+            root.currentPlayerIndex = 0
+          }
+          console.log("[media] Found players: " + players.join(", "))
+        } else {
+          root.mediaPlayers = []
+          root.currentPlayerIndex = 0
+        }
+      }
+    }
+  }
+
+  // Media player (MPRIS) monitoring via playerctl
+  Process {
+    id: mediaProcess
+    command: ["sh", "-c", "playerctl -p " + (root.mediaPlayers.length > 0 ? root.mediaPlayers[root.currentPlayerIndex] : "''") + " metadata --format '{{playerName}}|||{{title}}|||{{artist}}|||{{status}}' 2>/dev/null || echo ''"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var data = text.trim()
+        if (data && data !== "") {
+          var parts = data.split('|||')
+          if (parts.length >= 4) {
+            root.mediaPlayer = parts[0] || ""
+            root.mediaTitle = parts[1] || "No title"
+            root.mediaArtist = parts[2] || ""
+            root.mediaPlaying = (parts[3] === "Playing")
+            console.log("[media] " + root.mediaPlayer + " - " + root.mediaTitle)
+          }
+        } else {
+          root.mediaPlayer = ""
+          root.mediaTitle = "No media playing"
+          root.mediaArtist = ""
+          root.mediaPlaying = false
+        }
+      }
+    }
+    
+    onExited: function(exitCode, exitStatus) {
+      if (exitCode !== 0) {
+        root.mediaPlayer = ""
+        root.mediaTitle = "No media playing"
+        root.mediaArtist = ""
+        root.mediaPlaying = false
+      }
+    }
+  }
+  
+  Timer {
+    interval: 2000 // Update every 2 seconds
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: {
+      if (!mediaListProcess.running) mediaListProcess.running = true
+      Qt.callLater(function() {
+        if (!mediaProcess.running) mediaProcess.running = true
+      })
+    }
+  }
+
+  // Clipboard monitoring with cliphist
+  Process {
+    id: clipboardProcess
+    command: ["sh", "-c", "cliphist list | head -n 8"]
+    
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var output = text.trim()
+        if (output === "") {
+          root.clipboardHistory = []
+          return
+        }
+        
+        var lines = output.split('\n')
+        var history = []
+        var now = new Date()
+        
+        for (var i = 0; i < lines.length && i < 8; i++) {
+          if (lines[i] === "") continue
+          
+          // Cliphist format: "ID\tcontent"
+          var parts = lines[i].split('\t')
+          if (parts.length < 2) continue
+          
+          var content = parts.slice(1).join('\t') // Rejoin in case content has tabs
+          
+          // Clean up content: replace newlines/tabs with spaces, trim whitespace
+          var cleanContent = content.replace(/[\n\r\t]+/g, ' ').replace(/\s+/g, ' ').trim()
+          var displayContent = cleanContent.length > 200 ? cleanContent.substring(0, 200) + "..." : cleanContent
+          
+          history.push({
+            id: parts[0],
+            type: "text",
+            content: displayContent,
+            fullContent: content,
+            itemNumber: i + 1
+          })
+        }
+        
+        root.clipboardHistory = history
+        console.log("[clipboard] Loaded " + history.length + " items from cliphist")
+      }
+    }
+  }
+  
+  Timer {
+    interval: 2000 // Update every 2 seconds
+    repeat: true
+    running: true
+    triggeredOnStart: true
+    onTriggered: {
+      if (!clipboardProcess.running) {
+        clipboardProcess.running = true
+      }
+    }
   }
 
   // CPU Temperature monitoring via thermal zone - robust implementation
@@ -446,7 +718,7 @@ ShellRoot {
       Rectangle { // Weather Card
         id: weatherCard
         Layout.preferredWidth: 120
-        Layout.preferredHeight: timeCard.height + dashboardWindow.cardSpacing + infoBar.height + dashboardWindow.cardSpacing + cpuGpuRow.height
+        Layout.fillHeight: true
         radius: 4
         color: root.primaryColor
         border.width: 0
@@ -766,9 +1038,9 @@ ShellRoot {
             }
           }
           Item { Layout.fillWidth: true } // spacer
-          ColumnLayout { // Right: date only
+          ColumnLayout { // Right: date and workspace
             Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-            spacing: 8
+            spacing: 12
             Label {
               text: root.dayText.toUpperCase()
               font.pixelSize: 18
@@ -778,10 +1050,67 @@ ShellRoot {
               color: root.subTextColor
               horizontalAlignment: Text.AlignRight
             }
+            
+            // Workspace indicator
+            Rectangle {
+              Layout.alignment: Qt.AlignRight
+              width: 90
+              height: 28
+              radius: 3
+              color: Qt.rgba(0.651, 0.753, 0.575, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.651, 0.753, 0.575, 0.3)
+              
+              RowLayout {
+                anchors.centerIn: parent
+                spacing: 6
+                
+                Label {
+                  text: "󱂬"
+                  font.pixelSize: 14
+                  font.family: "JetBrainsMono Nerd Font"
+                  color: root.accentColor
+                  opacity: 0.8
+                }
+                
+                Label {
+                  text: "WS " + root.currentWorkspace
+                  font.pixelSize: 11
+                  font.weight: Font.Bold
+                  font.family: "JetBrains Mono"
+                  font.letterSpacing: 0.5
+                  color: root.accentColor
+                }
+              }
+            }
+            
+            // Uptime display
+            RowLayout {
+              spacing: 8
+              Layout.alignment: Qt.AlignRight
+              
+              Label {
+                text: "󱫋"
+                font.pixelSize: 10
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.accentColor
+                opacity: 0.6
+              }
+              
+              Label {
+                text: root.uptimeDays + "d " + root.uptimeHours + "h " + root.uptimeMinutes + "m"
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.subTextColor
+                opacity: 0.8
+              }
+            }
           }
         }
       }
-      
+
+
       // Info Summary Bar
       Rectangle {
         id: infoBar
@@ -1041,64 +1370,298 @@ ShellRoot {
           }
         }
         ColumnLayout {
-          anchors.centerIn: parent; spacing: 16
-          ColumnLayout {
-            spacing: 4
-            Layout.alignment: Qt.AlignHCenter
+          anchors.fill: parent
+          anchors.margins: 16
+          spacing: 10
+          
+          // Header
+          RowLayout {
+            spacing: 8
+            Layout.fillWidth: true
             
             Label {
-              text: "CPU"
+              text: "BLUETOOTH"
               font.pixelSize: 10
               font.weight: Font.Bold
               font.family: "JetBrains Mono"
               font.letterSpacing: 2
               color: root.redColor
               opacity: 0.8
-              Layout.alignment: Qt.AlignHCenter
             }
             
+            Item { Layout.fillWidth: true }
+            
+            // Toggle indicator
             Rectangle {
-              width: 72
-              height: 72
-              radius: 2
-              color: Qt.rgba(0.902, 0.494, 0.502, 0.1)
-              Layout.alignment: Qt.AlignHCenter
+              width: 32
+              height: 16
+              radius: 8
+              color: root.bluetoothEnabled ? Qt.rgba(0.902, 0.494, 0.502, 0.3) : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+              border.width: 1
+              border.color: root.bluetoothEnabled ? root.redColor : root.subTextColor
               
+              Rectangle {
+                width: 12
+                height: 12
+                radius: 6
+                x: root.bluetoothEnabled ? parent.width - width - 2 : 2
+                y: 2
+                color: root.bluetoothEnabled ? root.redColor : root.subTextColor
+                
+                Behavior on x { NumberAnimation { duration: 150 } }
+              }
+              
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  // Toggle bluetooth with immediate refresh
+                  var cmd = root.bluetoothEnabled ? "bluetoothctl power off" : "bluetoothctl power on"
+                  var toggleProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "' + cmd + '"] }', root)
+                  toggleProcess.running = true
+                  // Immediate refresh after toggle
+                  Qt.callLater(function() {
+                    setTimeout(function() { root.refreshBluetooth() }, 300)
+                  })
+                }
+              }
+            }
+          }
+          
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: root.redColor
+            opacity: 0.3
+          }
+          
+          // Bluetooth disabled state - centered with enable button
+          Item {
+            visible: !root.bluetoothEnabled
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            
+            ColumnLayout {
+              anchors.centerIn: parent
+              spacing: 16
+              
+              Rectangle {
+                width: 56
+                height: 56
+                radius: 2
+                color: Qt.rgba(0.5, 0.5, 0.5, 0.1)
+                Layout.alignment: Qt.AlignHCenter
+                border.width: 2
+                border.color: Qt.rgba(0.5, 0.5, 0.5, 0.3)
+                
+                Label {
+                  anchors.centerIn: parent
+                  text: "󰂲"
+                  font.pixelSize: 28
+                  font.family: "JetBrainsMono Nerd Font"
+                  color: root.subTextColor
+                }
+              }
+              
+              Label {
+                text: "MODULE DISABLED"
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1.5
+                color: root.subTextColor
+                opacity: 0.8
+                Layout.alignment: Qt.AlignHCenter
+              }
+              
+              // Enable button
+              Rectangle {
+                Layout.alignment: Qt.AlignHCenter
+                width: 200
+                height: 40
+                radius: 3
+                color: Qt.rgba(0.902, 0.494, 0.502, 0.15)
+                border.width: 2
+                border.color: Qt.rgba(0.902, 0.494, 0.502, 0.4)
+                
+                Label {
+                  anchors.centerIn: parent
+                  text: "ENABLE BLUETOOTH"
+                  font.pixelSize: 10
+                  font.weight: Font.Bold
+                  font.family: "JetBrains Mono"
+                  font.letterSpacing: 1
+                  color: root.redColor
+                }
+                
+                MouseArea {
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: {
+                    var toggleProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "bluetoothctl power on"] }', root)
+                    toggleProcess.running = true
+                    Qt.callLater(function() {
+                      setTimeout(function() { root.refreshBluetooth() }, 300)
+                    })
+                  }
+                }
+              }
+            }
+          }
+          
+          // Bluetooth enabled state - show icon, status, and devices
+          ColumnLayout {
+            visible: root.bluetoothEnabled
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 10
+            
+            Rectangle {
+              width: 56
+              height: 56
+              radius: 2
+              color: Qt.rgba(0.902, 0.494, 0.502, 0.15)
+              Layout.alignment: Qt.AlignHCenter
               border.width: 2
               border.color: Qt.rgba(0.902, 0.494, 0.502, 0.4)
               
               Label {
                 anchors.centerIn: parent
-                text: "󰻠"
-                font.pixelSize: 36
+                text: "󰂯"
+                font.pixelSize: 28
                 font.family: "JetBrainsMono Nerd Font"
                 color: root.redColor
               }
             }
+            
+            Label {
+              text: "ENABLED"
+              font.pixelSize: 9
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 1
+              color: root.redColor
+              opacity: 0.8
+              Layout.alignment: Qt.AlignHCenter
+            }
+            
+            Rectangle {
+              Layout.fillWidth: true
+              Layout.preferredHeight: 1
+              color: root.redColor
+              opacity: 0.2
+            }
+            
+            // Devices list
+            Flickable {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              contentHeight: devicesColumn.height
+              clip: true
+            
+            ColumnLayout {
+              id: devicesColumn
+              width: parent.width
+              spacing: 4
+              
+              Label {
+                text: "DEVICES"
+                font.pixelSize: 8
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+                opacity: 0.6
+              }
+              
+              Repeater {
+                model: root.bluetoothDevices
+                
+                Rectangle {
+                  Layout.fillWidth: true
+                  Layout.preferredHeight: 32
+                  radius: 2
+                  color: modelData.connected ? Qt.rgba(0.902, 0.494, 0.502, 0.1) : "transparent"
+                  border.width: 1
+                  border.color: modelData.connected ? Qt.rgba(0.902, 0.494, 0.502, 0.3) : Qt.rgba(0.5, 0.5, 0.5, 0.2)
+                  
+                  RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 6
+                    spacing: 6
+                    
+                    Label {
+                      text: modelData.connected ? "󰂱" : (modelData.paired ? "󰂯" : "󰂲")
+                      font.pixelSize: 12
+                      font.family: "JetBrainsMono Nerd Font"
+                      color: modelData.connected ? root.redColor : root.subTextColor
+                    }
+                    
+                    Label {
+                      text: modelData.name
+                      font.pixelSize: 9
+                      font.family: "JetBrains Mono"
+                      color: modelData.connected ? root.textColor : root.subTextColor
+                      elide: Text.ElideRight
+                      Layout.fillWidth: true
+                    }
+                  }
+                  
+                  MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                      // Toggle connection with immediate refresh
+                      var cmd = modelData.connected ? "bluetoothctl disconnect " + modelData.mac : "bluetoothctl connect " + modelData.mac
+                      var connectProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "' + cmd + '"] }', root)
+                      connectProcess.running = true
+                      // Immediate refresh after connection toggle
+                      Qt.callLater(function() {
+                        setTimeout(function() { root.refreshBluetooth() }, 500)
+                      })
+                    }
+                  }
+                }
+              }
+              
+              ColumnLayout {
+                visible: root.bluetoothDevices.length === 0
+                spacing: 4
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
+                
+                Label {
+                  text: root.bluetoothEnabled ? "NO DEVICES" : "MODULE DISABLED"
+                  font.pixelSize: 9
+                  font.weight: Font.Bold
+                  font.family: "JetBrains Mono"
+                  font.letterSpacing: 1
+                  color: root.subTextColor
+                  opacity: 0.6
+                  Layout.alignment: Qt.AlignHCenter
+                }
+                
+                Label {
+                  visible: root.bluetoothEnabled
+                  text: "Pair devices to see them here"
+                  font.pixelSize: 8
+                  font.family: "JetBrains Mono"
+                  color: root.subTextColor
+                  opacity: 0.4
+                  Layout.alignment: Qt.AlignHCenter
+                  horizontalAlignment: Text.AlignHCenter
+                  wrapMode: Text.WordWrap
+                  Layout.preferredWidth: 200
+                }
+              }
+            }
           }
-          Label {
-            text: root.cpuTemp
-            font.pixelSize: 38
-            font.weight: Font.Bold
-            font.family: "JetBrains Mono"
-            color: root.cpuColor(root.cpuTempRaw)
-            Layout.alignment: Qt.AlignHCenter
-          }
-          Label { 
-            text: "TEMPERATURE"
-            font.pixelSize: 9
-            font.weight: Font.Bold
-            font.family: "JetBrains Mono"
-            font.letterSpacing: 1
-            color: root.subTextColor
-            opacity: 0.6
-            Layout.alignment: Qt.AlignHCenter
           }
         }
         }
 
-        Rectangle { // GPU Card - Sci-fi lab design
-        id: gpuCard
+        Rectangle { // Storage Size Display - Sci-fi lab design
+        id: storageCard
         Layout.preferredWidth: 260
         Layout.preferredHeight: 220
         radius: 4
@@ -1131,13 +1694,18 @@ ShellRoot {
             opacity: 0.6
           }
         }
-        ColumnLayout { anchors.centerIn: parent; spacing: 16
+        
+        ColumnLayout {
+          anchors.fill: parent
+          anchors.margins: 16
+          spacing: 12
+          
           ColumnLayout {
-            spacing: 4
+            spacing: 6
             Layout.alignment: Qt.AlignHCenter
             
             Label {
-              text: "GPU"
+              text: "STORAGE SIZE"
               font.pixelSize: 10
               font.weight: Font.Bold
               font.family: "JetBrains Mono"
@@ -1148,48 +1716,110 @@ ShellRoot {
             }
             
             Rectangle {
-              width: 72
-              height: 72
+              width: 56
+              height: 56
               radius: 2
               color: Qt.rgba(0.843, 0.6, 0.714, 0.1)
               Layout.alignment: Qt.AlignHCenter
-              
               border.width: 2
               border.color: Qt.rgba(0.843, 0.6, 0.714, 0.4)
               
               Label {
                 anchors.centerIn: parent
-                text: "󰢮"
-                font.pixelSize: 36
+                text: "󰋊"
+                font.pixelSize: 28
                 font.family: "JetBrainsMono Nerd Font"
                 color: root.purpleColor
               }
             }
           }
-          Label {
-            text: root.gpuTemp
-            font.pixelSize: 38
-            font.weight: Font.Bold
-            font.family: "JetBrains Mono"
-            color: root.textColor
-            Layout.alignment: Qt.AlignHCenter
+          
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: root.purpleColor
+            opacity: 0.3
           }
-          Label { 
-            text: "TEMPERATURE"
-            font.pixelSize: 9
-            font.weight: Font.Bold
-            font.family: "JetBrains Mono"
-            font.letterSpacing: 1
-            color: root.subTextColor
-            opacity: 0.6
-            Layout.alignment: Qt.AlignHCenter
+          
+          // ROOT partition
+          ColumnLayout {
+            spacing: 6
+            Layout.fillWidth: true
+            
+            RowLayout {
+              spacing: 6
+              
+              Label {
+                text: "ROOT (/)"
+                font.pixelSize: 9
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+              }
+              
+              Item { Layout.fillWidth: true }
+              
+              Label {
+                text: root.diskUsageRoot
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.textColor
+              }
+            }
+            
+            Label {
+              text: root.diskPercentRoot + "% used"
+              font.pixelSize: 8
+              font.family: "JetBrains Mono"
+              color: root.subTextColor
+              opacity: 0.7
+            }
+          }
+          
+          // HOME partition
+          ColumnLayout {
+            spacing: 6
+            Layout.fillWidth: true
+            
+            RowLayout {
+              spacing: 6
+              
+              Label {
+                text: "HOME (~)"
+                font.pixelSize: 9
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+              }
+              
+              Item { Layout.fillWidth: true }
+              
+              Label {
+                text: root.diskUsageHome
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.textColor
+              }
+            }
+            
+            Label {
+              text: root.diskPercentHome + "% used"
+              font.pixelSize: 8
+              font.family: "JetBrains Mono"
+              color: root.subTextColor
+              opacity: 0.7
+            }
           }
         }
         }
         
-        Rectangle { // Disk Usage Panel - Sci-fi geometric design
-        id: diskCard
-        Layout.preferredWidth: 260
+        Rectangle { // Media Player Panel - Sci-fi geometric design
+        id: mediaCard
+        Layout.preferredWidth: 360
         Layout.preferredHeight: 220
         radius: 4
         color: root.primaryColor
@@ -1222,155 +1852,489 @@ ShellRoot {
           }
         }
         
-        ColumnLayout { 
+        ColumnLayout {
           anchors.fill: parent
-          anchors.margins: 16
-          spacing: 10
+          anchors.margins: 14
+          spacing: 8
           
-          // Header
+          // Header with source selector
           ColumnLayout {
-            spacing: 3
-            Layout.alignment: Qt.AlignHCenter
+            spacing: 6
+            Layout.fillWidth: true
             
-            Label {
-              text: "STORAGE"
-              font.pixelSize: 10
-              font.weight: Font.Bold
-              font.family: "JetBrains Mono"
-              font.letterSpacing: 2
-              color: root.yellowColor
-              opacity: 0.8
-              Layout.alignment: Qt.AlignHCenter
+            RowLayout {
+              spacing: 8
+              Layout.fillWidth: true
+              
+              Label {
+                text: "MEDIA PLAYER"
+                font.pixelSize: 10
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 2
+                color: root.yellowColor
+                opacity: 0.8
+              }
+              
+              Item { Layout.fillWidth: true }
+              
+              Label {
+                text: root.mediaPlayers.length > 1 ? root.mediaPlayers.length + " SOURCES" : ""
+                font.pixelSize: 7
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                font.letterSpacing: 1
+                color: root.subTextColor
+                opacity: 0.5
+                visible: root.mediaPlayers.length > 1
+              }
             }
             
-            // Icon with geometric shape
+            // Source switcher (only visible when multiple sources)
+            RowLayout {
+              spacing: 3
+              Layout.fillWidth: true
+              visible: root.mediaPlayers.length > 1
+              
+              Repeater {
+                model: root.mediaPlayers
+                
+                Rectangle {
+                  Layout.fillWidth: true
+                  Layout.preferredHeight: 20
+                  radius: 2
+                  color: index === root.currentPlayerIndex ? Qt.rgba(0.859, 0.737, 0.498, 0.15) : Qt.rgba(0.859, 0.737, 0.498, 0.05)
+                  border.width: 1
+                  border.color: index === root.currentPlayerIndex ? Qt.rgba(0.859, 0.737, 0.498, 0.4) : Qt.rgba(0.859, 0.737, 0.498, 0.2)
+                  
+                  Label {
+                    anchors.centerIn: parent
+                    text: modelData.toUpperCase()
+                    font.pixelSize: 6
+                    font.weight: Font.Bold
+                    font.family: "JetBrains Mono"
+                    font.letterSpacing: 0.5
+                    color: index === root.currentPlayerIndex ? root.yellowColor : root.subTextColor
+                    elide: Text.ElideRight
+                    width: parent.width - 6
+                    horizontalAlignment: Text.AlignHCenter
+                  }
+                  
+                  MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                      root.currentPlayerIndex = index
+                      mediaProcess.running = true
+                    }
+                  }
+                }
+              }
+            }
+          }
+          
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: root.yellowColor
+            opacity: 0.3
+          }
+          
+          // Media info
+          ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 5
+            
             Rectangle {
-              width: 56
-              height: 56
+              width: 48
+              height: 48
               radius: 2
               color: Qt.rgba(0.859, 0.737, 0.498, 0.1)
               Layout.alignment: Qt.AlignHCenter
-              
               border.width: 2
               border.color: Qt.rgba(0.859, 0.737, 0.498, 0.4)
               
               Label {
                 anchors.centerIn: parent
-                text: "󰋊"
-                font.pixelSize: 28
+                text: root.mediaPlaying ? "" : "󱗝"
+                font.pixelSize: 24
                 font.family: "JetBrainsMono Nerd Font"
                 color: root.yellowColor
               }
             }
-          }
-          
-          // Root disk usage
-          ColumnLayout {
-            spacing: 4
-            Layout.alignment: Qt.AlignHCenter
-            Layout.fillWidth: true
             
-            RowLayout {
-              spacing: 8
+            ColumnLayout {
+              spacing: 2
               Layout.fillWidth: true
+              Layout.alignment: Qt.AlignHCenter
               
               Label {
-                text: "ROOT"
-                font.pixelSize: 9
+                text: root.mediaTitle
+                font.pixelSize: 10
                 font.weight: Font.Bold
                 font.family: "JetBrains Mono"
-                font.letterSpacing: 1
-                color: root.subTextColor
+                color: root.textColor
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+                Layout.preferredWidth: 320
               }
-              
-              Item { Layout.fillWidth: true }
               
               Label {
-                text: root.diskUsageRoot
-                font.pixelSize: 9
+                text: root.mediaArtist
+                font.pixelSize: 8
                 font.family: "JetBrains Mono"
-                color: root.textColor
+                color: root.subTextColor
                 opacity: 0.8
-              }
-            }
-            
-            // Progress bar - geometric
-            Rectangle {
-              Layout.fillWidth: true
-              Layout.preferredHeight: 6
-              Layout.alignment: Qt.AlignHCenter
-              color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
-              border.width: 1
-              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.3)
-              
-              Rectangle {
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: parent.width * (root.diskPercentRoot / 100.0)
-                color: root.diskPercentRoot > 90 ? root.redColor : root.diskPercentRoot > 75 ? root.yellowColor : root.accentColor
-                opacity: 0.7
-                
-                Behavior on width { NumberAnimation { duration: 300 } }
+                Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: Text.AlignHCenter
+                elide: Text.ElideRight
+                Layout.preferredWidth: 320
+                visible: root.mediaArtist !== ""
               }
             }
           }
           
-          // Home disk usage
-          ColumnLayout {
-            spacing: 4
-            Layout.alignment: Qt.AlignHCenter
+          // Controls
+          Item {
             Layout.fillWidth: true
+            Layout.preferredHeight: 32
             
-            RowLayout {
-              spacing: 8
-              Layout.fillWidth: true
-              
-              Label {
-                text: "HOME"
-                font.pixelSize: 9
-                font.weight: Font.Bold
-                font.family: "JetBrains Mono"
-                font.letterSpacing: 1
-                color: root.subTextColor
-              }
-              
-              Item { Layout.fillWidth: true }
-              
-              Label {
-                text: root.diskUsageHome
-                font.pixelSize: 9
-                font.family: "JetBrains Mono"
-                color: root.textColor
-                opacity: 0.8
-              }
-            }
+          RowLayout {
+            anchors.centerIn: parent
+            spacing: 8
             
-            // Progress bar - geometric
             Rectangle {
-              Layout.fillWidth: true
-              Layout.preferredHeight: 6
-              Layout.alignment: Qt.AlignHCenter
-              color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
+              width: 32
+              height: 32
+              radius: 2
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.1)
               border.width: 1
               border.color: Qt.rgba(0.859, 0.737, 0.498, 0.3)
               
-              Rectangle {
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: parent.width * (root.diskPercentHome / 100.0)
-                color: root.diskPercentHome > 90 ? root.redColor : root.diskPercentHome > 75 ? root.yellowColor : root.accentColor
-                opacity: 0.7
-                
-                Behavior on width { NumberAnimation { duration: 300 } }
+              Label {
+                anchors.centerIn: parent
+                text: "󰒮"
+                font.pixelSize: 14
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.yellowColor
+              }
+              
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  var player = root.mediaPlayers.length > 0 ? root.mediaPlayers[root.currentPlayerIndex] : ""
+                  if (player !== "") {
+                    var prevProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["playerctl", "-p", "' + player + '", "previous"] }', root)
+                    prevProcess.running = true
+                  }
+                }
               }
             }
+            
+            Rectangle {
+              width: 38
+              height: 38
+              radius: 2
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.15)
+              border.width: 2
+              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.4)
+              
+              Label {
+                anchors.centerIn: parent
+                text: root.mediaPlaying ? "󰏤" : "󰐊"
+                font.pixelSize: 18
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.yellowColor
+              }
+              
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  var player = root.mediaPlayers.length > 0 ? root.mediaPlayers[root.currentPlayerIndex] : ""
+                  if (player !== "") {
+                    var playPauseProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["playerctl", "-p", "' + player + '", "play-pause"] }', root)
+                    playPauseProcess.running = true
+                  }
+                }
+              }
+            }
+            
+            Rectangle {
+              width: 32
+              height: 32
+              radius: 2
+              color: Qt.rgba(0.859, 0.737, 0.498, 0.1)
+              border.width: 1
+              border.color: Qt.rgba(0.859, 0.737, 0.498, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰒭"
+                font.pixelSize: 14
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.yellowColor
+              }
+              
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  var player = root.mediaPlayers.length > 0 ? root.mediaPlayers[root.currentPlayerIndex] : ""
+                  if (player !== "") {
+                    var nextProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["playerctl", "-p", "' + player + '", "next"] }', root)
+                    nextProcess.running = true
+                  }
+                }
+              }
+            }
+          }
           }
         }
         }
       }
       } // end of right content column
+      
+      // Notifications Panel (right side)
+      Rectangle {
+        id: notificationsPanel
+        Layout.preferredWidth: 248
+        Layout.fillHeight: true
+        radius: 4
+        color: root.primaryColor
+        border.width: 2
+        border.color: Qt.rgba(0.498, 0.733, 0.702, 0.4) // tealColor
+        
+        // Technical shadow
+        Rectangle {
+          anchors.fill: parent
+          radius: parent.radius
+          color: "black"
+          opacity: 0.3
+          x: 3
+          z: -1
+        }
+        
+        ColumnLayout {
+          anchors.fill: parent
+          anchors.margins: 16
+          spacing: 12
+          
+          // Header
+          RowLayout {
+            spacing: 8
+            Layout.fillWidth: true
+            
+            Rectangle {
+              width: 32
+              height: 32
+              radius: 2
+              color: Qt.rgba(0.498, 0.733, 0.702, 0.12)
+              border.width: 1
+              border.color: Qt.rgba(0.498, 0.733, 0.702, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰂚"
+                font.pixelSize: 16
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.tealColor
+              }
+            }
+            
+            Label {
+              text: "NOTIFY"
+              font.pixelSize: 10
+              font.weight: Font.Bold
+              font.family: "JetBrains Mono"
+              font.letterSpacing: 2
+              color: root.tealColor
+              opacity: 0.8
+            }
+            
+            Item { Layout.fillWidth: true }
+            
+            // Clear all button
+            Rectangle {
+              visible: root.clipboardHistory.length > 0
+              width: 28
+              height: 28
+              radius: 2
+              color: Qt.rgba(0.902, 0.494, 0.502, 0.1)
+              border.width: 1
+              border.color: Qt.rgba(0.902, 0.494, 0.502, 0.3)
+              
+              Label {
+                anchors.centerIn: parent
+                text: "󰩺"
+                font.pixelSize: 14
+                font.family: "JetBrainsMono Nerd Font"
+                color: root.redColor
+                opacity: 0.8
+              }
+              
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+                onEntered: parent.color = Qt.rgba(0.902, 0.494, 0.502, 0.15)
+                onExited: parent.color = Qt.rgba(0.902, 0.494, 0.502, 0.1)
+                onClicked: {
+                  // Wipe all cliphist history
+                  var wipeProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["cliphist", "wipe"] }', root)
+                  wipeProcess.running = true
+                  console.log("[clipboard] Wiped all clipboard history")
+                  root.clipboardHistory = []
+                }
+              }
+            }
+          }
+          
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: root.tealColor
+            opacity: 0.3
+          }
+          
+          // Clipboard history
+          Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            
+            ColumnLayout {
+              anchors.fill: parent
+              spacing: 0
+              
+              // Empty state
+              Item {
+                visible: root.clipboardHistory.length === 0
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                
+                ColumnLayout {
+                  anchors.centerIn: parent
+                  spacing: 12
+                  
+                  Rectangle {
+                    width: 56
+                    height: 56
+                    radius: 2
+                    color: Qt.rgba(0.498, 0.733, 0.702, 0.1)
+                    Layout.alignment: Qt.AlignHCenter
+                    border.width: 2
+                    border.color: Qt.rgba(0.498, 0.733, 0.702, 0.3)
+                    
+                    Label {
+                      anchors.centerIn: parent
+                      text: "󰜦"
+                      font.pixelSize: 28
+                      font.family: "JetBrainsMono Nerd Font"
+                      color: root.tealColor
+                      opacity: 0.6
+                    }
+                  }
+                  
+                  Label {
+                    text: "CLIPBOARD EMPTY"
+                    font.pixelSize: 9
+                    font.weight: Font.Bold
+                    font.family: "JetBrains Mono"
+                    font.letterSpacing: 1.5
+                    color: root.tealColor
+                    opacity: 0.6
+                    Layout.alignment: Qt.AlignHCenter
+                  }
+                  
+                  Label {
+                    text: "Copy something\nto see it here"
+                    font.pixelSize: 8
+                    font.family: "JetBrains Mono"
+                    color: root.subTextColor
+                    opacity: 0.5
+                    Layout.alignment: Qt.AlignHCenter
+                    horizontalAlignment: Text.AlignHCenter
+                  }
+                }
+              }
+              
+              // Clipboard items list
+              Flickable {
+                visible: root.clipboardHistory.length > 0
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                contentHeight: clipItemsColumn.height
+                clip: true
+                
+                ColumnLayout {
+                  id: clipItemsColumn
+                  width: parent.width
+                  spacing: 6
+                  
+                  Repeater {
+                    model: root.clipboardHistory
+                    
+                    Rectangle {
+                      id: clipItem
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 32
+                      radius: 2
+                      color: clipItemMouse.containsMouse ? Qt.rgba(0.498, 0.733, 0.702, 0.1) : Qt.rgba(0.498, 0.733, 0.702, 0.05)
+                      border.width: 1
+                      border.color: clipItemMouse.containsMouse ? Qt.rgba(0.498, 0.733, 0.702, 0.3) : Qt.rgba(0.498, 0.733, 0.702, 0.2)
+                      
+                      RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        spacing: 8
+                        
+                        Label {
+                          text: "#" + modelData.itemNumber
+                          font.pixelSize: 7
+                          font.weight: Font.Bold
+                          font.family: "JetBrains Mono"
+                          color: root.tealColor
+                          opacity: 0.5
+                          Layout.alignment: Qt.AlignVCenter
+                        }
+                        
+                        Label {
+                          text: modelData.content
+                          font.pixelSize: 9
+                          font.family: "JetBrains Mono"
+                          color: root.textColor
+                          opacity: 0.85
+                          Layout.fillWidth: true
+                          Layout.alignment: Qt.AlignVCenter
+                          elide: Text.ElideRight
+                          maximumLineCount: 1
+                        }
+                      }
+                      
+                      // Click to copy
+                      MouseArea {
+                        id: clipItemMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                          var clipId = modelData.id
+                          var copyProcess = Qt.createQmlObject('import Quickshell.Io; Process { command: ["sh", "-c", "cliphist decode ' + clipId + ' | wl-copy"] }', clipItem)
+                          copyProcess.running = true
+                          console.log("[clipboard] Copied item " + clipId + " to clipboard")
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     } // end of main row
   }
 }

@@ -23,8 +23,7 @@ in
       # Applications to run automatically when Hyprland starts
       "exec-once" = [
         "systemctl --user start hyprpolkitagent"  # Polkit authentication agent
-        "waybar"                                   # Status bar
-        "quickshell"                              # QuickShell dashboard
+        "wl-paste --watch cliphist store"         # Cliphist daemon for clipboard history
       ];
 
       # ===================================

@@ -27,7 +27,8 @@
     kdePackages.gwenview       # Image viewer
     libnotify                  # Desktop notifications
     grimblast                  # Screenshot utility
-    wl-clipboard               # Wayland clipboard
+    wl-clipboard               # Wayland clipboard (required by cliphist)
+    cliphist                   # Clipboard history manager
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
   ];
 
