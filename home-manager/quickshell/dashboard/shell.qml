@@ -91,6 +91,16 @@ ShellRoot {
   // Weather forecast (7 days)
   property var forecastData: []
 
+  // Application discovery
+  property var appCatalog: []
+  property var appFilteredApps: []
+  property string appSearchTerm: ""
+  property int appSelectedIndex: -1
+  property bool appDataLoaded: false
+
+  onAppSearchTermChanged: updateAppFilter()
+  onAppCatalogChanged: updateAppFilter()
+
   function mapWeather(code) {
     switch(code) {
       case 0: return { d: "Clear sky", i: "" }
@@ -105,6 +115,54 @@ ShellRoot {
       case 96: case 99: return { d: "Storm", i: "" }
       default: return { d: "--", i: "󰔗" }
     }
+  }
+
+  function cleanExecCommand(execString) {
+    if (!execString || typeof execString !== "string") return ""
+    var cleaned = execString.replace(/%%/g, "%")
+    cleaned = cleaned.replace(/%[fFuUdDnNickvm]/g, "")
+    cleaned = cleaned.replace(/%[ciks]/g, "")
+    return cleaned.trim()
+  }
+
+  function updateAppFilter() {
+    var term = (root.appSearchTerm || "").toLowerCase().trim()
+    var source = root.appCatalog || []
+    if (!term) {
+      root.appFilteredApps = source
+    } else {
+      root.appFilteredApps = source.filter(function(app) {
+        if (!app) return false
+        if (app.lowerName && app.lowerName.indexOf(term) !== -1) return true
+        return app.lowerComment && app.lowerComment.indexOf(term) !== -1
+      })
+    }
+
+    if (!root.appFilteredApps || root.appFilteredApps.length === 0) {
+      root.appSelectedIndex = -1
+    } else if (root.appSelectedIndex < 0 || root.appSelectedIndex >= root.appFilteredApps.length) {
+      root.appSelectedIndex = 0
+    }
+  }
+
+  function ensureAppDataLoaded() {
+    if ((root.appDataLoaded && root.appCatalog.length > 0) || appDiscoveryLoader.running) return
+    root.appDataLoaded = false
+    appDiscoveryLoader.running = true
+    console.log("[app-discovery] loading desktop entries")
+  }
+
+  function launchApp(app) {
+    if (!app) return
+    var command = app.cleanedExec || cleanExecCommand(app.exec)
+    if (!command) {
+      console.log("[app-discovery] missing exec for", app.name)
+      return
+    }
+    appLaunchProcess.command = ["sh", "-c", command]
+    appLaunchProcess.running = true
+    console.log("[app-discovery] launching", app.name)
+    appDiscoveryWindow.hide()
   }
 
   function fetchWeather() {
@@ -630,6 +688,115 @@ ShellRoot {
         clipboardProcess.running = true
       }
     }
+  }
+
+  Process {
+    id: appDiscoveryLoader
+    command: [
+      "python3",
+      "-c",
+      "import json, os, glob, configparser\n"
+        + "home = os.path.expanduser('~')\n"
+        + "username = os.path.basename(home.rstrip(os.sep)) or os.environ.get('USER', '')\n"
+        + "xdg_data_home = os.environ.get('XDG_DATA_HOME', os.path.join(home, '.local', 'share'))\n"
+        + "base_dirs = set([\n"
+        + "    os.path.join(home, '.local', 'share', 'applications'),\n"
+        + "    os.path.join(home, '.nix-profile', 'share', 'applications'),\n"
+        + "    os.path.join(xdg_data_home, 'applications'),\n"
+        + "    '/usr/share/applications',\n"
+        + "    '/usr/local/share/applications',\n"
+        + "    '/run/current-system/sw/share/applications'\n"
+        + "])\n"
+        + "xdg_data_dirs = os.environ.get('XDG_DATA_DIRS', '')\n"
+        + "for part in xdg_data_dirs.split(':'):\n"
+        + "    part = part.strip()\n"
+        + "    if part:\n"
+        + "        base_dirs.add(os.path.join(part, 'applications'))\n"
+        + "if username:\n"
+        + "    base_dirs.add(os.path.join('/etc/profiles/per-user', username, 'share', 'applications'))\n"
+        + "entries = []\n"
+        + "for d in sorted(base_dirs):\n"
+        + "    if not os.path.isdir(d):\n"
+        + "        continue\n"
+        + "    for path in glob.glob(os.path.join(d, '**', '*.desktop'), recursive=True):\n"
+        + "        parser = configparser.ConfigParser(interpolation=None)\n"
+        + "        try:\n"
+        + "            parser.read(path, encoding='utf-8')\n"
+        + "        except Exception:\n"
+        + "            continue\n"
+        + "        if 'Desktop Entry' not in parser:\n"
+        + "            continue\n"
+        + "        entry = parser['Desktop Entry']\n"
+        + "        if entry.get('NoDisplay', '').lower() == 'true':\n"
+        + "            continue\n"
+        + "        name = entry.get('Name')\n"
+        + "        exec_cmd = entry.get('Exec')\n"
+        + "        if not name or not exec_cmd:\n"
+        + "            continue\n"
+        + "        comment = entry.get('Comment', '')\n"
+        + "        icon = entry.get('Icon', '')\n"
+        + "        entries.append({'name': name, 'exec': exec_cmd, 'comment': comment, 'icon': icon, 'path': path, 'directory': d})\n"
+        + "print(json.dumps(entries))"
+    ]
+
+    stdout: StdioCollector {
+      onStreamFinished: {
+        var raw = text.trim()
+        if (raw === "") {
+          root.appCatalog = []
+          root.appDataLoaded = true
+          root.updateAppFilter()
+          console.log("[app-discovery] loader returned empty dataset")
+          return
+        }
+
+        try {
+          var parsed = JSON.parse(raw)
+          var mapped = []
+          for (var i = 0; i < parsed.length; i++) {
+            var entry = parsed[i] || {}
+            var name = entry.name || entry.Name || ""
+            var exec = entry.exec || entry.Exec || ""
+            if (!name || !exec) continue
+            var comment = entry.comment || entry.Comment || ""
+            mapped.push({
+              name: name,
+              lowerName: name.toLowerCase(),
+              exec: exec,
+              cleanedExec: root.cleanExecCommand(exec),
+              comment: comment,
+              lowerComment: comment ? comment.toLowerCase() : "",
+              icon: entry.icon || entry.Icon || "",
+              path: entry.path || entry.Path || ""
+            })
+          }
+          mapped.sort(function(a, b) { return a.lowerName.localeCompare(b.lowerName) })
+          root.appCatalog = mapped
+          root.appDataLoaded = true
+          root.updateAppFilter()
+          console.log("[app-discovery] parsed " + mapped.length + " entries")
+        } catch(e) {
+          console.log("[app-discovery] JSON parse error: " + e)
+          root.appCatalog = []
+          root.appDataLoaded = true
+          root.updateAppFilter()
+        }
+      }
+    }
+
+    onExited: function(exitCode, exitStatus) {
+      if (exitCode !== 0) {
+        console.log("[app-discovery] loader exited with code " + exitCode)
+        if (!root.appDataLoaded) {
+          root.appDataLoaded = true
+          root.updateAppFilter()
+        }
+      }
+    }
+  }
+
+  Process {
+    id: appLaunchProcess
   }
 
   // CPU Temperature monitoring via thermal zone - robust implementation
@@ -1326,6 +1493,80 @@ ShellRoot {
                 font.family: "JetBrains Mono"
                 color: root.volumeMuted ? root.subTextColor : root.textColor
               }
+            }
+          }
+
+          Item { Layout.fillWidth: true }
+
+          Rectangle {
+            width: 1
+            height: 40
+            color: root.borderColor
+            opacity: 0.3
+          }
+
+          Rectangle {
+            id: appDiscoveryButton
+            Layout.preferredWidth: 160
+            Layout.alignment: Qt.AlignVCenter
+            height: 40
+            radius: 4
+            property bool hovered: false
+            color: hovered ? Qt.rgba(0.651, 0.753, 0.575, 0.18) : Qt.rgba(0.651, 0.753, 0.575, 0.08)
+            border.width: 1
+            border.color: hovered ? Qt.rgba(0.651, 0.753, 0.575, 0.45) : Qt.rgba(0.651, 0.753, 0.575, 0.3)
+
+            RowLayout {
+              anchors.fill: parent
+              anchors.margins: 12
+              spacing: 10
+
+              Rectangle {
+                width: 24
+                height: 24
+                radius: 3
+                color: Qt.rgba(0, 0, 0, 0.25)
+
+                Label {
+                  anchors.centerIn: parent
+                  text: "󰍉"
+                  font.pixelSize: 14
+                  font.family: "JetBrainsMono Nerd Font"
+                  color: root.accentColor
+                }
+              }
+
+              ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 0
+
+                Label {
+                  text: "APP DISCOVERY"
+                  font.pixelSize: 10
+                  font.weight: Font.Bold
+                  font.family: "JetBrains Mono"
+                  color: root.textColor
+                  elide: Text.ElideRight
+                }
+
+                Label {
+                  text: "Search installed apps"
+                  font.pixelSize: 8
+                  font.family: "JetBrains Mono"
+                  color: root.subTextColor
+                  opacity: 0.7
+                  elide: Text.ElideRight
+                }
+              }
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              hoverEnabled: true
+              cursorShape: Qt.PointingHandCursor
+              onEntered: appDiscoveryButton.hovered = true
+              onExited: appDiscoveryButton.hovered = false
+              onClicked: appDiscoveryWindow.toggleVisibility()
             }
           }
         }
@@ -2336,5 +2577,404 @@ ShellRoot {
         }
       }
     } // end of main row
+  }
+
+  PanelWindow {
+    id: appDiscoveryWindow
+    color: "transparent"
+    focusable: true
+    visible: false
+    exclusionMode: ExclusionMode.Ignore
+    implicitWidth: 520
+    implicitHeight: 620
+
+    Keys.onEscapePressed: hide()
+    Keys.onPressed: function(event) {
+      if (handleNavigationKey(event)) {
+        event.accepted = true
+      }
+    }
+
+    function handleNavigationKey(event) {
+      if (!visible || !event || typeof event.key !== "number" || !appList) return false
+      var key = event.key
+      var count = root.appFilteredApps.length
+      if (key === Qt.Key_Return || key === Qt.Key_Enter) {
+        if (root.appSelectedIndex >= 0 && root.appSelectedIndex < count) {
+          root.launchApp(root.appFilteredApps[root.appSelectedIndex])
+        }
+        return true
+      }
+      if (count <= 0) return false
+
+      var current = root.appSelectedIndex >= 0 ? root.appSelectedIndex : 0
+      var step = Math.max(1, Math.floor(appList.height / 52))
+
+      switch (key) {
+        case Qt.Key_Down: {
+          var next = Math.min(current + 1, count - 1)
+          if (next !== root.appSelectedIndex) {
+            root.appSelectedIndex = next
+          } else {
+            appList.positionViewAtIndex(next, ListView.Contain)
+          }
+          return true
+        }
+        case Qt.Key_Up: {
+          var prev = Math.max(current - 1, 0)
+          if (prev !== root.appSelectedIndex) {
+            root.appSelectedIndex = prev
+          } else {
+            appList.positionViewAtIndex(prev, ListView.Contain)
+          }
+          return true
+        }
+        case Qt.Key_PageDown: {
+          var downIndex = Math.min(current + step, count - 1)
+          if (downIndex !== root.appSelectedIndex) {
+            root.appSelectedIndex = downIndex
+          } else {
+            appList.positionViewAtIndex(downIndex, ListView.Contain)
+          }
+          return true
+        }
+        case Qt.Key_PageUp: {
+          var upIndex = Math.max(current - step, 0)
+          if (upIndex !== root.appSelectedIndex) {
+            root.appSelectedIndex = upIndex
+          } else {
+            appList.positionViewAtIndex(upIndex, ListView.Contain)
+          }
+          return true
+        }
+        case Qt.Key_Home: {
+          if (root.appSelectedIndex !== 0) {
+            root.appSelectedIndex = 0
+          } else {
+            appList.positionViewAtIndex(0, ListView.Beginning)
+          }
+          return true
+        }
+        case Qt.Key_End: {
+          var last = count - 1
+          if (root.appSelectedIndex !== last) {
+            root.appSelectedIndex = last
+          } else {
+            appList.positionViewAtIndex(last, ListView.End)
+          }
+          return true
+        }
+        default:
+          return false
+      }
+    }
+
+    function toggleVisibility() {
+      if (visible) {
+        hide()
+      } else {
+        show()
+      }
+    }
+
+    function show() {
+      if (!visible) {
+        root.ensureAppDataLoaded()
+        visible = true
+      }
+    }
+
+    function hide() {
+      if (visible) {
+        visible = false
+      }
+    }
+
+    onVisibleChanged: {
+      if (visible) {
+        root.ensureAppDataLoaded()
+        root.appSearchTerm = ""
+        Qt.callLater(function() {
+          searchField.forceActiveFocus()
+          searchField.selectAll()
+        })
+      }
+    }
+
+    Component.onCompleted: {
+      try {
+        var targetScreen = Quickshell.primaryScreen
+        if (targetScreen && targetScreen.geometry) {
+          var screenWidth = targetScreen.geometry.width
+          var screenHeight = targetScreen.geometry.height
+          if (screenWidth > 0 && screenHeight > 0) {
+            x = Math.max(0, (screenWidth - implicitWidth) / 2)
+            y = Math.max(0, (screenHeight - implicitHeight) / 3)
+            console.log("[app-discovery] window positioned at (" + x + ", " + y + ")")
+          }
+        }
+      } catch(e) {
+        console.log("[app-discovery] positioning error", e)
+      }
+    }
+
+    Rectangle {
+      anchors.fill: parent
+      radius: 8
+      color: root.primaryColor
+      border.width: 2
+      border.color: root.borderColor
+
+      Rectangle {
+        anchors.fill: parent
+        anchors.margins: -8
+        radius: parent.radius + 4
+        color: Qt.rgba(0, 0, 0, 0.28)
+        z: -1
+        opacity: 0.7
+      }
+
+      ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 20
+        spacing: 12
+
+        RowLayout {
+          Layout.fillWidth: true
+          spacing: 8
+
+          Label {
+            text: "APP DISCOVERY"
+            font.pixelSize: 14
+            font.weight: Font.Bold
+            font.family: "JetBrains Mono"
+            font.letterSpacing: 1
+            color: root.textColor
+          }
+
+          Item { Layout.fillWidth: true }
+
+          Rectangle {
+            width: 28
+            height: 28
+            radius: 4
+            color: Qt.rgba(0.651, 0.753, 0.575, 0.08)
+            border.width: 1
+            border.color: Qt.rgba(0.651, 0.753, 0.575, 0.3)
+
+            Label {
+              anchors.centerIn: parent
+              text: "󰑓"
+              font.pixelSize: 14
+              font.family: "JetBrainsMono Nerd Font"
+              color: root.accentColor
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: {
+                root.appDataLoaded = false
+                root.appCatalog = []
+                root.ensureAppDataLoaded()
+              }
+            }
+          }
+        }
+
+        TextField {
+          id: searchField
+          Layout.fillWidth: true
+          placeholderText: "Search applications…"
+          text: root.appSearchTerm
+          color: root.textColor
+          selectionColor: root.accentColor
+          selectedTextColor: root.primaryColor
+          font.family: "JetBrains Mono"
+          font.pixelSize: 12
+          onTextChanged: {
+            if (root.appSearchTerm !== text) {
+              root.appSearchTerm = text
+            }
+          }
+          Keys.onPressed: function(event) {
+            if (appDiscoveryWindow.handleNavigationKey(event)) {
+              event.accepted = true
+            }
+          }
+
+          background: Rectangle {
+            radius: 4
+            color: Qt.rgba(0, 0, 0, 0.2)
+            border.width: 1
+            border.color: Qt.rgba(1, 1, 1, 0.08)
+          }
+        }
+
+        StackLayout {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          currentIndex: root.appDataLoaded ? (root.appFilteredApps.length > 0 ? 2 : 1) : 0
+
+          Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+              anchors.centerIn: parent
+              spacing: 8
+
+              BusyIndicator {
+                running: true
+                implicitWidth: 32
+                implicitHeight: 32
+              }
+
+              Label {
+                text: "Loading applications…"
+                font.pixelSize: 10
+                font.family: "JetBrains Mono"
+                color: root.subTextColor
+              }
+            }
+          }
+
+          Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+              anchors.centerIn: parent
+              spacing: 6
+
+              Label {
+                text: root.appSearchTerm.length > 0 ? "No matches" : "No applications found"
+                font.pixelSize: 12
+                font.weight: Font.Bold
+                font.family: "JetBrains Mono"
+                color: root.subTextColor
+              }
+
+              Label {
+                text: root.appSearchTerm.length > 0 ? "Try a different query" : "Install applications to populate the list"
+                font.pixelSize: 9
+                font.family: "JetBrains Mono"
+                color: root.subTextColor
+                opacity: 0.7
+              }
+            }
+          }
+
+          ListView {
+            id: appList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            model: root.appFilteredApps
+            clip: true
+            spacing: 6
+            boundsBehavior: Flickable.StopAtBounds
+            keyNavigationWraps: false
+            preferredHighlightBegin: 0
+            preferredHighlightEnd: height
+            highlightFollowsCurrentItem: false
+            ScrollBar.vertical: ScrollBar { }
+
+            delegate: Rectangle {
+              required property var modelData
+              width: ListView.view ? ListView.view.width : parent ? parent.width : 0
+              height: 52
+              radius: 4
+              color: index === appList.currentIndex ? Qt.rgba(0.651, 0.753, 0.575, 0.18) : Qt.rgba(1, 1, 1, 0.03)
+              border.width: 1
+              border.color: index === appList.currentIndex ? Qt.rgba(0.651, 0.753, 0.575, 0.35) : Qt.rgba(1, 1, 1, 0.08)
+
+              RowLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 12
+
+                Rectangle {
+                  width: 28
+                  height: 28
+                  radius: 4
+                  color: Qt.rgba(0, 0, 0, 0.35)
+
+                  Label {
+                    anchors.centerIn: parent
+                    text: modelData.name ? modelData.name.charAt(0).toUpperCase() : "?"
+                    font.pixelSize: 14
+                    font.weight: Font.Bold
+                    font.family: "JetBrains Mono"
+                    color: root.textColor
+                  }
+                }
+
+                ColumnLayout {
+                  Layout.fillWidth: true
+                  spacing: 2
+
+                  Label {
+                    text: modelData.name
+                    font.pixelSize: 12
+                    font.weight: Font.Bold
+                    font.family: "JetBrains Mono"
+                    color: root.textColor
+                    elide: Text.ElideRight
+                  }
+
+                  Label {
+                    visible: modelData.comment && modelData.comment.length > 0
+                    text: modelData.comment
+                    font.pixelSize: 10
+                    font.family: "JetBrains Mono"
+                    color: root.subTextColor
+                    opacity: 0.8
+                    elide: Text.ElideRight
+                  }
+                }
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onEntered: {
+                  appList.currentIndex = index
+                }
+                onClicked: {
+                  if (appList.currentIndex !== index) {
+                    appList.currentIndex = index
+                  } else {
+                    root.launchApp(modelData)
+                  }
+                }
+                onDoubleClicked: root.launchApp(modelData)
+              }
+            }
+
+            onCurrentIndexChanged: {
+              if (root.appSelectedIndex !== currentIndex) {
+                root.appSelectedIndex = currentIndex
+              }
+            }
+
+            function ensureIndexVisible(index) {
+              if (index < 0) return
+              positionViewAtIndex(index, ListView.Contain)
+            }
+          }
+        }
+
+        Connections {
+          target: root
+          function onAppSelectedIndexChanged() {
+            if (root.appSelectedIndex !== appList.currentIndex) {
+              appList.currentIndex = root.appSelectedIndex
+              appList.ensureIndexVisible(root.appSelectedIndex)
+            }
+          }
+        }
+      }
+    }
   }
 }
