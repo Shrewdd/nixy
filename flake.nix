@@ -28,5 +28,11 @@
           }
         ];
       };
+      nixosConfigurations.nomad = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ./hosts/nomad/configuration.nix
+        ];
+      };
     };
 }
