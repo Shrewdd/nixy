@@ -6,9 +6,12 @@
   # SYSTEM PACKAGES
   #######################
   environment.systemPackages = with pkgs; [
-    librewolf
-    vscode
-    ghostty
+  librewolf; # privacy-focused browser
+  vscode; # code editor
+  ghostty; # terminal emulator
+  
+  # GNOME EXTENSIONS!
+  gnomeExtensions.appindicator; # GNOME tray extension for system tray icons
   ];
 
   #######################
@@ -26,5 +29,6 @@
   programs.zoom-us = {
     enable = true;
   };
+
 
 }
