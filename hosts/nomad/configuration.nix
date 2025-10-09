@@ -20,6 +20,8 @@
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+    # Enable flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   #######################
   # Nix-Helper
@@ -102,15 +104,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
-  programs.git.enable = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vscode
-    librewolf
-  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
