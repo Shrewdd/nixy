@@ -99,6 +99,7 @@
     description = "km";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
+      tree
     #  thunderbird
     ];
   };

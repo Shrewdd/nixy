@@ -11,7 +11,7 @@
     ghostty # terminal
   
   # GNOME EXTENSIONS!
-  gnomeExtensions.appindicator; # GNOME tray extension for system tray icons
+  gnomeExtensions.appindicator # GNOME tray extension for system tray icons
   ];
 
   #######################
