@@ -9,14 +9,15 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Display Manager (GDM)
-  services.xserver.displayManager.gdm.enable = true;
+  services.displayManager.gdm.enable = true;
 
   # Enable the GNOME Desktop Environment
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Exclude unwanted GNOME apps
-  environment.gnome.excludePackages = with pkgs.gnome; [
+  environment.gnome.excludePackages = with pkgs; [
     gnome-tour
+    epiphany
   ];
 
   # Keyboard layout settings for X11 and console

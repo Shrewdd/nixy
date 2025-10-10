@@ -9,9 +9,7 @@
     librewolf # browser
     vscode # code editor
     ghostty # terminal
-  
-  # GNOME EXTENSIONS!
-  gnomeExtensions.appindicator # GNOME tray extension for system tray icons
+    gnomeExtensions.appindicator # System tray extension
   ];
 
   #######################
