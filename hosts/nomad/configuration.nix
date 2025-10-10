@@ -26,16 +26,6 @@
     # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  #######################
-  # Nix-Helper
-  #######################
-  programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/km/nixy";
-  };
-
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -56,13 +46,6 @@
     LC_TELEPHONE = "pl_PL.UTF-8";
     LC_TIME = "pl_PL.UTF-8";
   };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.km = {
