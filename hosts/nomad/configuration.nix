@@ -11,6 +11,7 @@
       ./modules/packages.nix
       ./modules/display.nix
       ./modules/audio.nix
+      ./modules/services.nix
     ];
 
   # Bootloader.
