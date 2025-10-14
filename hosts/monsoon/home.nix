@@ -4,7 +4,6 @@
   imports = [
     ./../../home-manager/hyprland/default.nix
     ./../../home-manager/hyprland/hyprpaper/default.nix
-    ./../../home-manager/quickshell/default.nix
     ./../../home-manager/zen-browser/default.nix
     ./../../home-manager/git/default.nix
     ./../../home-manager/spotify/default.nix
@@ -17,6 +16,7 @@
     ./../../home-manager/shell/fastfetch/default.nix
     ./../../home-manager/shell/starship/default.nix
     ./../../home-manager/gtk/default.nix
+    ./../../home-manager/waybar/default.nix
   ];
 
   home.username = "km";
@@ -26,7 +26,6 @@
   home.packages = with pkgs; [
     vesktop
     vscode
-    hyprpolkitagent
   ];
 
   programs.home-manager.enable = true;

@@ -23,7 +23,7 @@ in
       # Applications to run automatically when Hyprland starts
       "exec-once" = [
         "systemctl --user start hyprpolkitagent"  # Polkit authentication agent
-        "wl-paste --watch cliphist store"         # Cliphist daemon for clipboard history
+        "waybar"                                  # Status bar
       ];
 
       # ===================================

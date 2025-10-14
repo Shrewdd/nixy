@@ -83,11 +83,9 @@
   # Services & Programs
   #######################
   services.flatpak.enable = true;
-  # Audio stack moved to ./modules/audio.nix
 
   # GNOME Keyring (password/key storage)
   services.gnome.gnome-keyring.enable = true;
-
   services.tumbler.enable = true;
   services.gvfs.enable = true;
   services.printing = {

@@ -9,16 +9,16 @@
     nerd-fonts.symbols-only
   ];
 
-  #######################
-  # SYSTEM PACKAGES
-  #######################
+  ##########################
+  # APPLICATIONS & UTILITIES
+  ##########################
   environment.systemPackages = with pkgs; [
     pavucontrol                # Audio control
     playerctl                  # Media player control
     jq                         # JSON processor
     curl                       # Data transfer tool
     brightnessctl              # Screen brightness
-    libsecret                  # Secret storage
+    libsecret                  # Secrets storage
     seahorse                   # GNOME key manager
     xarchiver                  # Archive manager
     appimage-run               # AppImage support
@@ -28,13 +28,13 @@
     libnotify                  # Desktop notifications
     grimblast                  # Screenshot utility
     wl-clipboard               # Wayland clipboard (required by cliphist)
-    cliphist                   # Clipboard history manager
+    hyprpolkitagent            # Hyprland polkit agent
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
   ];
 
-  #######################
-  # PROGRAMS
-  #######################
+  ###########################
+  # APPLICATIONS WITH OPTIONS
+  ###########################
   programs.localsend = {
     enable = true;
     openFirewall = true;
