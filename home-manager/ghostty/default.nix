@@ -4,7 +4,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      theme = "Everforest Dark   Hard";
+      theme = "Everforest Dark Hard";
       background-blur-radius = 20;
       font-family = "Maple Mono NF";
       font-feature = [ "+ss02" "+ss03" "+ss05" "+ss07" ];
