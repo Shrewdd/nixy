@@ -92,4 +92,28 @@
     enable = true;
     drivers = [ pkgs.cups-filters ];
   };
+
+  xdg.mime.defaultApplications = {
+      "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
+  };
+
+  xdg.portal = {
+      enable = true;
+      wlr.enable = true;
+      config = {
+        hyprland = {
+          default = [
+            "hyprland"
+            "gtk"
+          ];
+        };
+        common = {
+          default = [
+            "gtk"
+          ];
+        };
+      };
+      extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
+    };
+  services.dbus.enable = true;
 }

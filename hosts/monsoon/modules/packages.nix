@@ -29,6 +29,7 @@
     grimblast                  # Screenshot utility
     wl-clipboard               # Wayland clipboard (required by cliphist)
     hyprpolkitagent            # Hyprland polkit agent
+    rojo                       # Roblox development tool
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
   ];
 
