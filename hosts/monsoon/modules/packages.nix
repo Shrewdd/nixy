@@ -30,6 +30,7 @@
     wl-clipboard               # Wayland clipboard (required by cliphist)
     hyprpolkitagent            # Hyprland polkit agent
     rojo                       # Roblox development tool
+    lshw
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
   ];
 

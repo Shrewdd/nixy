@@ -95,25 +95,6 @@
 
   xdg.mime.defaultApplications = {
       "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
+      "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
   };
-
-  xdg.portal = {
-      enable = true;
-      wlr.enable = true;
-      config = {
-        hyprland = {
-          default = [
-            "hyprland"
-            "gtk"
-          ];
-        };
-        common = {
-          default = [
-            "gtk"
-          ];
-        };
-      };
-      extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
-    };
-  services.dbus.enable = true;
 }

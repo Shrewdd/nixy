@@ -159,6 +159,9 @@ in
         # Wallpaper changer
         "$mainMod, W, exec, bash /home/km/nixy/home-manager/hyprland/hyprpaper/change-wallpaper.sh"
         
+        # Focus Roblox Studio (to refocus when unfocused)
+        "$mainMod, R, focuswindow, class:robloxstudiobeta.exe"
+        
         # Screenshot functionality
         "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"  # Full screen
         ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"         # Area selection
@@ -228,6 +231,9 @@ in
         # Additional application border colors
         "bordercolor ${theme.rgb.red}, class:(.*steam.*)"      # Steam: red
         "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)"   # Thunar: peach
+        
+        # Keep Roblox Studio fully opaque (no background visible)
+        "opacity 1.0 1.0, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
         
         # Opacity settings for different window types
         "opacity 0.9 0.9, class:(.*terminal.*)"              # Slightly transparent terminals
