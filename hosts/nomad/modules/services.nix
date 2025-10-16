@@ -15,4 +15,9 @@
   services.libinput = {
     enable = true;
   };
+
+  # Enable flatpak just in case
+  services.flatpak = {
+    enable = true;
+  };
 }
