@@ -9,18 +9,23 @@
   # GRAPHICS HARDWARE
   # ===================================
   # Enable graphics support and NVIDIA drivers
-  hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
+   hardware.graphics.enable = true;
+   services.xserver.videoDrivers = [ "nvidia" ];
 
   # NVIDIA-specific configuration
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
+   hardware.nvidia = {
+     modesetting.enable = true;
+     powerManagement.enable = false;
+     powerManagement.finegrained = false;
+     open = false;
+     nvidiaSettings = true;
+     package = config.boot.kernelPackages.nvidiaPackages.stable;
+     prime = {
+       sync.enable = true;
+       nvidiaBusId = "PCI:1:0:0";
+       intelBusId = "PCI:0:2:0";
+     };
+   };
 
   # ===================================
   # DISPLAY MANAGER
