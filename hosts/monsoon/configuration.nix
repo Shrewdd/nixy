@@ -83,15 +83,37 @@
   # Services & Programs
   #######################
   services.flatpak.enable = true;
-  # Audio stack moved to ./modules/audio.nix
 
   # GNOME Keyring (password/key storage)
   services.gnome.gnome-keyring.enable = true;
-
   services.tumbler.enable = true;
   services.gvfs.enable = true;
   services.printing = {
     enable = true;
     drivers = [ pkgs.cups-filters ];
   };
+
+  xdg.mime.defaultApplications = {
+      "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
+  };
+
+  xdg.portal = {
+      enable = true;
+      wlr.enable = true;
+      config = {
+        hyprland = {
+          default = [
+            "hyprland"
+            "gtk"
+          ];
+        };
+        common = {
+          default = [
+            "gtk"
+          ];
+        };
+      };
+      extraPortals = [pkgs.kdePackages.xdg-desktop-portal-kde];
+    };
+  services.dbus.enable = true;
 }
