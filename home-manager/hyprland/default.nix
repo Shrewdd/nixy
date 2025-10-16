@@ -160,7 +160,7 @@ in
         "$mainMod, W, exec, bash /home/km/nixy/home-manager/hyprland/hyprpaper/change-wallpaper.sh"
         
         # Focus Roblox Studio (to refocus when unfocused)
-        "$mainMod, R, focuswindow, class:robloxstudiobeta.exe"
+        "$mainMod, R, focuswindow, class:robloxstudiobeta.exe,title:.* - Roblox Studio$"
         
         # Screenshot functionality
         "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"  # Full screen
@@ -228,16 +228,18 @@ in
       # ===================================
       # More specific window rules with additional properties
       windowrulev2 = [
-        # Additional application border colors
-        "bordercolor ${theme.rgb.red}, class:(.*steam.*)"      # Steam: red
-        "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)"   # Thunar: peach
-        
-        # Keep Roblox Studio fully opaque (no background visible)
-        "opacity 1.0 1.0, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
-        
-        # Opacity settings for different window types
-        "opacity 0.9 0.9, class:(.*terminal.*)"              # Slightly transparent terminals
-        "opacity 0.95 0.95, class:(.*)"                      # Subtle transparency for all windows
+    # Additional application border colors
+    "bordercolor ${theme.rgb.red}, class:(.*steam.*)"      # Steam: red
+    "bordercolor ${theme.rgb.peach}, class:(.*thunar.*)"   # Thunar: peach
+
+    # Opacity settings for different window types
+    "opacity 0.9 0.9, class:(.*terminal.*)"              # Slightly transparent terminals
+    "opacity 0.95 0.95, class:(.*)"                      # Subtle transparency for all windows
+
+    # Keep Roblox Studio fully opaque (no background visible)
+    "opacity 1.0 1.0, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
+    # Prevent blur behind Roblox Studio (helps context menus render correctly)
+    "noblur, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
       ];
 
       # ===================================
