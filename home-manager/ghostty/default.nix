@@ -15,7 +15,7 @@
       cursor-invert-fg-bg = false;
       gtk-single-instance = true;
       window-theme = "system";
-      gtk-titlebar = false;
+      gtk-titlebar = true;
       gtk-wide-tabs = false;
       macos-titlebar-style = "hidden";
       macos-option-as-alt = true;
