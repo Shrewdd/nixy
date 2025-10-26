@@ -7,11 +7,7 @@ in
 
   programs.spicetify = {
     enable = true;
-
-    # Everforest theme
-    theme = spicePkgs.themes.text;
-    colorScheme = "EverforestDarkMedium";
-
+    # Extensions
     enabledExtensions = with spicePkgs.extensions; [
       adblockify
       fullAppDisplay
