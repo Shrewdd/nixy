@@ -1,13 +1,9 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, lib, ... }:
 {
-  #######################
-  # DISPLAY MANAGEMENT & GRAPHICS
-  #######################
+  ####################################
+  # DISPLAY MANAGEMENT & GNOME DESKTOP
+  ####################################
 
-  # ===================================
-  # GRAPHICS HARDWARE
-  # ===================================
   # Enable graphics support and NVIDIA drivers
    hardware.graphics.enable = true;
    services.xserver.videoDrivers = [ "nvidia" ];
@@ -27,31 +23,12 @@
      };
    };
 
-  # ===================================
-  # DISPLAY MANAGER
-  # ===================================
-  # SDDM configuration
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    theme = "sddm-astronaut-theme";
-    package = pkgs.kdePackages.sddm;
-    extraPackages = with pkgs; [
-      qt6Packages.qtmultimedia
-      qt6Packages.qtsvg
-      qt6Packages.qtvirtualkeyboard
-    ];
-  };
+  # Enable the COSMIC Display Manager (GDM)
+  services.displayManager.cosmic-greeter.enable = true;
 
-  # ===================================
-  # WINDOW MANAGER (HYPRLAND)
-  # ===================================
-  # Hyprland Configuration
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
+  # Enable the COSMIC Desktop Environment
+  services.desktopManager.cosmic.enable = true;
+
 
   # ===================================
   # INPUT CONFIGURATION

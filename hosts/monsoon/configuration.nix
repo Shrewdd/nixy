@@ -83,11 +83,6 @@
   # Services & Programs
   #######################
   services.flatpak.enable = true;
-
-  # GNOME Keyring (password/key storage)
-  services.gnome.gnome-keyring.enable = true;
-  services.tumbler.enable = true;
-  services.gvfs.enable = true;
   services.printing = {
     enable = true;
     drivers = [ pkgs.cups-filters ];
