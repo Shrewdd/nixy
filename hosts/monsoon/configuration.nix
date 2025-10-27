@@ -26,16 +26,6 @@
   home-manager.backupFileExtension = "backup";
 
   #######################
-  # Nix-Helper
-  #######################
-  programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/km/nixy";
-  };
-
-  #######################
   # Hostname & Networking
   #######################
   networking.hostName = "monsoon";
