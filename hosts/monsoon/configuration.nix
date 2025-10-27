@@ -85,11 +85,5 @@
   services.flatpak.enable = true;
   services.printing = {
     enable = true;
-    drivers = [ pkgs.cups-filters ];
-  };
-
-  xdg.mime.defaultApplications = {
-      "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
-      "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
   };
 }
