@@ -20,6 +20,8 @@
     kdePackages.gwenview       # Image viewer
     rojo                       # Roblox development tool
     lshw                       # PCIe Hardware info
+    simple-scan                # Document Scanner
+    papers                     # Document Viewer
   ];
 
   # ===================================
