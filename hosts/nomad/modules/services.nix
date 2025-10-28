@@ -1,23 +1,28 @@
 { pkgs, ... }:
 
 {
-  # GNOME AppIndicator tray support
+  # ===================================
+  # Services Configuration
+  # ===================================
+
+  # GNOME AppIndicator / udev helpers (desktop integrations)
   services.udev = {
     packages = [ pkgs.gnome-settings-daemon ];
   };
 
-  # Enable CUPS to print documents.
+  # Enable CUPS to print documents
   services.printing = {
     enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
+  # Enable touchpad support (libinput)
   services.libinput = {
     enable = true;
   };
 
-  # Enable flatpak just in case
+  # Enable flatpak support
   services.flatpak = {
     enable = true;
   };
+
 }

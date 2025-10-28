@@ -1,20 +1,19 @@
 { pkgs, ... }:
 
 {
-
-  #######################
+  # ===================================
   # SYSTEM PACKAGES
-  #######################
+  # ===================================
   environment.systemPackages = with pkgs; [
-    librewolf # browser
-    vscode # code editor
-    ghostty # terminal
-    gnomeExtensions.appindicator # System tray extension
+    librewolf                  # browser
+    vscode                     # code editor
+    ghostty                    # terminal
+    gnomeExtensions.appindicator # system tray extension
   ];
 
-  #######################
-  # PROGRAMS
-  #######################
+  # ===================================
+  # PROGRAMS WITH OPTIONS
+  # ===================================
   programs.localsend = {
     enable = true;
     openFirewall = true;
@@ -34,6 +33,5 @@
     clean.extraArgs = "--keep-since 4d --keep 3";
     flake = "/home/km/nixy";
   };
-
 
 }

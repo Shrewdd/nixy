@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  ####################################
+  # ===================================
   # DISPLAY MANAGEMENT & GNOME DESKTOP
-  ####################################
+  # ===================================
 
   # Enable the X11 windowing system
   services.xserver.enable = true;
@@ -20,11 +20,15 @@
     epiphany
   ];
 
+  # ===================================
+  # INPUT CONFIGURATION
+  # ===================================
   # Keyboard layout settings for X11 and console
   services.xserver.xkb = {
     layout = "pl";
     variant = "";
   };
-  
+
   console.keyMap = "pl2";
+
 }
