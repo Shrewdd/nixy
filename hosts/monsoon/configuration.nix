@@ -60,6 +60,11 @@
   # ===================================
   nixpkgs.config.allowUnfree = true;
 
+  xdg.mime.defaultApplications = {
+    "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
+    "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
+  };
+
 
   # ===================================
   # System state version
