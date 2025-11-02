@@ -21,6 +21,7 @@
     lshw                       # PCIe Hardware info
     simple-scan                # Document Scanner
     papers                     # Document Viewer
+    speedtest-cli              # Internet speed test
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
     wally                      # Roblox Package Manager
