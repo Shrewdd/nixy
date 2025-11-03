@@ -22,6 +22,7 @@
     simple-scan                # Document Scanner
     papers                     # Document Viewer
     speedtest-cli              # Internet speed test
+    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
     wally                      # Roblox Package Manager

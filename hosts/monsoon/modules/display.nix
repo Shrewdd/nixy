@@ -2,7 +2,7 @@
 
 {
   # ===================================
-  # DISPLAY MANAGEMENT & GNOME DESKTOP
+  # DISPLAY MANAGEMENT
   # ===================================
 
   # Enable graphics support and NVIDIA drivers
@@ -24,12 +24,23 @@
     };
   };
 
-  # Enable the COSMIC Display Manager (Cosmic greeter)
-  services.displayManager.cosmic-greeter.enable = true;
+  # Enable SDDM with preset theme
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    theme = "sddm-astronaut-theme";
+    package = pkgs.kdePackages.sddm;
+    extraPackages = with pkgs; [
+      qt6Packages.qtmultimedia
+      qt6Packages.qtsvg
+      qt6Packages.qtvirtualkeyboard
+    ];
+  };
 
   # Enable the COSMIC Desktop Environment
   services.desktopManager.cosmic.enable = true;
-
+  # Enable NIRI Wayland compositor
+  programs.niri.enable = true;
 
   # ===================================
   # INPUT CONFIGURATION
