@@ -3,7 +3,7 @@
   programs.zsh = {
     enable = true;
     # Basic zsh config
-    initExtra = ''
+    initContent = ''
       # Add any custom zsh init here
     '';
   };
