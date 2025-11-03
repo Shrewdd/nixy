@@ -20,6 +20,7 @@
         inherit system;
         modules = [
           ./hosts/monsoon/configuration.nix
+          niri.nixosModules.niri
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inputs = self.inputs; };

@@ -2,6 +2,6 @@
 
 {
   imports = [
-    # monsoon specific modules here
+    ./niri/default.nix
   ];
 }
