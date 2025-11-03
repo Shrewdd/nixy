@@ -24,6 +24,11 @@
       };
 
       # ===================================
+      # ENVIRONMENT VARIABLES
+      # ===================================
+      environment."NIXOS_OZONE_WL" = "1";
+
+      # ===================================
       # HOTKEY BINDINGS
       # ===================================
       binds = with config.lib.niri.actions; {
