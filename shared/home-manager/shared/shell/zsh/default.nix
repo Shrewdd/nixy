@@ -2,6 +2,8 @@
 {
   programs.zsh = {
     enable = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
     # Basic zsh config
     initContent = ''
       # Add any custom zsh init here
