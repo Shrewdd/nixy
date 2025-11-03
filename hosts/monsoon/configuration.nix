@@ -11,6 +11,7 @@
     ./modules/audio.nix
     ./modules/services.nix
     ./modules/localization.nix
+    ./modules/flatpak.nix
   ];
 
   # ===================================

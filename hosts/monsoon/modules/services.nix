@@ -10,9 +10,4 @@
     enable = true;
   };
 
-  # Enable flatpak support
-  services.flatpak = {
-    enable = true;
-  };
-
 }
