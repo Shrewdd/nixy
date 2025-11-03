@@ -7,7 +7,7 @@
     ./git/default.nix
     ./rofi/default.nix
     ./shell/btop/default.nix
-    ./shell/fish/default.nix
+    ./shell/zsh/default.nix
     ./shell/fastfetch/default.nix
     ./spotify/default.nix
     ./zen-browser/default.nix

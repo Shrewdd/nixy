@@ -3,6 +3,7 @@
 {
   programs.ghostty = {
     enable = true;
+    enableZshIntegration = true;
     settings = {
       theme = "Everforest Dark Hard";
       background-blur-radius = 20;
@@ -27,7 +28,6 @@
       auto-update = "check";
       auto-update-channel = "stable";
       shell-integration-features = "no-cursor,no-sudo,no-title";
-      shell-integration = "fish";
     };
   };
 }
