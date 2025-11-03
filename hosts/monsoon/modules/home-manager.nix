@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./../../shared/home-manager/shared/default.nix
-    ./../../shared/home-manager/monsoon/default.nix
+    ./../../../shared/home-manager/shared/default.nix
+    ./../../../shared/home-manager/monsoon/default.nix
   ];
 
   home.username = "km";
