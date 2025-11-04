@@ -25,6 +25,12 @@
       };
 
       # ===================================
+      # APPLICATION FIXES
+      # ===================================
+      # Fixes launching and client-side decorations for apps like Spotify and Roblox
+      prefer-no-csd = true;
+
+      # ===================================
       # ENVIRONMENT VARIABLES
       # ===================================
       environment."NIXOS_OZONE_WL" = "1";
@@ -34,6 +40,7 @@
       # ===================================
       layout = {
         gaps = 8;
+        prefer-no-csd = true;
       };
 
       # ===================================
