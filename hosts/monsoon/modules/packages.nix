@@ -22,6 +22,8 @@
     simple-scan                # Document Scanner
     papers                     # Document Viewer
     speedtest-cli              # Internet speed test
+    nautilus                   # File manager
+    xwayland-satellite         # XWayland support for niri
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
