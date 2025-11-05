@@ -5,7 +5,6 @@
     ./anytype/default.nix
     ./ghostty/default.nix
     ./git/default.nix
-    ./rofi/default.nix
     ./shell/btop/default.nix
     ./shell/zsh/default.nix
     ./shell/fastfetch/default.nix

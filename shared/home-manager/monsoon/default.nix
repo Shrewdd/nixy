@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./niri/default.nix
-    ./fuzzel/default.nix
+    ./gtk/default.nix
   ];
 }

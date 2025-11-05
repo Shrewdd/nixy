@@ -19,12 +19,8 @@
     veracrypt                  # Disk encryption
     kdePackages.gwenview       # Image viewer
     lshw                       # PCIe Hardware info
-    simple-scan                # Document Scanner
-    papers                     # Document Viewer
     speedtest-cli              # Internet speed test
-    nautilus                   # File manager
-    xwayland-satellite         # XWayland support for niri
-    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
+    gnomeExtensions.appindicator # AppIndicator support for GNOME
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
     wally                      # Roblox Package Manager
@@ -33,23 +29,35 @@
   # ===================================
   # APPLICATIONS WITH OPTIONS
   # ===================================
+  programs.dconf = {
+    enable = true;
+  };
   programs.localsend = {
     enable = true;
     openFirewall = true;
   };
 
   programs.nh = {
-  enable = true;
-  clean.enable = true;
-  clean.extraArgs = "--keep-since 4d --keep 3";
-  flake = "/home/km/nixy";
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/km/nixy";
   };
 
   programs.zoom-us = {
-  enable = true;
+    enable = true;
   };
 
   programs.gamemode = {
     enable = true;
   };
+
+  # ===================================
+  # GNOME EXCLUSIONS
+  # ===================================
+  environment.gnome.excludePackages = (with pkgs; [
+    epiphany
+    geary
+    gnome-tour
+  ]);
 }

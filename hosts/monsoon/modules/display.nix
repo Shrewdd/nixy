@@ -23,24 +23,15 @@
       intelBusId = "PCI:0:2:0";
     };
   };
-
-  # Enable SDDM with preset theme
-  services.displayManager.sddm = {
+  
+  # Enable GNOME Display Manager
+  services.displayManager.gdm = {
     enable = true;
-    wayland.enable = true;
-    theme = "sddm-astronaut-theme";
-    package = pkgs.kdePackages.sddm;
-    extraPackages = with pkgs; [
-      qt6Packages.qtmultimedia
-      qt6Packages.qtsvg
-      qt6Packages.qtvirtualkeyboard
-    ];
+    wayland = true;
+    autoSuspend = true;
   };
-
-  # Enable the COSMIC Desktop Environment
-  services.desktopManager.cosmic.enable = true;
-  # Enable NIRI Wayland compositor
-  programs.niri.enable = true;
+  # Enable GNOME Desktop Environment
+  services.desktopManager.gnome.enable = true;
 
   # ===================================
   # INPUT CONFIGURATION
