@@ -1,22 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  # ===================================
-  # Services Configuration
-  # ===================================
-
-  # Enable CUPS to print documents.
-  services.printing = {
-    enable = true;
-  };
-
-  # Enable Avahi for mDNS resolution (.local names)
-  services.avahi = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  # Enable udev for GNOME DE
-  services.udev.packages = with pkgs; [ gnomeExtensions.appindicator ];
+  # This file was split into smaller shared modules under
+  # `../../shared/nixos/services/`. Host-unique udev settings were migrated
+  # into `hosts/monsoon/configuration.nix`.
 
 }

@@ -1,28 +1,8 @@
 { pkgs, ... }:
 
 {
-  # ===================================
-  # Services Configuration
-  # ===================================
-
-  # GNOME AppIndicator / udev helpers (desktop integrations)
-  services.udev = {
-    packages = [ pkgs.gnome-settings-daemon ];
-  };
-
-  # Enable CUPS to print documents
-  services.printing = {
-    enable = true;
-  };
-
-  # Enable touchpad support (libinput)
-  services.libinput = {
-    enable = true;
-  };
-
-  # Enable flatpak support
-  services.flatpak = {
-    enable = true;
-  };
+  # Services have been split into smaller shared modules under
+  # `../../shared/nixos/services/`. Host-unique configuration (udev,
+  # libinput) was migrated into `hosts/nomad/configuration.nix`.
 
 }

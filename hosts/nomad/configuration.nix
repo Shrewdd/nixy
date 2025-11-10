@@ -11,10 +11,12 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/packages.nix
-    ./modules/display.nix
-    ./modules/audio.nix
-    ./modules/services.nix
-    ./modules/localization.nix
+  ../../shared/nixos/display/common.nix
+  ../../shared/nixos/display/gnome.nix
+    ../../shared/nixos/services/printing.nix
+    ../../shared/nixos/services/flatpak.nix
+    ../../shared/nixos/localization.nix
+    ../../shared/nixos/audio.nix    
   ];
 
   # ===================================
@@ -34,6 +36,10 @@
   networking.hostName = "nomad";
   # Enable network manager
   networking.networkmanager.enable = true;
+
+  # Host-specific services
+  services.udev.packages = with pkgs; [ pkgs.gnome-settings-daemon ];
+  services.libinput.enable = true;
 
   # ===================================
   # Users

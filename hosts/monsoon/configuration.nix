@@ -6,11 +6,14 @@
   # ===================================
   imports = [
     ./hardware-configuration.nix
-    ./modules/display.nix
+  ../../shared/nixos/display/common.nix
+  ../../shared/nixos/display/gnome.nix
+  ./modules/nvidia.nix
     ./modules/packages.nix
-    ./modules/audio.nix
-    ./modules/services.nix
-    ./modules/localization.nix
+    ../../shared/nixos/audio.nix
+    ../../shared/nixos/services/printing.nix
+    ../../shared/nixos/services/avahi.nix
+    ../../shared/nixos/localization.nix
     ./modules/flatpak.nix
   ];
 
@@ -55,6 +58,9 @@
   # Hardware
   # ===================================
   hardware.bluetooth.enable = true;
+
+  # Host-specific udev packages (GNOME appindicator integration)
+  services.udev.packages = with pkgs; [ gnomeExtensions.appindicator ];
 
   # ===================================
   # Software policy

@@ -21,9 +21,13 @@
     lshw                       # PCIe Hardware info
     speedtest-cli              # Internet speed test
     gnomeExtensions.appindicator # AppIndicator support for GNOME
+    nixfmt
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
     wally                      # Roblox Package Manager
+    selene                     # Lua Linter
+    luau-lsp                   # Luau Language Server
+    stylua                     # Lua Formatter
   ];
 
   # ===================================
