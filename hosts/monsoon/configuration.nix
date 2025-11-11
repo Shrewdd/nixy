@@ -9,6 +9,7 @@
   ../../shared/nixos/display/common.nix
   ../../shared/nixos/display/gnome.nix
   ./modules/nvidia.nix
+    ../../shared/nixos/packages.nix
     ./modules/packages.nix
     ../../shared/nixos/audio.nix
     ../../shared/nixos/services/printing.nix

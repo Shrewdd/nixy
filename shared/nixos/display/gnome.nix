@@ -11,4 +11,9 @@
 
   # GNOME-related helpers (appindicator support is added via packages)
   environment.gnome.excludePackages = with pkgs; [ epiphany gnome-tour ];
+
+  # GNOME-specific packages
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.appindicator
+  ];
 }

@@ -13,15 +13,13 @@
   # ===================================
   environment.systemPackages = with pkgs; [
     vesktop                    # Discord client
-    vscode                     # VSCode editor
     appimage-run               # AppImage support
+    lutris                     # Game installer/runner
     sixpair                    # PS3 controller pairing
     veracrypt                  # Disk encryption
     kdePackages.gwenview       # Image viewer
     lshw                       # PCIe Hardware info
     speedtest-cli              # Internet speed test
-    gnomeExtensions.appindicator # AppIndicator support for GNOME
-    nixfmt
     # ROBLOX DEVELOPMENT
     rojo                       # Roblox Development Tool
     wally                      # Roblox Package Manager
@@ -36,25 +34,16 @@
   programs.dconf = {
     enable = true;
   };
-  programs.localsend = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/km/nixy";
-  };
-
-  programs.zoom-us = {
-    enable = true;
-  };
+  # programs.localsend, programs.nh and programs.zoom-us are now
+  # provided by `shared/nixos/packages.nix` and are available when that
+  # module is imported by the host configuration.
 
   programs.gamemode = {
     enable = true;
   };
+
+  programs.steam.enable = true;
+  
 
   # ===================================
   # GNOME EXCLUSIONS

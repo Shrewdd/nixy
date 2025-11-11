@@ -10,7 +10,8 @@
   # ===================================
   imports = [
     ./hardware-configuration.nix
-    ./modules/packages.nix
+      ../../shared/nixos/packages.nix
+      ./modules/packages.nix
   ../../shared/nixos/display/common.nix
   ../../shared/nixos/display/gnome.nix
     ../../shared/nixos/services/printing.nix
