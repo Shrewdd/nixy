@@ -6,10 +6,6 @@
   };
 
   config = lib.mkIf config.hm.apps.anytype.enable {
-    imports = [ inputs.anytype.homeManagerModules.default ];
-    
-    programs.anytype = {
-      enable = true;
-    };
+    home.packages = [ inputs.anytype.packages.${pkgs.system}.default ];
   };
 }

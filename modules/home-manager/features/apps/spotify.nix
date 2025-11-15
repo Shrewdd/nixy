@@ -8,9 +8,11 @@ in
     enable = lib.mkEnableOption "Spotify with Spicetify";
   };
 
+  imports = [
+    inputs.spotify.homeManagerModules.default
+  ];
+  
   config = lib.mkIf config.hm.apps.spotify.enable {
-    imports = [ inputs.spotify.homeManagerModules.default ];
-    
     programs.spicetify = {
       enable = true;
       theme = spicePkgs.themes.catppuccin;
