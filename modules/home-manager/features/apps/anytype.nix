@@ -6,6 +6,6 @@
   };
 
   config = lib.mkIf config.hm.apps.anytype.enable {
-    home.packages = [ inputs.anytype.packages.${pkgs.system}.default ];
+    home.packages = [ inputs.anytype.packages.${pkgs.stdenv.hostPlatform.system}.default ];
   };
 }

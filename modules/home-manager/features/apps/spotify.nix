@@ -1,7 +1,7 @@
 { config, lib, pkgs, inputs, ... }:
 
 let
-  spicePkgs = inputs.spotify.legacyPackages.${pkgs.system};
+  spicePkgs = inputs.spotify.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   options.hm.apps.spotify = {

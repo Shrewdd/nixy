@@ -20,8 +20,12 @@
   config = lib.mkIf config.hm.dev.git.enable {
     programs.git = {
       enable = true;
-      userName = config.hm.dev.git.userName;
-      userEmail = config.hm.dev.git.userEmail;
+      settings = {
+        user = {
+          name = config.hm.dev.git.userName;
+          email = config.hm.dev.git.userEmail;
+        };
+      };
     };
   };
 }

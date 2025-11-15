@@ -19,7 +19,7 @@
         "..." = "cd ../..";
       };
 
-      initExtra = ''
+      initContent = ''
         # Add any custom zsh init here
       '';
     };

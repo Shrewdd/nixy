@@ -16,7 +16,7 @@
     };
 
     # Disable PulseAudio (PipeWire replaces it)
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
 
     # Enable real-time audio (for low latency)
     security.rtkit.enable = true;
