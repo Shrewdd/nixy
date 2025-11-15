@@ -1,38 +1,64 @@
 {
-  description = "A very basic flake";
+  description = "Modular NixOS configuration (I suppose)";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     spotify.url = "github:Gerg-L/spicetify-nix";
     anytype.url = "github:squalus/anytype-flake";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, spotify, anytype, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-    in {
-      # Defines NixOS configurations for different hosts
-      nixosConfigurations.monsoon = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-          ./hosts/monsoon/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inputs = self.inputs; };
-            home-manager.users.km = {
-              imports = [ ./hosts/monsoon/modules/home-manager.nix ];
-            };
-          }
-        ];
+      
+      # Special args to pass to all modules
+      specialArgs = {
+        inherit inputs;
       };
-      nixosConfigurations.nomad = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-          ./hosts/nomad/configuration.nix
-        ];
+    in {
+      # ===================================
+      # NixOS Configurations
+      # ===================================
+      
+      nixosConfigurations = {
+        # monsoon
+        monsoon = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = [
+            ./hosts/monsoon/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = specialArgs;
+              };
+            }
+          ];
+        };
+
+        # nomad
+        nomad = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = [
+            ./hosts/nomad/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = specialArgs;
+              };
+            }
+          ];
+        };
       };
     };
 }
