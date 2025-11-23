@@ -23,6 +23,8 @@
     environment.gnome.excludePackages = with pkgs; [
       epiphany
       gnome-tour
+      geary
+      yelp
     ];
 
     # GNOME-specific packages
@@ -30,6 +32,10 @@
       gnomeExtensions.appindicator
       gnome-settings-daemon
     ];
+
+    # GNOME uses power-profiles-daemon for profile integration; force-disable
+    # TLP when GNOME is enabled to avoid conflicts between the two services.
+    services.tlp.enable = lib.mkForce false;
 
     # udev packages for GNOME
     services.udev.packages = with pkgs; [
