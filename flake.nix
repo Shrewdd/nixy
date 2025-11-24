@@ -59,6 +59,23 @@
             }
           ];
         };
+
+        # aurora
+        aurora = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = [
+            ./hosts/aurora/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = specialArgs;
+              };
+            }
+          ];
+        };
       };
     };
 }
