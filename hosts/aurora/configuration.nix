@@ -7,6 +7,9 @@
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
 
+  # Set hostname
+  networking.hostName = "aurora";
+
   system.stateVersion = "25.11"; # keep the original stateVersion
 
   # Keep SSH enabled. Permit root login by public key only (temporary).
@@ -41,8 +44,14 @@
     allowedTCPPorts = [ 22 ];
   };
 
+  # Enable flakes and nix-command
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # System packages: keep speedtest-cli available
-  environment.systemPackages = with pkgs; [ speedtest-cli ];
+  environment.systemPackages = with pkgs; [
+    speedtest-cli
+    git
+    ];
 
   # Allow sudo for users in wheel group without password
   security.sudo = {
