@@ -70,4 +70,7 @@
     # Host-specific packages
     home.packages = with pkgs; [ tree ];
   };
+
+    # Enable the system-level vscode-server service
+    services.vscode-server.enable = true;
 }

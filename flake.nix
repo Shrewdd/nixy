@@ -6,13 +6,14 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     spotify.url = "github:Gerg-L/spicetify-nix";
     anytype.url = "github:squalus/anytype-flake";
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, vscode-server, ... }@inputs:
     let
       system = "x86_64-linux";
       
@@ -66,6 +67,7 @@
           modules = [
             ./hosts/aurora/configuration.nix
             home-manager.nixosModules.home-manager
+            vscode-server.nixosModules.default
             {
               home-manager = {
                 useGlobalPkgs = true;
