@@ -50,7 +50,6 @@
   # System packages: keep speedtest-cli available
   environment.systemPackages = with pkgs; [
     speedtest-cli
-    git
     ];
 
   # Allow sudo for users in wheel group without password
@@ -59,8 +58,13 @@
     wheelNeedsPassword = false;
   };
 
-  # Home Manager user config: import btop only
+  # ===================================
+  # Home Manager (User Configuration)
+  # ===================================
   home-manager.users.km = {
-    imports = [ ../../modules/home-manager/features/shell/btop.nix ];
+    imports = [ ../../modules/home-manager/profiles/base.nix ];
+
+    # Host-specific packages
+    home.packages = with pkgs; [ tree ];
   };
 }
