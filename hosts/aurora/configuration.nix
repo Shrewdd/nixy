@@ -50,9 +50,11 @@
   # Enable flakes and nix-command
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # System packages: keep speedtest-cli available
+  # System packages
   environment.systemPackages = with pkgs; [
     speedtest-cli
+    nodejs_24
+    pnpm
     ];
 
   # Allow sudo for users in wheel group without password
@@ -71,6 +73,11 @@
     home.packages = with pkgs; [ tree ];
   };
 
-    # Enable the system-level vscode-server service
-    services.vscode-server.enable = true;
+    # Enable nix-ld for vscode ssh remote development
+    programs.nix-ld.enable = true;
+
+    programs.nh = {
+        enable = true;
+        flake = "/home/km/nixy";
+      };
 }
