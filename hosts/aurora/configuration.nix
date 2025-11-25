@@ -1,30 +1,60 @@
 { config, lib, pkgs, ... }:
 
-# Minimal aurora configuration (safe for remote VPS)
 {
   imports = [ ./hardware-configuration.nix ];
 
-  # Use the GRUB 2 boot loader.
+  networking.hostName = "aurora";
+  system.stateVersion = "25.11";
+
+  # ===================================
+  # Boot Configuration
+  # ===================================
+  # GRUB on /dev/sda
   boot.loader.grub = {
     enable = true;
     device = "/dev/sda";
   };
 
-  # Set hostname
-  networking.hostName = "aurora";
-
-  system.stateVersion = "25.11"; # keep the original stateVersion
-
-  # Keep SSH enabled. Permit root login by public key only (temporary).
-  services.openssh = {
-    enable = true;
-    settings = {
-      PermitRootLogin = "prohibit-password";
-      PasswordAuthentication = false;
-    };
+  # ===================================
+  # Nix Configuration
+  # ===================================
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    auto-optimise-store = true;  # Deduplicate store files automatically
   };
 
-  # Keep your km user's public key so you won't be locked out.
+  # Auto-cleanup old generations weekly (keep 30 days)
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # ===================================
+  # Networking & Firewall
+  # ===================================
+  networking.useDHCP = lib.mkDefault true;
+  
+  # Only SSH allowed by default
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 ];
+    # allowedUDPPorts = [ ];
+  };
+
+  # ===================================
+  # Localization
+  # ===================================
+  time.timeZone = "Europe/Warsaw";  # Server in Poland
+  i18n.defaultLocale = "en_US.UTF-8";
+  console.keyMap = "us";
+
+  # ===================================
+  # User Configuration
+  # ===================================
   users.users.km = {
     isNormalUser = true;
     description = "km";
@@ -34,50 +64,77 @@
     ];
   };
 
-  # Root authorized keys placeholder. To enable key-based root login, add the
-  # public key you generate locally (see instructions). Example:
-  # users.users.root.openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAA... aurora" ];
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgMUi7ElERM2QYAh4YsXDT1Ak9QtiWk0rCV6Cbab3ur aurora"
-  ];
-
-  # Enable firewall but allow SSH so remote access remains available.
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 22 ];
-  };
-
-  # Enable flakes and nix-command
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # System packages
-  environment.systemPackages = with pkgs; [
-    speedtest-cli
-    nodejs_24
-    pnpm
-    ];
-
-  # Allow sudo for users in wheel group without password
+  # Allow sudo without password for wheel group (convenient for automation)
   security.sudo = {
     enable = true;
     wheelNeedsPassword = false;
   };
 
   # ===================================
+  # SSH Configuration
+  # ===================================
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;  # SSH keys only
+    };
+  };
+
+  # No root SSH - use km + sudo instead
+
+  # ===================================
+  # System Packages
+  # ===================================
+  environment.systemPackages = with pkgs; [
+    nixfmt
+    speedtest-cli
+    tree
+    
+    # Discord bot stuff
+    nodejs_24
+    pnpm
+  ];
+
+  # ===================================
+  # Programs & Services
+  # ===================================
+  programs.nh = {
+    enable = true;
+    flake = "/home/km/nixy";
+  };
+
+  programs.nix-ld.enable = true;  # For VS Code Remote SSH
+
+  # ===================================
   # Home Manager (User Configuration)
   # ===================================
   home-manager.users.km = {
-    imports = [ ../../modules/home-manager/profiles/base.nix ];
+    imports = [
+      ../../modules/home-manager/features/shell/zsh.nix
+      ../../modules/home-manager/features/shell/starship.nix
+      ../../modules/home-manager/features/shell/btop.nix
+      ../../modules/home-manager/features/shell/fastfetch.nix
+      ../../modules/home-manager/features/dev/git.nix
+    ];
 
-    # Host-specific packages
-    home.packages = with pkgs; [ tree ];
-  };
-
-    # Enable nix-ld for vscode ssh remote development
-    programs.nix-ld.enable = true;
-
-    programs.nh = {
-        enable = true;
-        flake = "/home/km/nixy";
+    hm = {
+      shell = {
+        zsh.enable = true;
+        starship.enable = true;
+        btop.enable = true;
+        fastfetch.enable = true;
       };
+      dev.git.enable = true;
+    };
+
+    programs.home-manager.enable = true;
+    
+    home = {
+      username = "km";
+      homeDirectory = "/home/km";
+      stateVersion = "24.05";
+      packages = [ ];
+    };
+  };
 }
