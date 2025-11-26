@@ -52,6 +52,9 @@
         auto-update = "check";
         auto-update-channel = "stable";
         shell-integration-features = "no-cursor,no-sudo,no-title";
+        
+        # Use xterm-256color for SSH compatibility (servers don't know xterm-ghostty)
+        term = "xterm-256color";
       };
     };
   };
