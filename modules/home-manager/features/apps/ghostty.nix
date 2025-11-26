@@ -51,9 +51,9 @@
         window-padding-balance = true;
         auto-update = "check";
         auto-update-channel = "stable";
-        shell-integration-features = "no-cursor,no-sudo,no-title";
+        shell-integration-features = "no-cursor,sudo,no-title,ssh-env,ssh-terminfo";
         
-        # Use xterm-256color for SSH compatibility (servers don't know xterm-ghostty)
+        # Universal terminal compatibility
         term = "xterm-256color";
       };
     };
