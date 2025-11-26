@@ -135,6 +135,12 @@
       homeDirectory = "/home/km";
       stateVersion = "24.05";
       packages = [ ];
+      # Ensure pnpm global bin works without manual setup
+      sessionVariables = {
+        PNPM_HOME = "/home/km/.local/share/pnpm";
+      };
+      # Prepend PNPM_HOME to PATH at login shells
+      sessionPath = [ "$PNPM_HOME" ];
     };
   };
 }
