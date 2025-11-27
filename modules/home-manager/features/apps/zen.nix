@@ -6,6 +6,6 @@
   };
 
   config = lib.mkIf config.hm.apps.zen.enable {
-    home.packages = [ inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+    home.packages = [ inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight ];
   };
 }
