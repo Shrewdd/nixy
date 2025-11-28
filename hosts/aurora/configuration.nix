@@ -60,7 +60,7 @@
     description = "km";
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIObivn9a8x+FkEdQEYe7BvkRf7bOxWQgHRKhUXUic8uU tyraaxvps"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgMUi7ElERM2QYAh4YsXDT1Ak9QtiWk0rCV6Cbab3ur aurora"
     ];
   };
 
@@ -81,7 +81,7 @@
     };
   };
 
-  # No root SSH - use km + sudo instead
+  # No root SSH - using km instead
 
   # ===================================
   # System Packages
@@ -105,6 +105,36 @@
   };
 
   programs.nix-ld.enable = true;  # For VS Code Remote SSH
+
+  # ===================================
+  # PostgreSQL
+  # ===================================
+  services.postgresql = {
+    enable = true;
+    settings = {
+      listen_addresses = lib.mkForce "127.0.0.1";
+      max_connections = 10;
+    };
+    authentication = ''
+      local   all             all                                     peer
+      host    all             all             127.0.0.1/32            scram-sha-256
+      host    all             all             ::1/128                 scram-sha-256
+    '';
+    ensureDatabases = [ "tyraax" "clerk" ];
+    ensureUsers = [
+      { name = "tyraax"; ensureDBOwnership = true; }
+      { name = "clerk"; ensureDBOwnership = true; }
+    ];
+  };
+
+  # Daily backups at 02:00 with zstd compression
+  services.postgresqlBackup = {
+    enable = true;
+    startAt = "02:00:00";
+    compression = "zstd";
+    compressionLevel = 9;
+    location = "/var/backup/postgresql";
+  };
 
   # ===================================
   # Home Manager (User Configuration)
