@@ -123,8 +123,8 @@
     '';
     ensureDatabases = [ "tyraax" "clerk" ];
     ensureUsers = [
-      { name = "tyraax"; ensureDBOwnership = true; }
-      { name = "clerk"; ensureDBOwnership = true; }
+      { name = "tyraax"; ensureDBOwnership = true; ensureClauses = { createdb = true; login = true; }; }
+      { name = "clerk"; ensureDBOwnership = true; ensureClauses = { createdb = true; login = true; }; }
     ];
   };
 
