@@ -1,15 +1,14 @@
-{ self, super }:
+{ final, prev }:
 
-# ===================================
-# Prisma overlay
-# Provides a `prisma-engines` derivation built from the official npm tarball.
-# We pin the npm tarball sha256 so builds are reproducible. To update, change
-# `version` and run `nix-prefetch-url --unpack` to get a new sha256.
-# ===================================
+# Prisma overlay (final: prev: { ... })
+# - Provides a `prisma-engines` derivation built from the official npm tarball.
+# - Uses `builtins.fetchurl` to avoid evaluation-order recursion.
+# - Update `version` and the `sha256` to move to newer releases.
 
 let
+  pkgs = prev;
   version = "7.0.1";
-  src = super.fetchurl {
+  src = builtins.fetchurl {
     url = "https://registry.npmjs.org/prisma/-/prisma-${version}.tgz";
     sha256 = "1jdcxlap9a4pk4zwz65cgf4ghn136fmaw37wjrnbd7c6rnscfz5d";
   };
@@ -17,51 +16,59 @@ in
 {
   # Expose `prisma-engines` so existing NixOS configs that refer to
   # `pkgs.prisma-engines` will continue to work.
-  prisma-engines = super.stdenv.mkDerivation {
+  prisma-engines = pkgs.stdenv.mkDerivation {
     pname = "prisma-engines";
-    inherit version;
-    src = src;
+    inherit version src;
 
     nativeBuildInputs = [];
 
-    # npm tarballs usually contain a top-level `package/` directory. We
-    # strip the component so the package contents appear at the root.
+    # Unpack the npm tarball into a temporary directory and copy expected
+    # runtime artifacts into the Nix store layout.
     unpackPhase = ''
-      tar -xzf $src --strip-components=1
+      mkdir -p $TMPDIR/src
+      tar -xzf $src -C $TMPDIR/src --strip-components=1
+      export SRC_DIR=$TMPDIR/src
     '';
 
-    # installPhase: best-effort layout. Different Prisma versions may store
-    # compiled binaries or node native addons in different paths. We copy a
-    # few expected locations into the Nix store so runtime env vars from
-    # `configuration.nix` continue to point at something usable.
     installPhase = ''
       mkdir -p $out/bin $out/lib
 
       # Common binaries (schema-engine, prisma-fmt, query-engine)
       for bin in schema-engine prisma-fmt query-engine; do
-        if [ -f "./$bin" ]; then
-          cp "./$bin" "$out/bin/"
+        if [ -f "$SRC_DIR/$bin" ]; then
+          cp "$SRC_DIR/$bin" "$out/bin/"
         fi
       done
 
       # Node native addon: try a few possible locations and normalize the name
-      if [ -f ./libquery_engine.node ]; then
-        cp ./libquery_engine.node $out/lib/libquery_engine.node
+      if [ -f "$SRC_DIR/libquery_engine.node" ]; then
+        cp "$SRC_DIR/libquery_engine.node" $out/lib/libquery_engine.node
       fi
-      if [ -f ./runtime/query-engine-node/index.node ]; then
-        cp ./runtime/query-engine-node/index.node $out/lib/libquery_engine.node
+      if [ -f "$SRC_DIR/runtime/query-engine-node/index.node" ]; then
+        cp "$SRC_DIR/runtime/query-engine-node/index.node" $out/lib/libquery_engine.node
       fi
-      if [ -f ./query-engine/index.node ]; then
-        cp ./query-engine/index.node $out/lib/libquery_engine.node
+      if [ -f "$SRC_DIR/query-engine/index.node" ]; then
+        cp "$SRC_DIR/query-engine/index.node" $out/lib/libquery_engine.node
       fi
 
       chmod +x $out/bin/* || true
     '';
 
-    meta = with super.lib; {
+    meta = with pkgs.lib; {
       description = "Prisma engines bundle (from npm prisma-${version})";
       license = licenses.asl20;
       platforms = platforms.linux;
     };
   };
+
+  # Example: if you want to override the top-level `prisma` package from nixpkgs
+  # to use this version, you can uncomment the following block. This is optional
+  # and commented by default because the upstream `prisma` package layout may
+  # differ between nixpkgs versions.
+  #
+  # (if prev ? prisma then {
+  #   prisma = prev.prisma.overrideAttrs (old: {
+  #     inherit src version;
+  #   });
+  # } else {})
 }
