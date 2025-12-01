@@ -5,8 +5,9 @@ final: prev: {
       owner = "prisma";
       repo = "prisma-engines";
       rev = version;
-      hash = "sha256-+8k+M2+WySR2CeywYlhU/jd3av/4UeUoEOlO/qHUk5o=";
+      hash = "sha256-16lksjhzwkp920lfalgqzxm7fdzyaic65c7c15v29jcndwrkxjgv";
     };
     cargoHash = prev.lib.fakeSha256;
+    cargoVendorDir = null;
   });
 }
