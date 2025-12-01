@@ -23,9 +23,6 @@
     auto-optimise-store = true;  # Deduplicate store files automatically
   };
 
-  # Local overlays: use up-to-date Prisma engines from npm
-  nixpkgs.overlays = [ (import ../../overlays/prisma.nix) ];
-
   # Auto-cleanup old generations weekly (keep 30 days)
   nix.gc = {
     automatic = true;
@@ -35,6 +32,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # Add Prisma overlay
+  nixpkgs.overlays = [ (import ../../overlays/prisma.nix) ];
 
   # ===================================
   # Networking & Firewall

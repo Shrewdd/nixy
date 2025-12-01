@@ -1,9 +1,12 @@
 final: prev: {
-  # Prisma overlay (final: prev: { ... })
-  # - Provides a `prisma-engines` derivation built from the official npm tarball.
-  # - Uses `builtins.fetchurl` to avoid evaluation-order recursion.
-  # - Update `version` and the `sha256` in `prisma-derivation.nix` to move to newer releases.
-
-  # Import the derivation that expects `pkgs` to avoid evaluation-order issues.
-  prisma-engines = (import ./prisma-derivation.nix { pkgs = prev; });
+  prisma-engines = prev.prisma-engines.overrideAttrs (old: rec {
+    version = "7.0.1";
+    src = prev.fetchFromGitHub {
+      owner = "prisma";
+      repo = "prisma-engines";
+      rev = version;
+      hash = "sha256-07rn0bl4a8k9h7c0m8s247pn9dlw9hv3blvgfni7k87q00v0kkgy";
+    };
+    cargoHash = "sha256-07xy2rz0fwzxl9c29jjsw7mrfd7rl2pyq1ps732qpzcg1g2wddqh";
+  });
 }
