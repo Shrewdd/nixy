@@ -48,7 +48,7 @@
   # ===================================
   # Localization
   # ===================================
-  time.timeZone = "Europe/Warsaw";  # Server in Poland
+  time.timeZone = "Europe/Warsaw";
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
 
