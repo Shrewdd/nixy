@@ -1,5 +1,27 @@
 { config, lib, pkgs, ... }:
 
+let
+  prismaEnginesOverlay = final: prev: {
+    prisma-engines = prev.prisma-engines.overrideAttrs (old: rec {
+      version = "7.0.1";
+      src = final.fetchFromGitHub {
+        owner = "prisma";
+        repo = "prisma-engines";
+        rev = "7.0.1";
+        hash = "sha256-+8k+M2+WySR2CeywYlhU/jd3av/4UeUoEOlO/qHUk5o=";
+      };
+      cargoDeps = final.rustPlatform.fetchCargoVendor {
+        inherit src;
+        hash = "sha256-n83hJfSlvuaoBb3w9Rk8+q2emjGCoPDHhFdoVzhf4sM=";
+      };
+      cargoBuildFlags = [ "--package" "query-compiler" "--package" "schema-engine-cli" "--package" "prisma-fmt" ];
+      postInstall = ''
+        mv $out/bin/query-engine-node-api $out/bin/query-engine || true
+        mv $out/lib/libquery_engine*.so $out/lib/libquery_engine.node || true
+      '';
+    });
+  };
+in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -33,8 +55,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Add Prisma overlay
-  nixpkgs.overlays = [ (import ../../overlays/prisma.nix) ];
+  # Ensure the overlay is applied so environment.variables use the correct version
+  nixpkgs.overlays = [ prismaEnginesOverlay ];
 
   # ===================================
   # Networking & Firewall
