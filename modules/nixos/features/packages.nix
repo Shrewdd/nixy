@@ -44,6 +44,8 @@
       environment.systemPackages = with pkgs; [
         nixfmt
         vscode
+        veracrypt                  # Disk encryption
+        kdePackages.gwenview       # Image viewer
       ];
 
       # Common programs
@@ -75,8 +77,6 @@
         
         # Utilities
         appimage-run               # AppImage support
-        veracrypt                  # Disk encryption
-        kdePackages.gwenview       # Image viewer
         lshw                       # PCIe Hardware info
         speedtest-cli              # Internet speed test
         
