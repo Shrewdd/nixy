@@ -3,12 +3,12 @@
 let
   prismaEnginesOverlay = final: prev: {
     prisma-engines = prev.prisma-engines.overrideAttrs (old: rec {
-      version = "7.0.1";
+      version = "7.1.0";
       src = final.fetchFromGitHub {
         owner = "prisma";
         repo = "prisma-engines";
-        rev = "7.0.1";
-        hash = "sha256-+8k+M2+WySR2CeywYlhU/jd3av/4UeUoEOlO/qHUk5o=";
+        rev = "7.1.0";
+        hash = "sha256-RBHUJI6QG37cMVGciQAWrmMnEhgRW/B8/BxpLhK09OQ=";
       };
       cargoDeps = final.rustPlatform.fetchCargoVendor {
         inherit src;
