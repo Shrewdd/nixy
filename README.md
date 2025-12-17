@@ -8,32 +8,35 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 .
 ├── flake.nix                  # Flake entrypoint with host definitions
 ├── flake.lock                 # Locked dependency versions
-├── hosts/                     # Host-specific configuration
+├── hosts/                     # Host manifests and configurations
+│   ├── aurora/
+│   │   ├── configuration.nix
+│   │   └── hardware-configuration.nix
 │   ├── monsoon/
 │   │   ├── configuration.nix
 │   │   └── hardware-configuration.nix
-│   └── nomad/
-│       ├── configuration.nix
-│       └── hardware-configuration.nix
+│   ├── nomad/
+│   │   ├── configuration.nix
+│   │   └── hardware-configuration.nix
+│   └── default.nix            # Shared host definitions consumed by flake.nix
 ├── modules/
-│   ├── nixos/
-│   │   ├── features/          # Individual system features (audio, bluetooth, etc.)
-│   │   │   ├── desktop/
-│   │   │   ├── hardware/
-│   │   │   ├── services/
-│   │   │   ├── system/
-│   │   │   └── packages.nix
-│   │   └── profiles/          # Feature bundles (base, desktop, laptop)
-│   └── home-manager/
-│       ├── features/          # User-level features (shell, apps, theming)
-│       │   ├── apps/
-│       │   ├── desktop/
-│       │   ├── dev/
-│       │   └── shell/
-│       └── profiles/          # User bundles (base, desktop)
-├── assets/
-│   ├── theme/                 # Color schemes (for future use)
-│   └── wallpapers/            # Wallpaper collection
+│   ├── shared/
+│   │   ├── theme/             # Color palettes for reuse
+│   │   └── wallpapers/        # Shared wallpaper collection
+│   ├── system/
+│   │   ├── core/              # Base OS defaults (nix, networking, localization)
+│   │   ├── desktop/           # Desktop environment modules (GNOME only for now)
+│   │   ├── hardware/          # Audio, bluetooth, GPU helpers
+│   │   ├── packages/          # Package bundles per role
+│   │   ├── profiles/          # Host roles (server, workstation, laptop)
+│   │   └── services/          # Flatpak, printing, etc.
+│   └── user/
+│       ├── apps/              # Home Manager application modules
+│       ├── core/              # Shared user defaults
+│       ├── desktop/           # User-level desktop tweaks (GNOME, GTK)
+│       ├── dev/               # Developer tooling (git)
+│       ├── profiles/          # User bundles (server, desktop)
+│       └── shell/             # Shell tooling (zsh, starship, etc.)
 └── README.md
 ```
 
@@ -42,7 +45,7 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 - Flakes and nix-command are enabled by default
 - Automatic store optimization and weekly garbage collection configured
 - GNOME automatically disables blueman (uses built-in bluetooth management)
-- Hyprland/other DEs will use blueman by default (conditional logic in bluetooth.nix)
+- GNOME is the sole desktop environment at the moment (add others under modules/system/desktop)
 - Home Manager backups enabled (`.backup` extension for conflicting files)
 
 ---

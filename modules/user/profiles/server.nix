@@ -1,0 +1,4 @@
+{ ... }:
+{
+  imports = [ ../core/base.nix ];
+}

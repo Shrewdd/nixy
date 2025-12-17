@@ -12,70 +12,32 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
-      system = "x86_64-linux";
-      
-      # Special args to pass to all modules
-      specialArgs = {
-        inherit inputs;
-      };
+      lib = nixpkgs.lib;
+      specialArgs = { inherit inputs; };
+      hosts = import ./hosts/default.nix { inherit inputs; };
+      mkHost = _: attrs:
+        let
+          system = attrs.system or "x86_64-linux";
+          hostModules = attrs.modules or [ ];
+        in
+        lib.nixosSystem {
+          inherit system;
+          specialArgs = specialArgs;
+          modules = hostModules ++ [
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = specialArgs;
+              };
+            }
+          ];
+        };
     in {
-      # ===================================
-      # NixOS Configurations
-      # ===================================
-      
-      nixosConfigurations = {
-        # monsoon
-        monsoon = nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            ./hosts/monsoon/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = specialArgs;
-              };
-            }
-          ];
-        };
-
-        # nomad
-        nomad = nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            ./hosts/nomad/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = specialArgs;
-              };
-            }
-          ];
-        };
-
-        # aurora
-        aurora = nixpkgs.lib.nixosSystem {
-          inherit system specialArgs;
-          modules = [
-            ./hosts/aurora/configuration.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = specialArgs;
-              };
-            }
-          ];
-        };
-      };
+      nixosConfigurations = lib.mapAttrs mkHost hosts;
     };
 }

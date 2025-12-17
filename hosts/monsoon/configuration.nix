@@ -1,19 +1,16 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/profiles/desktop.nix
+    ../../modules/system/profiles/monsoon.nix
   ];
 
   networking.hostName = "monsoon";
   system.stateVersion = "25.05";
 
-  # ===================================
-  # Hardware Configuration - NVIDIA
-  # ===================================
   services.xserver.videoDrivers = [ "nvidia" ];
-  
+
   hardware.nvidia = {
     open = false;
     modesetting.enable = true;
@@ -30,6 +27,7 @@
 
   boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
   boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   hardware.graphics = {
     enable = true;
@@ -42,34 +40,13 @@
     LIBVA_DRIVER_NAME = "nvidia";
   };
 
-  # ===================================
-  # System Configuration
-  # ===================================
-  features.system.boot.latestKernel = true;
-  packages.monsoon.enable = true;
-
-  # Hyprland (Wayland)
-  features.desktop.hyprland.enable = true;
-  features.desktop.plasma.enable = false;
-  features.desktop.gnome.enable = false;
-
-  # Roblox URL handlers so desktop portalsHyprland) can
-  # resolve and open roblox-player/studio links correctly system-wide.
   xdg.mime.defaultApplications = {
     "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
     "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
   };
 
-  # ===================================
-  # Home Manager (User Configuration)
-  # ===================================
   home-manager.users.km = {
-    imports = [ ../../modules/home-manager/profiles/desktop.nix ];
-
-    # Host-specific packages
+    imports = [ ../../modules/user/profiles/desktop.nix ];
     home.packages = with pkgs; [ tree ];
-
-    hm.desktop.gnome.enable = false;
-    hm.desktop.hyprland.enable = true;
   };
 }
