@@ -1,326 +1,56 @@
 { config, lib, pkgs, ... }:
 
 let
-  theme = import ../../../assets/theme/everforest.nix;
-  wallpaperDir = "${../../../../assets/wallpapers}";
-  powermenuThemePath = "${config.xdg.configHome}/rofi/powermenu/style.rasi";
-
-  wallpaperScript = pkgs.writeShellScriptBin "hypr-wallpaper" ''
-    set -euo pipefail
-
-    WALL_DIR="${wallpaperDir}"
-    PRIMARY="desc:Samsung Electric Company LS24C33xG H9TX501846"
-    SECONDARY="desc:Samsung Electric Company LS24C33xG H9TX501795"
-
-    mapfile -t images < <(find "$WALL_DIR" -maxdepth 4 -type f \
-      \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
-      -print | sort -f)
-
-    if [ "''${#images[@]}" -eq 0 ]; then
-      echo "No images in $WALL_DIR" >&2
-      exit 1
-    fi
-
-    STATE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}"
-    mkdir -p "$STATE_DIR"
-    STATE_FILE="$STATE_DIR/hyprpaper-index"
-
-    cur=0
-    if [ -f "$STATE_FILE" ]; then
-      cur=$(cat "$STATE_FILE" 2>/dev/null || echo 0)
-    fi
-    [ -z "$cur" ] && cur=0
-
-    idx=$(( (cur + 1) % ''${#images[@]} ))
-    img="''${images[$idx]}"
-    echo "$idx" > "$STATE_FILE"
-
-    img=$(readlink -f "$img")
-    hyprctl hyprpaper preload "$img" >/dev/null 2>&1 || true
-
-    apply_wall() { hyprctl hyprpaper wallpaper "$1","$img" >/dev/null 2>&1 || true; }
-    apply_wall "$PRIMARY"
-    apply_wall "$SECONDARY"
-
-    notify-send -r 9911 "Wallpaper" "$(basename "$img")" -i "$img" 2>/dev/null || true
-  '';
-
-  powerMenuScript = pkgs.writeShellScriptBin "rofi-powermenu" ''
-    set -euo pipefail
-
-    uptime_str=$(uptime | awk -F'up ' '{print $2}' | sed 's/, 0 users.*//')
-
-    shutdown='󰐥'
-    reboot='󰜉'
-    lock=''
-    suspend='󰤄'
-    logout='󰍃'
-
-    rofi_cmd() {
-      rofi -dmenu -p "Uptime: $uptime_str" -mesg "Uptime: $uptime_str" -theme "${powermenuThemePath}"
-    }
-
-    confirm_cmd() {
-      rofi -dmenu -p 'Confirmation' -mesg 'Are you sure?' -theme "${powermenuThemePath}"
-    }
-
-    confirm_exit() {
-      printf 'yes\nno\n' | confirm_cmd
-    }
-
-    run_rofi() {
-      printf '%s\n%s\n%s\n%s\n%s\n' "$lock" "$suspend" "$logout" "$reboot" "$shutdown" | rofi_cmd
-    }
-
-    run_cmd() {
-      selected=$(confirm_exit || true)
-      [ "$selected" != "yes" ] && exit 0
-
-      case "$1" in
-        --shutdown) systemctl poweroff ;;
-        --reboot) systemctl reboot ;;
-        --suspend)
-          command -v mpc >/dev/null 2>&1 && mpc -q pause || true
-          command -v hyprlock >/dev/null 2>&1 && hyprlock || true
-          systemctl suspend
-          ;;
-        --logout) hyprctl dispatch exit ;;
-        --lock)
-          command -v hyprlock >/dev/null 2>&1 && hyprlock || true
-          ;;
-      esac
-    }
-
-    chosen=$(run_rofi || true)
-    case "$chosen" in
-      "$shutdown") run_cmd --shutdown ;;
-      "$reboot") run_cmd --reboot ;;
-      "$lock") run_cmd --lock ;;
-      "$suspend") run_cmd --suspend ;;
-      "$logout") run_cmd --logout ;;
-    esac
-  '';
+  theme = import ../../../../../assets/theme/everforest.nix;
+  waybarStyle = ./waybar/style.css;
+  waybarModulesDir = "${config.xdg.configHome}/waybar/modules";
 in
 {
   options.hm.desktop.hyprland = {
-    enable = lib.mkEnableOption "Hyprland user configuration";
+    enable = lib.mkEnableOption "Hyprland window manager user configuration";
   };
 
   config = lib.mkIf config.hm.desktop.hyprland.enable {
-    home.packages = with pkgs; [
-      hyprpaper
-      waybar
-      rofi
-      dunst
-      wl-clipboard
-      libnotify
-      grim
-      slurp
-      playerctl
-      hyprpolkitagent
-      hyprlock
-    ];
-
-    xdg.portal.enable = lib.mkDefault true;
-
-    services.hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "on";
-        splash = false;
-      };
-    };
-
-    services.dunst.enable = lib.mkDefault true;
-
-    programs.rofi = {
-      enable = lib.mkDefault true;
-      location = lib.mkDefault "center";
-      font = lib.mkDefault "Maple Mono NF 10.5";
-      theme = {
-        configuration = {
-          modi = "drun,filebrowser";
-          show-icons = true;
-          icon-theme = "Papirus-Dark";
-          matching = "normal";
-          tokenize = true;
-          display-drun = "Apps";
-          click-to-exit = true;
-        };
-        "*" = {
-          background = "#${theme.base}CC";
-          foreground = "#${theme.text}FF";
-          accent = "#${theme.peach}69";
-          background-tb = "#${theme.surface1}FF";
-          border-tb = "#${theme.surface0}FF";
-          selected = "linear-gradient(to right, #${theme.surface0}FF, #${theme.peach}69)";
-          button = "linear-gradient(#${theme.overlay2}FF)";
-          button-selected = "linear-gradient(#${theme.peach}69)";
-          active = "linear-gradient(to right, #${theme.teal}FF, #${theme.green}FF)";
-          urgent = "#${theme.red}FF";
-        };
-        window = {
-          location = "center";
-          anchor = "center";
-          border = 2;
-          border-radius = 6;
-          border-color = "@accent";
-          width = 420;
-          transparency = "real";
-          background-color = "@background";
-        };
-        mainbox = {
-          spacing = 10;
-          padding = 20;
-          children = [ "inputbar" "mode-switcher" "listview" ];
-        };
-        inputbar = {
-          spacing = 10;
-          children = [ "textbox-prompt-colon" "entry" ];
-        };
-        "textbox-prompt-colon" = {
-          padding = [ 10 10 10 12 ];
-          border-radius = 4;
-          border-color = "@border-tb";
-          background-color = "@background-tb";
-          text-color = "@foreground";
-          str = " ";
-        };
-        entry = {
-          padding = [ 10 12 ];
-          border-radius = 4;
-          border-color = "@border-tb";
-          background-color = "@background-tb";
-          text-color = "@foreground";
-          placeholder = "Search...";
-        };
-        listview = {
-          columns = 1;
-          lines = 5;
-          scrollbar = false;
-          spacing = 5;
-        };
-        element = {
-          spacing = 16;
-          margin = [ 2 0 ];
-          padding = 12;
-          border-radius = 4;
-          background-color = "transparent";
-          text-color = "@foreground";
-        };
-        "element normal.active" = {
-          background-image = "@active";
-        };
-        "element selected.normal" = {
-          background-image = "@selected";
-        };
-        "element-icon" = { size = 28; };
-        "element-text" = { vertical-align = 0.5; };
-      };
-    };
-
-    xdg.configFile."rofi/powermenu/style.rasi".text = ''
-      configuration {
-        show-icons: false;
-        me-select-entry: "";
-        me-accept-entry: [ MousePrimary, MouseSecondary, MouseDPrimary ];
-      }
-
-      * {
-        background:       #${theme.base}CC;
-        foreground:       #${theme.text}FF;
-        accent:           #${theme.peach}69;
-        background-tb:    #${theme.surface1}FF;
-        border-tb:        #${theme.surface0}FF;
-        selected:         linear-gradient(to right, #${theme.surface0}FF, #${theme.peach}69);
-        button:           linear-gradient(#${theme.overlay2}FF);
-        button-selected:  linear-gradient(#${theme.peach}69);
-        active:           linear-gradient(to right, #${theme.teal}FF, #${theme.green}FF);
-        urgent:           #${theme.red}FF;
-      }
-
-      window {
-        transparency: "real";
-        location: center;
-        anchor: center;
-        width: 450px;
-        border: 2px solid;
-        border-radius: 10px;
-        border-color: @accent;
-        background-color: @background;
-      }
-
-      mainbox {
-        spacing: 15px;
-        padding: 30px;
-        children: [ "message", "listview" ];
-      }
-
-      inputbar { enabled: false; }
-
-      message {
-        padding: 12px;
-        border-radius: 10px;
-        background-color: @background-tb;
-        text-color: @foreground;
-      }
-
-      listview {
-        columns: 5;
-        lines: 1;
-        spacing: 15px;
-        scrollbar: false;
-      }
-
-      element {
-        padding: 10px;
-        border-radius: 10px;
-        background-color: transparent;
-        text-color: @foreground;
-      }
-
-      element-text {
-        font: "Symbols Nerd Font 24";
-        vertical-align: 0.5;
-        horizontal-align: 0.5;
-      }
-
-      element selected.normal {
-        background-color: @foreground;
-        text-color: @background;
-      }
-    '';
-
-    home.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-    };
-
     wayland.windowManager.hyprland = {
       enable = true;
 
       settings = {
         "$mainMod" = "SUPER";
         "$terminal" = "ghostty";
-        "$fileManager" = "thunar";
-        "$menu" = "rofi -show drun";
+        "$fileManager" = "nautilus";
 
         "exec-once" = [
-          "hyprpolkitagent"
+          "systemctl --user start hyprpolkitagent"
           "waybar"
-          "hyprpaper"
+        ];
+
+        monitor = [
+          "desc:Samsung Electric Company LS24C33xG H9TX501846, 1920x1080@100, 0x0, 1"
+          "desc:Samsung Electric Company LS24C33xG H9TX501795, 1920x1080@100, 1920x0, 1"
         ];
 
         general = {
           layout = "dwindle";
           border_size = 3;
           "col.active_border" = "${theme.rgb.green} ${theme.rgb.teal} 135deg";
-          "col.inactive_border" = theme.rgb.base;
+          "col.inactive_border" = theme.rgb.surface1;
           gaps_in = 2;
           gaps_out = 8;
         };
 
         dwindle = {
           preserve_split = true;
+        };
+
+        group = {
+          "col.border_active" = "${theme.rgb.blue} ${theme.rgb.sky} 135deg";
+          "col.border_inactive" = theme.rgb.surface1;
+          "col.border_locked_active" = "${theme.rgb.yellow} ${theme.rgb.peach} 135deg";
+          "col.border_locked_inactive" = theme.rgb.surface1;
+          groupbar = {
+            font_size = 11;
+            gradients = false;
+          };
         };
 
         decoration = {
@@ -335,7 +65,7 @@ in
             enabled = true;
             range = 4;
             render_power = 3;
-            color = "rgba(0d0f1080)";
+            color = "rgba(1a1a1a80)";
             color_inactive = "rgba(00000060)";
           };
         };
@@ -343,8 +73,6 @@ in
         bind = [
           "$mainMod, RETURN, exec, $terminal"
           "$mainMod, E, exec, $fileManager"
-          "$mainMod, A, exec, $menu"
-          "$mainMod, X, exec, rofi-powermenu"
 
           "$mainMod, Q, killactive,"
           "$mainMod, M, exit,"
@@ -385,11 +113,10 @@ in
           "$mainMod, mouse_down, workspace, e+1"
           "$mainMod, mouse_up, workspace, e-1"
 
-          "$mainMod, W, exec, hypr-wallpaper"
+          "$mainMod, R, focuswindow, class:robloxstudiobeta.exe,title:.* - Roblox Studio$"
 
-          # Screenshots via grim+slurp
-          "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grim -o "$(hyprctl monitors -j | jq -r ".[0].name" 2>/dev/null || echo 0)" "$f" && wl-copy < "$f" && notify-send -i "$f" "Screenshot Saved" "$f"'"
-          ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grim -g "$(slurp)" "$f" && wl-copy < "$f" && notify-send -i "$f" "Screenshot Saved" "$f"'"
+          ''$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze "$f" && wl-copy < "$f" && notify-send -i "$f" "Screenshot Saved" "$f"''
+          '', Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze "$f" && wl-copy < "$f" && notify-send -i "$f" "Screenshot Saved" "$f"''
         ];
 
         bindm = [
@@ -398,9 +125,9 @@ in
         ];
 
         bindel = [
-          ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk "{print int(\$2*100)}") && notify-send -r 9991 -h int:value:$vol -a "Volume" "Volume: $vol%"'"
-          ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk "{print int(\$2*100)}") && notify-send -r 9991 -h int:value:$vol -a "Volume" "Volume: $vol%"'"
-          ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@) && if echo "$vol_info" | grep -q MUTED; then notify-send -r 9991 -h int:value:0 -a "Volume" "Volume: Muted"; else vol_num=$(echo "$vol_info" | awk "{print int(\$2*100)}") && notify-send -r 9991 -h int:value:$vol_num -a "Volume" "Volume: $vol_num%"; fi'"
+          ",XF86AudioRaiseVolume, exec, bash -c 'wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\\$2*100)}\") && notify-send -r 9991 -h int:value:$vol -a \"Volume\" \"Volume: $vol%\"'"
+          ",XF86AudioLowerVolume, exec, bash -c 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk \"{print int(\\$2*100)}\") && notify-send -r 9991 -h int:value:$vol -a \"Volume\" \"Volume: $vol%\"'"
+          ",XF86AudioMute, exec, bash -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@) && if echo \"$vol_info\" | grep -q MUTED; then notify-send -r 9991 -h int:value:0 -a \"Volume\" \"Volume: Muted\"; else vol_num=$(echo \"$vol_info\" | awk \"{print int(\\$2*100)}\") && notify-send -r 9991 -h int:value:$vol_num -a \"Volume\" \"Volume: $vol_num%\"; fi'"
           ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
         ];
 
@@ -411,9 +138,27 @@ in
           ", XF86AudioPrev, exec, playerctl previous"
         ];
 
+        bindr = [
+          "$mainMod, SUPER_L, exec, bash -c 'qs -c dashboard ipc call dashboard toggle'"
+        ];
+
         windowrule = [
           "suppressevent maximize, class:.*"
           "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+          "bordercolor ${theme.rgb.blue}, class:(.*zen.*)"
+          "bordercolor ${theme.rgb.green}, class:(code)"
+          "bordercolor ${theme.rgb.yellow}, class:(.*ghostty.*)"
+          "bordercolor ${theme.rgb.mauve}, class:(.*vesktop.*)"
+          "bordercolor ${theme.rgb.teal}, class:(.*spotify.*)"
+        ];
+
+        windowrulev2 = [
+          "bordercolor ${theme.rgb.red}, class:(.*steam.*)"
+          "bordercolor ${theme.rgb.peach}, class:(.*nautilus.*)"
+          "opacity 0.9 0.9, class:(.*terminal.*)"
+          "opacity 0.95 0.95, class:(.*)"
+          "opacity 1.0 1.0, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
+          "noblur, class:^(robloxstudiobeta.exe)$,title:(.* - Roblox Studio$|^Roblox Studio$)"
         ];
 
         misc = {
@@ -426,6 +171,123 @@ in
       };
     };
 
-    home.packages = [ wallpaperScript powerMenuScript pkgs.jq ];
+    programs.waybar = {
+      enable = true;
+      settings.mainBar = {
+        spacing = 1;
+        margin-bottom = -2;
+        height = 30;
+        modules-left = [ "hyprland/workspaces" "hyprland/window" ];
+        modules-center = [ "bluetooth" ];
+        modules-right = [
+          "custom/cpu_temp"
+          "custom/gpu_temp"
+          "wireplumber"
+          "clock"
+          "tray"
+        ];
+
+        clock = {
+          timezone = "Europe/Paris";
+          tooltip-format = "<span>{calendar}</span>";
+          calendar = {
+            mode = "month";
+            format = {
+              today = "<span color='#e7bbe4'><b>{}</b></span>";
+              days = "<span color='#cdd6f4'><b>{}</b></span>";
+              weekdays = "<span color='#7cd37c'><b>{}</b></span>";
+              months = "<b>{}</b>";
+            };
+          };
+          interval = 60;
+          max-length = 30;
+          format = "{:%H:%M  %d/%m/%y}";
+          format-alt = "{:%A, %d %B %Y}";
+        };
+
+        "hyprland/window" = {
+          format = "{}";
+          rewrite = { "^(.*?)[[:space:]]*[-—|].*?$" = "$1"; };
+          icon = true;
+          "icon-size" = 20;
+          swap-icon-label = false;
+          max-length = 30;
+        };
+
+        "hyprland/workspaces" = {
+          format = "●";
+          format-active = "<span background='#${theme.mauve}' color='#${theme.base}' font-weight='bold'>●</span>";
+          all-outputs = true;
+          show-special = false;
+        };
+
+        wireplumber = {
+          format = "{icon} {volume}%";
+          format-muted = "󰖁 muted";
+          format-icons = [ "󰕿" "󰖀" "󰕾" ];
+          scroll-step = 2;
+          swap-icon-label = false;
+          tooltip-format = "Volume: {volume}%";
+          max-volume = 100;
+          ignored-sinks = [ ];
+        };
+
+        bluetooth = {
+          format = "";
+          format-disabled = "";
+          format-off = "";
+          format-on = "";
+          format-connected = "󰂱 {device_alias}";
+          format-connected-battery = "󰂱 {device_alias} {device_battery_percentage}%";
+          tooltip-format = "{controller_alias}\t{controller_address}";
+          tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+          tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+          swap-icon-label = false;
+          max-length = 30;
+        };
+
+        tray = {
+          "icon-size" = 16;
+          spacing = 8;
+          show-passive-items = true;
+        };
+
+        "custom/cpu_temp" = {
+          exec = "${waybarModulesDir}/cpu_temp.sh";
+          return-type = "json";
+          interval = 5;
+          format = "{}";
+          tooltip = true;
+        };
+
+        "custom/gpu_temp" = {
+          exec = "${waybarModulesDir}/gpu_temp.sh";
+          return-type = "json";
+          interval = 5;
+          format = "{}";
+          tooltip = true;
+        };
+
+      };
+
+      style = builtins.readFile waybarStyle;
+
+    };
+
+    xdg.configFile."waybar/modules/cpu_temp.sh" = {
+      source = ./waybar/modules/cpu_temp.sh;
+      executable = true;
+    };
+
+    xdg.configFile."waybar/modules/gpu_temp.sh" = {
+      source = ./waybar/modules/gpu_temp.sh;
+      executable = true;
+    };
+
+    home.packages = with pkgs; [
+      hyprpolkitagent
+      nautilus
+    ];
   };
 }

@@ -1,0 +1,179 @@
+* { font-family: SF Pro Display, Inter, JetBrainsMono Nerd Font, sans-serif; font-weight: 500; font-size: 11px; }
+window#waybar {
+  background: #2d353b;
+  margin: 0;
+}
+
+/* Workspace display - minimal dots */
+#workspaces {
+  background: transparent;
+  margin: 0 4px 0 8px;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+#workspaces button {
+  background: transparent;
+  color: #475258;
+  padding: 3px 4px;
+  margin: 0 1px;
+  font-size: 11px;
+  font-weight: 500;
+  min-width: 12px;
+  border: none;
+}
+#workspaces button.active {
+  background: transparent;
+  color: #d699b6;
+  font-weight: 600;
+}
+#workspaces button:hover {
+  background: transparent;
+  color: #859289;
+}
+
+/* Bluetooth module */
+#bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
+  background: #343f44;
+  color: #d699b6;
+  font-weight: 600;
+  padding: 3px 8px;
+  margin: 0 1px;
+}
+#bluetooth > *, #bluetooth .text, #bluetooth .icon {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0 3px 0 0;
+}
+
+/* System tray */
+#tray {
+  background: #343f44;
+  color: #dbbc7f;
+  font-weight: 600;
+  padding: 3px 6px;
+  margin: 0 1px;
+}
+
+/* Shared module styling */
+#window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
+  background: #343f44;
+  color: #d3c6aa;
+  padding: 3px 8px;
+  margin: 0 1px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Temperature modules */
+#custom-cpu_temp {
+  background: #514045;
+  color: #e67e80;
+  font-weight: 600;
+}
+
+#custom-gpu_temp {
+  background: #425047;
+  color: #a7c080;
+  font-weight: 600;
+}
+
+/* Clock */
+#clock {
+  background: #3a515d;
+  color: #7fbbb3;
+  font-weight: 600;
+}
+
+/* Window title */
+#window {
+  background: #543a48;
+  color: #e69875;
+  font-weight: 500;
+}
+
+/* Volume control */
+#wireplumber, #wireplumber.muted {
+  background: #4a444e;
+  color: #d699b6;
+  font-weight: 600;
+}
+#wireplumber.muted {
+  opacity: 0.7;
+  color: #859289;
+}
+
+/* Bluetooth module with purple styling */
+/* Only shows when connected - positioned in center */
+#bluetooth, #bluetooth.connected, #bluetooth.connected-battery {
+  background: #2d353b;
+  color: #d699b6;
+  font-weight: 700;
+  padding: 1px 10px;
+  border-radius: 12px;
+}
+/* Inner elements should not create additional borders; inherit container look */
+#bluetooth > *, #bluetooth .text, #bluetooth .icon {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0 4px 0 0;
+}
+
+/* System tray with yellow styling */
+#tray {
+  background: #2d353b;
+  color: #dbbc7f;
+  font-weight: 700;
+}
+
+/* Shared module look */
+#window, #clock, #wireplumber, #tray, #custom-cpu_temp, #custom-gpu_temp {
+  background: #2d353b;
+  color: #d3c6aa;
+  padding: 1px 12px;
+  margin: 1px 3px 1px 0;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 8px rgba(65, 72, 104, 0.3);
+}
+
+/* tray child items intentionally left unstyled so background service icons stay untouched */
+
+/* Temperature modules with distinct modern styling */
+#custom-cpu_temp {
+  color: #e67e80;
+  font-weight: 700;
+}
+
+#custom-gpu_temp {
+  color: #a7c080;
+  font-weight: 700;
+}
+
+/* Clock with modern blue styling */
+#clock {
+  color: #7fbbb3;
+  font-weight: 700;
+}
+
+/* Window module with refined styling */
+#window {
+  color: #e69875;
+  font-weight: 600;
+}
+
+#wireplumber, #wireplumber.muted { 
+  background: #2d353b; 
+  color: #d699b6; 
+  font-weight: 800;
+}
+#wireplumber.muted { 
+  opacity: .6; 
+  color: #9da9a0;
+}

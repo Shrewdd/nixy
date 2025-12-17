@@ -2,30 +2,30 @@
 
 {
   options.features.desktop.hyprland = {
-    enable = lib.mkEnableOption "Hyprland Wayland compositor";
+    enable = lib.mkEnableOption "Hyprland window manager";
   };
 
   config = lib.mkIf config.features.desktop.hyprland.enable {
-    programs.hyprland.enable = true;
-
-    # Minimal display manager setup; provides a Hyprland session entry.
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
-    };
-
-    xdg.portal = {
-      enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-hyprland
-        xdg-desktop-portal-gtk
+      theme = "sddm-astronaut-theme";
+      package = pkgs.kdePackages.sddm;
+      extraPackages = with pkgs; [
+        qt6Packages.qtmultimedia
+        qt6Packages.qtsvg
+        qt6Packages.qtvirtualkeyboard
       ];
     };
 
-    # Basic Wayland utilities commonly needed by desktop apps.
     environment.systemPackages = with pkgs; [
-      wayland
-      wayland-protocols
+      (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; }) # SDDM theme
     ];
+    
+    programs.hyprland = {
+      enable = true;
+      withUWSM = true;
+      xwayland.enable = true;
+    };
   };
 }
