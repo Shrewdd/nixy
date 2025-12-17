@@ -48,6 +48,11 @@
   features.system.boot.latestKernel = true;
   packages.monsoon.enable = true;
 
+  # Hyprland (Wayland)
+  features.desktop.hyprland.enable = true;
+  features.desktop.plasma.enable = false;
+  features.desktop.gnome.enable = false;
+
   # Roblox URL handlers so desktop portalsHyprland) can
   # resolve and open roblox-player/studio links correctly system-wide.
   xdg.mime.defaultApplications = {
@@ -63,5 +68,8 @@
 
     # Host-specific packages
     home.packages = with pkgs; [ tree ];
+
+    hm.desktop.gnome.enable = false;
+    hm.desktop.hyprland.enable = true;
   };
 }

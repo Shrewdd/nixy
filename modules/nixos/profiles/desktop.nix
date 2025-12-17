@@ -5,6 +5,8 @@
   imports = [
     ./base.nix
     ../features/desktop/gnome.nix
+    ../features/desktop/plasma.nix
+    ../features/desktop/hyprland.nix
     ../features/hardware/audio.nix
     ../features/hardware/bluetooth.nix
     ../features/services/printing.nix

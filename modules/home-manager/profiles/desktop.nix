@@ -6,6 +6,7 @@
     ./base.nix
     ../features/desktop/gtk.nix
     ../features/desktop/gnome.nix
+    ../features/desktop/hyprland.nix
     ../features/apps/ghostty.nix
     ../features/apps/zen.nix
     ../features/apps/spotify.nix
