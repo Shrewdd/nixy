@@ -61,9 +61,9 @@
         format = "([\[$all_status$ahead_behind\]]($style) )";
         style = "bold red";
         conflicted = "=";
-        ahead = "⇡${count}";
-        behind = "⇣${count}";
-        diverged = "⇕⇡${ahead_count}⇣${behind_count}";
+        ahead = lib.concatStrings [ "⇡$" "{count}" ];
+        behind = lib.concatStrings [ "⇣$" "{count}" ];
+        diverged = lib.concatStrings [ "⇕⇡$" "{ahead_count}⇣$" "{behind_count}" ];
         untracked = "?";
         stashed = "$";
         modified = "!";

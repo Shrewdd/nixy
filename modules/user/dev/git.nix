@@ -2,7 +2,9 @@
 {
   programs.git = {
     enable = true;
-    userName = lib.mkDefault "qkbp";
-    userEmail = lib.mkDefault "qkbpp@protonmail.com";
+    settings.user = {
+      name = lib.mkDefault "qkbp";
+      email = lib.mkDefault "qkbpp@protonmail.com";
+    };
   };
 }
