@@ -44,8 +44,5 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 
 - Flakes and nix-command are enabled by default
 - Automatic store optimization and weekly garbage collection configured
-- GNOME automatically disables blueman (uses built-in bluetooth management)
-- GNOME is the sole desktop environment at the moment (add others under modules/system/desktop)
-- Home Manager backups enabled (`.backup` extension for conflicting files)
 
 ---
