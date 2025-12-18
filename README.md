@@ -40,9 +40,4 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 └── README.md
 ```
 
-## Notes
-
-- Flakes and nix-command are enabled by default
-- Automatic store optimization and weekly garbage collection configured
-
 ---
