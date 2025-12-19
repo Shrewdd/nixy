@@ -5,7 +5,6 @@
     sixpair
     appimage-run
     lshw
-    speedtest-cli
   ];
 
   programs.gamemode.enable = true;

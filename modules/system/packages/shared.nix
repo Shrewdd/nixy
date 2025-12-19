@@ -8,6 +8,7 @@
   environment.systemPackages = with pkgs; [
     vscode
     veracrypt
+    speedtest-cli
     kdePackages.gwenview
   ];
 
