@@ -1,11 +1,11 @@
 { lib, pkgs, ... }:
 {
-  # Keep the same login manager flow as GNOME had, but switch the session
-  # to Hyprland for this profile.
-  services.displayManager.gdm = {
+
+  services.displayManager.gdm.enable = lib.mkForce false;
+
+  services.displayManager.sddm = {
     enable = true;
-    wayland = true;
-    autoSuspend = lib.mkDefault true;
+    wayland.enable = true;
   };
 
   programs.hyprland = {

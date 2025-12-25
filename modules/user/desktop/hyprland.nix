@@ -7,6 +7,11 @@
     settings = {
       "$mod" = "SUPER";
 
+      monitor = [
+        "HDMI-A-4,1920x1080@100,0x0,1"
+        "HDMI-A-5,1920x1080@100,1920x0,1"
+      ];
+
       # Minimal, usable defaults.
       bind = [
         "$mod, Return, exec, ghostty"
