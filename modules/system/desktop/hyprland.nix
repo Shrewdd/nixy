@@ -1,6 +1,9 @@
 { lib, pkgs, ... }:
 {
 
+  services.dbus.enable = true;
+  security.polkit.enable = true;
+
   services.displayManager.gdm.enable = lib.mkForce false;
 
   services.displayManager.sddm = {
@@ -10,6 +13,7 @@
 
   programs.hyprland = {
     enable = true;
+    withUWSM = true;
     xwayland.enable = true;
   };
 
@@ -21,7 +25,10 @@
     ];
   };
 
-  # NVIDIA-friendly defaults; kept scoped to this Hyprland profile.
+  environment.systemPackages = with pkgs; [
+    hyprpolkitagent
+  ];
+
   environment.sessionVariables = {
     NIXOS_OZONE_WL = lib.mkDefault "1";
     WLR_NO_HARDWARE_CURSORS = lib.mkDefault "1";
