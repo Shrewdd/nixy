@@ -4,6 +4,7 @@
     ../core/base.nix
     ../core/boot.nix
     ../desktop/hyprland.nix
+    ../apps/thunar.nix
     ../hardware/audio.nix
     ../hardware/bluetooth.nix
     ../services/flatpak.nix
