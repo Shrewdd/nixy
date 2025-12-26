@@ -9,6 +9,7 @@
     vscode
     veracrypt
     speedtest-cli
+    netflix
     kdePackages.gwenview
   ];
 
