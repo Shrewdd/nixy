@@ -9,6 +9,13 @@
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
+    theme = "sddm-astronaut-theme";
+    package = pkgs.kdePackages.sddm;
+    extraPackages = with pkgs; [
+      qt6Packages.qtmultimedia
+      qt6Packages.qtsvg
+      qt6Packages.qtvirtualkeyboard
+    ];
   };
 
   programs.hyprland = {
@@ -27,6 +34,7 @@
 
   environment.systemPackages = with pkgs; [
     hyprpolkitagent
+    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
   environment.sessionVariables = {
