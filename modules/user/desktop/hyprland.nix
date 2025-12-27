@@ -98,8 +98,6 @@ in
         "$mainMod SHIFT, S, movetoworkspace, special:magic"
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
-        "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
-        ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
       ];
 
       bindm = [
@@ -128,7 +126,6 @@ in
       windowrule = [
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-        "bordercolor ${theme.rgb.blue}, class:(.*zen.*)"
       ];
 
       input.kb_layout = "pl";
