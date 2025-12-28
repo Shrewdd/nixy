@@ -34,6 +34,7 @@
 
   environment.systemPackages = with pkgs; [
     hyprpolkitagent
+    playerctl
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
