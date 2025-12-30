@@ -1,6 +1,7 @@
-{ ... }:
+{ lib, ... }:
 {
   imports = [
+    ../../shared/stylix.nix
     ../core/base.nix
     ../core/boot.nix
     ../desktop/hyprland.nix
@@ -11,6 +12,8 @@
     ../services/printing.nix
     ../packages/shared.nix
   ];
+
+  nixy.stylix.enable = lib.mkDefault true;
 
   security.sudo.wheelNeedsPassword = false;
 }

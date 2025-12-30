@@ -1,11 +1,10 @@
-{ ... }:
+{ lib, ... }:
 {
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "Default";
+      color_theme = lib.mkDefault "Default";
       theme_background = false;
-      vim_keys = true;
     };
   };
 }

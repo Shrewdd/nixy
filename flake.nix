@@ -6,13 +6,17 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     spotify.url = "github:Gerg-L/spicetify-nix";
     anytype.url = "github:squalus/anytype-flake";
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, stylix, ... }@inputs:
     let
       lib = nixpkgs.lib;
       specialArgs = { inherit inputs; };
@@ -26,6 +30,7 @@
           inherit system;
           specialArgs = specialArgs;
           modules = hostModules ++ [
+            stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
               home-manager = {

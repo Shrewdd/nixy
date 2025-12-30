@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
-  theme = import ../../shared/theme/everforest.nix;
+  colors = config.lib.stylix.colors;
+
+  stripHash = s: if lib.hasPrefix "#" s then lib.removePrefix "#" s else s;
+  rgb = hex: "rgb(${stripHash hex})";
+  gradient135 = a: b: "${rgb a} ${rgb b} 135deg";
 in
 {
   wayland.windowManager.hyprland = {
@@ -25,8 +29,8 @@ in
       general = {
         layout = "dwindle";
         border_size = 3;
-        "col.active_border" = "${theme.rgb.green} ${theme.rgb.teal} 135deg";
-        "col.inactive_border" = theme.rgb.surface1;
+        "col.active_border" = lib.mkDefault (gradient135 colors.base0B colors.base0C);
+        "col.inactive_border" = lib.mkDefault (rgb colors.base03);
         gaps_in = 2;
         gaps_out = 8;
       };
@@ -34,10 +38,10 @@ in
       dwindle.preserve_split = true;
 
       group = {
-        "col.border_active" = "${theme.rgb.blue} ${theme.rgb.sky} 135deg";
-        "col.border_inactive" = theme.rgb.surface1;
-        "col.border_locked_active" = "${theme.rgb.yellow} ${theme.rgb.peach} 135deg";
-        "col.border_locked_inactive" = theme.rgb.surface1;
+        "col.border_active" = lib.mkDefault (gradient135 colors.base0D colors.base0C);
+        "col.border_inactive" = lib.mkDefault (rgb colors.base03);
+        "col.border_locked_active" = lib.mkDefault (gradient135 colors.base0A colors.base09);
+        "col.border_locked_inactive" = lib.mkDefault (rgb colors.base03);
         groupbar = {
           font_size = 11;
           gradients = false;
@@ -45,19 +49,19 @@ in
       };
 
       decoration = {
-        rounding = 10;
+        rounding = lib.mkDefault 10;
         blur = {
-          enabled = true;
-          size = 3;
-          passes = 1;
-          new_optimizations = true;
+          enabled = lib.mkDefault true;
+          size = lib.mkDefault 3;
+          passes = lib.mkDefault 1;
+          new_optimizations = lib.mkDefault true;
         };
         shadow = {
-          enabled = true;
-          range = 4;
-          render_power = 3;
-          color = "rgba(1a1a1a80)";
-          color_inactive = "rgba(00000060)";
+          enabled = lib.mkDefault true;
+          range = lib.mkDefault 4;
+          render_power = lib.mkDefault 3;
+          color = lib.mkDefault "rgba(1a1a1a80)";
+          color_inactive = lib.mkDefault "rgba(00000060)";
         };
       };
 
