@@ -19,7 +19,6 @@
   programs.niri.enable = true;
 
   environment.systemPackages = with pkgs; [
-    hyprpolkitagent
     playerctl
     xwayland-satellite
     bibata-cursors

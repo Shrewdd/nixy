@@ -14,7 +14,7 @@
       size = 24;
     };
 
-    # Keep this minimal for testing; match Hyprland's launcher key.
+    # Minimal binds for daily use
     binds = {
       "Mod+A" = {
         action.spawn = [ "rofi" "-show" "drun" ];
@@ -115,12 +115,10 @@
     };
 
     Service = {
-      ExecStart = "${pkgs.hyprpolkitagent}/bin/hyprpolkitagent";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
     };
 
     Install.WantedBy = [ "graphical-session.target" ];
   };
-
-  # Config file generation is handled by niri-flake from programs.niri.settings.
 }
