@@ -14,6 +14,8 @@
       size = 24;
     };
 
+    screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+
     # Minimal binds for daily use
     binds = {
       "Mod+A" = {
@@ -70,6 +72,24 @@
       "XF86AudioPlay".action.spawn = [ "playerctl" "play-pause" ];
       "XF86AudioPause".action.spawn = [ "playerctl" "play-pause" ];
       "XF86AudioStop".action.spawn = [ "playerctl" "stop" ];
+
+      # Screenshots (built-in)
+      "Print" = {
+        action.screenshot = [];
+        allow-inhibiting = false;
+      };
+
+      # Full focused screen
+      "Mod+Print" = {
+        action."screenshot-screen" = [];
+        allow-inhibiting = false;
+      };
+
+      # Focused window
+      "Shift+Print" = {
+        action."screenshot-window" = [];
+        allow-inhibiting = false;
+      };
     };
 
     outputs = {
