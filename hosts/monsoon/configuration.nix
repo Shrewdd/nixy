@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/profiles/monsoon-hypr.nix
+    ../../modules/system/profiles/monsoon-niri.nix
   ];
 
   networking.hostName = "monsoon";
@@ -46,7 +46,7 @@
   };
 
   home-manager.users.km = {
-    imports = [ ../../modules/user/profiles/monsoon-hypr.nix ];
+    imports = [ ../../modules/user/profiles/monsoon-niri.nix ];
     home.packages = with pkgs; [ tree ];
   };
 }
