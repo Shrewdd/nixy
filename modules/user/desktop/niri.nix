@@ -19,7 +19,7 @@
     spawn-at-startup = [
       { argv = [ "swww-daemon" ]; }
       # Give the daemon a moment to come up on cold boot.
-      { sh = "sleep 0.5; swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 ${toString ../../shared/wallpapers/lake_trees.jpg}"; }
+      { sh = "sleep 0.5; swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 ${toString ../../shared/wallpapers/catppuccin-mocha/sunset.png}"; }
     ];
 
     # Minimal binds for daily use
@@ -32,7 +32,7 @@
         action.spawn = [
           "sh"
           "-c"
-           "dir='${toString ../../shared/wallpapers}'; file=\"$(find \"$dir\" -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.png' \\) | shuf -n 1)\"; [ -n \"$file\" ] && swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 \"$file\""
+          "dir='${toString ../../shared/wallpapers/catppuccin-mocha}'; file=\"$(find \"$dir\" -maxdepth 1 -type f \\\( -iname '*.jpg' -o -iname '*.png' \\\) | shuf -n 1)\"; [ -n \"$file\" ] && swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 \"$file\""
         ];
         allow-inhibiting = false;
       };

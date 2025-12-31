@@ -9,7 +9,7 @@ in
 
     image = lib.mkOption {
       type = lib.types.path;
-      default = ./wallpapers/lake_trees.jpg;
+      default = ./wallpapers/catppuccin-mocha/sunset.png;
       description = "Wallpaper used by Stylix for palette generation.";
     };
 
