@@ -15,6 +15,7 @@
   ];
 
   nixy.stylix.enable = lib.mkDefault true;
+  nixy.stylix.base16Scheme = lib.mkDefault (import ../../shared/theme/catppuccin-mocha-base16.nix);
 
   security.sudo.wheelNeedsPassword = false;
 }

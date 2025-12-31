@@ -30,6 +30,12 @@ in
       default = [ "default" ];
       description = "Zen Browser profile names Stylix should theme (HM target requirement).";
     };
+
+    base16Scheme = lib.mkOption {
+      type = lib.types.nullOr lib.types.attrs;
+      default = null;
+      description = "Optional fixed Base16 scheme attrset to use instead of generating one from the wallpaper.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -39,6 +45,8 @@ in
       polarity = cfg.polarity;
       autoEnable = cfg.autoEnable;
     };
+
+    stylix.base16Scheme = lib.mkIf (cfg.base16Scheme != null) cfg.base16Scheme;
 
     stylix.homeManagerIntegration = {
       autoImport = true;
