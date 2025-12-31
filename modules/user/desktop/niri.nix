@@ -9,15 +9,23 @@
     input.mod-key = "Super";
     input.focus-follows-mouse.enable = true;
     prefer-no-csd = true;
+    hotkey-overlay.skip-at-startup = true;
+    screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
     cursor = {
       theme = "Bibata-Modern-Ice";
       size = 24;
     };
 
-    screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
-
     # Minimal binds for daily use
     binds = {
+      "Mod+slash" = {
+        action."show-hotkey-overlay" = [ ];
+        allow-inhibiting = false;
+      };
+      "Mod+Return" = {
+        action.spawn = [ "ghostty" ];
+        allow-inhibiting = false;
+      };
       "Mod+A" = {
         action.spawn = [ "rofi" "-show" "drun" ];
         allow-inhibiting = false;
