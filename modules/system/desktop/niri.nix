@@ -22,6 +22,7 @@
     playerctl
     xwayland-satellite
     bibata-cursors
+    swww
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 

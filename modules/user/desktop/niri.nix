@@ -15,11 +15,25 @@
       theme = "Bibata-Modern-Ice";
       size = 24;
     };
+    
+    spawn-at-startup = [
+      { argv = [ "swww-daemon" ]; }
+      # Give the daemon a moment to come up on cold boot.
+      { sh = "sleep 0.5; swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 ${toString ../../shared/wallpapers/lake_trees.jpg}"; }
+    ];
 
     # Minimal binds for daily use
     binds = {
       "Mod+slash" = {
         action."show-hotkey-overlay" = [ ];
+        allow-inhibiting = false;
+      };
+      "Mod+W" = {
+        action.spawn = [
+          "sh"
+          "-c"
+           "dir='${toString ../../shared/wallpapers}'; file=\"$(find \"$dir\" -maxdepth 1 -type f \\( -iname '*.jpg' -o -iname '*.png' \\) | shuf -n 1)\"; [ -n \"$file\" ] && swww img --transition-type wipe --transition-duration 0.35 --transition-fps 100 \"$file\""
+        ];
         allow-inhibiting = false;
       };
       "Mod+Return" = {
