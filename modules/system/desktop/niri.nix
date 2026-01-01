@@ -16,7 +16,10 @@
     ];
   };
 
-  programs.niri.enable = true;
+  programs.niri = {
+    enable = true;
+    useNautilus = true;
+  };
 
   environment.systemPackages = with pkgs; [
     playerctl

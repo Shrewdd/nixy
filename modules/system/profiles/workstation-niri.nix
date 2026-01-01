@@ -6,7 +6,7 @@
     ../core/base.nix
     ../core/boot.nix
     ../desktop/niri.nix
-    ../apps/thunar.nix
+    ../apps/nautilus.nix
     ../hardware/audio.nix
     ../hardware/bluetooth.nix
     ../services/flatpak.nix
