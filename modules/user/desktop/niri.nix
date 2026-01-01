@@ -51,7 +51,7 @@
         allow-inhibiting = false;
       };
       "Mod+A" = {
-        action.spawn = [ "noctalia-shell" "launcher" "toggle" ];
+        action.spawn = [ "noctalia-shell" "ipc" "call" "launcher" "toggle" ];
         allow-inhibiting = false;
       };
       "Mod+Q" = {
