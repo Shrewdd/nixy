@@ -31,7 +31,7 @@
       window = {
         width = 600;
         padding = 8;
-        border = 1;
+        border = 2;
         border-radius = 4;
         transparency = "real";
       };
@@ -71,7 +71,7 @@
       };
 
       "element selected" = {
-        border = 1;
+        border = 2;
         border-radius = 2;
       };
 
