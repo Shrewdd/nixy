@@ -1,18 +1,15 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
 
-    # Keep it minimal: one mode, centered, tight.
+    # minimal
     modes = [ "drun" ];
     location = "center";
     xoffset = 0;
     yoffset = 0;
-
-    font = "JetBrainsMono Nerd Font 12";
+    font = lib.mkForce "JetBrainsMono Nerd Font 12";
     terminal = "ghostty";
-
     cycle = true;
 
     extraConfig = {
