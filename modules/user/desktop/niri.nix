@@ -51,7 +51,7 @@
         allow-inhibiting = false;
       };
       "Mod+A" = {
-        action.spawn = [ "rofi" "-show" "drun" ];
+        action.spawn = [ "noctalia-shell" "launcher" "toggle" ];
         allow-inhibiting = false;
       };
       "Mod+Q" = {
