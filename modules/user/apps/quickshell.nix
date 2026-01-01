@@ -7,38 +7,48 @@ let
     import QtQuick
     import Quickshell
 
-    // Minimal, sharp, Catppuccin-friendly top bar.
+    // Cozy, minimal status bar matching niri + Catppuccin vibes.
     ShellRoot {
       PanelWindow {
         id: panel
-        anchors.top: root.top
-        width: root.width
-        height: 40
+        anchors {
+          top: true
+          left: true
+          right: true
+        }
+        margins {
+          top: 8
+          left: 8
+          right: 8
+        }
+        
+        implicitHeight: 32
 
         Rectangle {
           anchors.fill: parent
           color: "#${mocha.base00}"
           border.color: "#${mocha.base02}"
-          border.width: 2
-          radius: 4
+          border.width: 1
+          radius: 0
         }
 
+        // Left: Time display
         Text {
           id: timeDisplay
           anchors.left: parent.left
-          anchors.leftMargin: 16
+          anchors.leftMargin: 10
           anchors.verticalCenter: parent.verticalCenter
 
           color: "#${mocha.base05}"
-          font.family: "JetBrainsMono Nerd Font"
-          font.pixelSize: 13
-          font.weight: Font.Medium
+          font.family: "Noto Sans"
+          font.pixelSize: 10
+          font.weight: Font.Normal
 
           function fmtTime() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            return hours + ':' + minutes;
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            return hours + ':' + mins;
           }
 
           text: fmtTime()
@@ -51,40 +61,31 @@ let
           }
         }
 
-        Text {
+        // Center: Indicator dot for visual balance
+        Rectangle {
           anchors.centerIn: parent
-          color: "#${mocha.base04}"
-          font.family: "JetBrainsMono Nerd Font"
-          font.pixelSize: 12
-          text: "quickshell"
-          opacity: 0.6
+          width: 4
+          height: 4
+          color: "#${mocha.base0E}"
+          radius: 2
+          opacity: 0.4
         }
 
-        Item {
+        // Right: Volume placeholder
+        Text {
           anchors.right: parent.right
-          anchors.rightMargin: 16
+          anchors.rightMargin: 10
           anchors.verticalCenter: parent.verticalCenter
-          width: 24
-          height: 24
 
-          Rectangle {
-            anchors.fill: parent
-            color: "#${mocha.base0E}"
-            border.color: "#${mocha.base0D}"
-            border.width: 2
-            radius: 2
-
-            Text {
-              anchors.centerIn: parent
-              color: "#${mocha.base00}"
-              text: "◆"
-              font.pixelSize: 12
-            }
-          }
+          color: "#${mocha.base05}"
+          font.family: "Noto Sans"
+          font.pixelSize: 10
+          text: "vol: --"
         }
       }
     }
   '';
+
 in
 {
   programs.quickshell = {
