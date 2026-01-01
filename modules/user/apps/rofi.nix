@@ -14,54 +14,69 @@
 
     extraConfig = {
       modi = "drun";
-      show-icons = false;
+      show-icons = true;
+      icon-theme = "Papirus-Dark";
       drun-display-format = "{name}";
       matching = "fuzzy";
       sort = true;
-      sorting-method = "normal";
+      sorting-method = "fzf";
+      disable-history = true;
       steal-focus = true;
       dpi = 0;
-      prompt = "Search";
+      prompt = ">";
     };
 
     # Stylix provides the palette. This only tweaks layout/shape.
     theme = {
       window = {
-        width = 700;
-        padding = 18;
-        border = 2;
-        border-radius = 16;
+        width = 600;
+        padding = 8;
+        border = 1;
+        border-radius = 4;
         transparency = "real";
       };
 
       mainbox = {
-        spacing = 12;
+        spacing = 6;
       };
 
       inputbar = {
-        padding = 12;
-        border-radius = 14;
+        padding = 8;
+        border-radius = 2;
+      };
+
+      prompt = {
+        padding = 4;
       };
 
       entry = {
-        padding = 6;
+        padding = 4;
+      };
+
+      textbox-prompt-colon = {
+        padding = 4;
       };
 
       listview = {
-        lines = 9;
+        lines = 7;
         fixed-height = false;
-        spacing = 6;
+        spacing = 3;
         scrollbar = false;
       };
 
       element = {
-        padding = 12;
-        border-radius = 12;
+        padding = 8;
+        border-radius = 2;
+        spacing = 10;
       };
 
       "element selected" = {
-        border = 2;
-        border-radius = 12;
+        border = 1;
+        border-radius = 2;
+      };
+
+      "element-icon" = {
+        size = 24;
       };
     };
   };
