@@ -9,5 +9,6 @@
     ../apps/zen.nix
     ../apps/spotify.nix
     ../apps/anytype.nix
+    ../apps/quickshell.nix
   ];
 }
