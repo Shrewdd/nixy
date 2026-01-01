@@ -1,5 +1,12 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 {
+  imports = [ inputs.noctalia.homeModules.default ];
+
+  programs.noctalia-shell = {
+    enable = true;
+    systemd.enable = true;
+  };
+
   programs.niri.settings = {
     input.mod-key = "Super";
     input.focus-follows-mouse.enable = true;

@@ -6,6 +6,10 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     spotify.url = "github:Gerg-L/spicetify-nix";
     anytype.url = "github:squalus/anytype-flake";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
