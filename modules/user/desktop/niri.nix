@@ -11,6 +11,14 @@
     prefer-no-csd = true;
     hotkey-overlay.skip-at-startup = true;
     screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+    layout = {
+      gaps = 8;
+
+      "focus-ring" = {
+        width = 2;
+      };
+    };
+
     cursor = {
       theme = "Bibata-Modern-Ice";
       size = 24;
