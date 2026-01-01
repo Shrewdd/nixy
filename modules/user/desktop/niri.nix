@@ -1,10 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  programs.rofi = {
-    enable = true;
-    package = pkgs.rofi;
-  };
-
   programs.niri.settings = {
     input.mod-key = "Super";
     input.focus-follows-mouse.enable = true;
