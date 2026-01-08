@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./workstation-niri.nix
+    ./workstation-hyprland.nix
     ../packages/monsoon.nix
   ];
 }

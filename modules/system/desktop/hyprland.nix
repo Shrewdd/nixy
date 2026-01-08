@@ -1,8 +1,17 @@
-{ inputs, lib, pkgs, ... }:
+{ pkgs, lib, ... }:
 {
-  nixpkgs.overlays = [ inputs.niri.overlays.niri ];
-
   services.displayManager.gdm.enable = lib.mkForce false;
+
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    withUWSM = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+  };
 
   services.displayManager.sddm = {
     enable = true;
@@ -16,12 +25,8 @@
     ];
   };
 
-  programs.niri.enable = true;
-
   environment.systemPackages = with pkgs; [
     playerctl
-    xwayland-satellite
-    bibata-cursors
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
