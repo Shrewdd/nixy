@@ -41,6 +41,17 @@
       "$fileManager" = "nautilus";
       "$menu" = "rofi -show drun";
 
+      monitor = [
+        "desc:Samsung Electric Company LS24C33xG H9TX501846, 1920x1080@100, 0x0, 1"
+        "desc:Samsung Electric Company LS24C33xG H9TX501795, 1920x1080@100, 1920x0, 1"
+      ];
+      
+      exec-once = [
+        "hyprctl dispatch submap global"
+      ];
+
+      submap = "global";
+
       # Caelestia: launcher on Super press + interrupt while holding Super.
       bindi = [
         "Super, Super_L, global, caelestia:launcher"
