@@ -20,6 +20,13 @@
 
       services.weatherLocation = "";
     };
+
+    cli = {
+      enable = true;
+      settings = {
+        theme.enableGtk = false;
+      };
+    };
   };
 
   wayland.windowManager.hyprland = {
