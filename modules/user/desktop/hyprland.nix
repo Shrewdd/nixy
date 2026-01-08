@@ -121,9 +121,9 @@
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
-        # Screenshots (keep your current grimblast workflow)
-        "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
-        ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
+        # Screenshots (Caelestia CLI)
+        "$mainMod, Print, exec, caelestia screenshot"
+        ", Print, exec, caelestia screenshot -r -f"
       ];
 
       bindm = [
