@@ -72,11 +72,9 @@
       };
 
       bind = [
+        # Your keybinds
         "$mainMod, RETURN, exec, $terminal"
         "$mainMod, E, exec, $fileManager"
-        # Launcher (replaces rofi)
-        "$mainMod, A, global, caelestia:launcher"
-        "$mainMod, SPACE, global, caelestia:launcher"
         "$mainMod, Q, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, V, togglefloating,"
@@ -111,19 +109,14 @@
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
 
-        # Caelestia global shortcuts
+        # Caelestia launcher + shortcuts (fully declarative; no submaps/catchall)
+        "$mainMod, SPACE, global, caelestia:launcher"
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
+
+        # Screenshots (keep your current grimblast workflow)
         "$mainMod, Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save screen --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
         ", Print, exec, bash -c 'f=~/Downloads/screenshot-$(date +%Y%m%d-%H%M%S).png; grimblast save area --freeze \"$f\" && wl-copy < \"$f\" && notify-send -i \"$f\" \"Screenshot Saved\" \"$f\"'"
-      ];
-
-      # Interrupt launcher when interacting while holding Mod (keeps Caelestia responsive)
-      bindin = [
-        "$mainMod, mouse:272, global, caelestia:launcherInterrupt"
-        "$mainMod, mouse:273, global, caelestia:launcherInterrupt"
-        "$mainMod, mouse_up, global, caelestia:launcherInterrupt"
-        "$mainMod, mouse_down, global, caelestia:launcherInterrupt"
       ];
 
       bindm = [
@@ -145,11 +138,9 @@
         ", XF86AudioPrev, exec, playerctl previous"
       ];
 
-
-
-      windowrule = [
+      windowrulev2 = [
         "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        "nofocus, class:^$, title:^$, xwayland:1, floating:1, fullscreen:0, pinned:0"
       ];
 
       input.kb_layout = "pl";
