@@ -116,8 +116,8 @@
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
 
-        # Caelestia launcher + shortcuts (fully declarative; no submaps/catchall)
-        "$mainMod, SPACE, global, caelestia:launcher"
+        # Caelestia launcher
+        "$mainMod, A, global, caelestia:launcher"
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
