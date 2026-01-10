@@ -7,6 +7,5 @@
     ../apps/ghostty.nix
     ../apps/zen.nix
     ../apps/spotify.nix
-    ../apps/anytype.nix
   ];
 }

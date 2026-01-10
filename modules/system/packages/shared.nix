@@ -6,6 +6,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    anytype
     vscode
     veracrypt
     speedtest-cli
