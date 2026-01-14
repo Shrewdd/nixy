@@ -19,6 +19,13 @@
       };
 
       services.weatherLocation = "";
+
+      utilities.toasts.capsLockChanged = false;
+
+      bar = {
+        excludedScreens = [ "HDMI-A-5" ];
+        workspaces.perMonitorWorkspaces = false;
+      };
     };
 
     cli = {
@@ -121,9 +128,9 @@
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
-        # Screenshots (Caelestia CLI)
-        "$mainMod, Print, exec, caelestia screenshot"
-        ", Print, exec, caelestia screenshot -r -f"
+        # Screenshots (grimblast)
+        "$mainMod, Print, exec, grimblast --notify --freeze copy active"
+        ", Print, exec, grimblast --notify --freeze copy area"
       ];
 
       bindm = [
