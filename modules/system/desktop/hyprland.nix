@@ -39,6 +39,7 @@
   environment.systemPackages = with pkgs; [
     playerctl
     grimblast
+    wl-clipboard
     gpu-screen-recorder
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
