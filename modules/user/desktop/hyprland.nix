@@ -128,9 +128,9 @@
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
-        # Screenshots (grimblast)
-        "$mainMod, Print, exec, grimblast --notify --freeze copy active"
-        ", Print, exec, grimblast --notify --freeze copy area"
+        # Screenshots (grimblast): save + copy
+        "$mainMod, Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=\"$dir/$(date +%Y-%m-%d_%H-%M-%S).png\"; grimblast --notify --freeze save output \"$file\" && wl-copy < \"$file\"'"
+        ", Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=\"$dir/$(date +%Y-%m-%d_%H-%M-%S).png\"; grimblast --notify --freeze save area \"$file\" && wl-copy < \"$file\"'"
       ];
 
       bindm = [
