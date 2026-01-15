@@ -22,10 +22,11 @@
 
       utilities.toasts.capsLockChanged = false;
 
-      bar = {
-        excludedScreens = [ "HDMI-A-5" ];
-        workspaces.perMonitorWorkspaces = false;
-      };
+        bar = {
+          # Hide the bar on the secondary display; include both common names so hotplug renames don't re-enable it.
+          excludedScreens = [ "HDMI-A-2" "HDMI-A-5" ];
+          workspaces.perMonitorWorkspaces = false;
+        };
     };
 
     cli = {
