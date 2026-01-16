@@ -32,10 +32,11 @@
     cli = {
       enable = true;
       settings = {
-        theme.enableGtk = false;
+        theme.enableGtk = true;
       };
     };
   };
+
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -129,9 +130,9 @@
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
-        # Screenshots (grimblast): save + copy
-        "$mainMod, Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=\"$dir/$(date +%Y-%m-%d_%H-%M-%S).png\"; grimblast --notify --freeze save output \"$file\" && cat \"$file\" | wl-copy'"
-        ", Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=\"$dir/$(date +%Y-%m-%d_%H-%M-%S).png\"; grimblast --notify --freeze save area \"$file\" && cat \"$file\" | wl-copy'"
+        # Screenshots (hyprshot)
+        "$mainMod, Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=$(date +%Y-%m-%d_%H-%M-%S).png; hyprshot -m output -o \"$dir\" -f \"$file\" --freeze --clipboard'"
+        ", Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=$(date +%Y-%m-%d_%H-%M-%S).png; hyprshot -m region -o \"$dir\" -f \"$file\" --freeze --clipboard'"
       ];
 
       bindm = [
