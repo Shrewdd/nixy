@@ -38,7 +38,6 @@
 
   environment.systemPackages = with pkgs; [
     playerctl
-    hyprshot
     gpu-screen-recorder
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];

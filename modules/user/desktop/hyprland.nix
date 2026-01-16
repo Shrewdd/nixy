@@ -130,9 +130,10 @@
         "$mainMod, Escape, global, caelestia:session"
         "$mainMod, L, global, caelestia:lock"
 
-        # Screenshots (hyprshot)
-        "$mainMod, Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=$(date +%Y-%m-%d_%H-%M-%S).png; hyprshot -m output -o \"$dir\" -f \"$file\" --freeze --clipboard'"
-        ", Print, exec, bash -lc 'dir=\"$HOME/Pictures/Screenshots\"; mkdir -p \"$dir\"; file=$(date +%Y-%m-%d_%H-%M-%S).png; hyprshot -m region -o \"$dir\" -f \"$file\" --freeze --clipboard'"
+        # Screenshots (caelestia)
+        "$mainMod, Print, exec, caelestia screenshot --freeze"
+        ", Print, exec, caelestia screenshot --region --freeze"
+        "$mainMod ALT, Print, exec, caelestia screenshot --all --freeze"
       ];
 
       bindm = [
