@@ -8,6 +8,10 @@
     withUWSM = true;
   };
 
+  programs.gpu-screen-recorder = {
+    enable = true;
+  };
+
   xdg.portal = {
     enable = true;
     extraPortals = [
@@ -38,7 +42,6 @@
 
   environment.systemPackages = with pkgs; [
     playerctl
-    gpu-screen-recorder
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
