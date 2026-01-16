@@ -13,8 +13,8 @@
     ../packages/shared.nix
   ];
 
-  nixy.stylix.enable = lib.mkDefault false;
-  nixy.stylix.base16Scheme = lib.mkDefault (import ../../shared/theme/catppuccin-mocha-base16.nix);
+  nixy.stylix.enable = lib.mkDefault true;
+  nixy.stylix.base16Scheme = lib.mkDefault (import ../../shared/theme/catppuccin-latte-base16.nix);
 
   security.sudo.wheelNeedsPassword = false;
 }

@@ -1,8 +1,15 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 let
   defaultPalette = import ../../shared/theme/catppuccin-latte-base16.nix;
-  palette = config.stylix.base16Scheme or config.nixy.stylix.base16Scheme or defaultPalette;
+  palette =
+    let
+      stylixPalette = lib.attrByPath [ "nixy" "stylix" "base16Scheme" ] config null;
+      userPalette = lib.attrByPath [ "stylix" "base16Scheme" ] config null;
+    in
+      if stylixPalette != null then stylixPalette
+      else if userPalette != null then userPalette
+      else defaultPalette;
   hex = name: let
     raw = if lib.hasAttr name palette && palette.${name} != null then palette.${name}
           else if lib.hasAttr name defaultPalette && defaultPalette.${name} != null then defaultPalette.${name}
