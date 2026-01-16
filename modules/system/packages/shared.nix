@@ -9,6 +9,7 @@
     anytype
     vscode
     veracrypt
+    zapzap
     speedtest-cli
     kdePackages.gwenview
   ];
