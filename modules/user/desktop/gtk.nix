@@ -11,8 +11,8 @@
       package = lib.mkDefault pkgs.adwaita-icon-theme;
     };
     cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
+      name = lib.mkDefault "Bibata-Modern-Ice";
+      package = lib.mkDefault pkgs.bibata-cursors;
     };
   };
 

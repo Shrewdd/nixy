@@ -162,6 +162,11 @@
 
       input.kb_layout = "pl";
 
+      env = [
+        "XCURSOR_THEME,Bibata-Modern-Ice"
+        "XCURSOR_SIZE,24"
+      ];
+
       misc = {
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
