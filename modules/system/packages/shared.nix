@@ -12,7 +12,7 @@
     veracrypt
     zapzap
     speedtest-cli
-    kdePackages.gwenview
+    gthumb
   ];
 
   programs.localsend = {
