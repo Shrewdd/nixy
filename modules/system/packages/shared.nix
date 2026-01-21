@@ -6,6 +6,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    apostrophe
     anytype
     vscode
     veracrypt
