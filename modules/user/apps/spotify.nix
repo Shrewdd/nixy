@@ -8,8 +8,6 @@ in
 
   programs.spicetify = {
     enable = true;
-    theme = lib.mkDefault spicePkgs.themes.catppuccin;
-    colorScheme = lib.mkDefault "mocha";
     enabledExtensions = with spicePkgs.extensions; [
       adblockify
       fullAppDisplay

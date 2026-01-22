@@ -26,5 +26,4 @@
   };
 
   programs.zoom-us.enable = true;
-  programs.dconf.enable = true;
 }

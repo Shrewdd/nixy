@@ -2,6 +2,7 @@
 {
   imports = [
     ../../shared/stylix.nix
+    ../../shared/theme-profiles.nix
     ../core/base.nix
     ../core/boot.nix
     ../desktop/hyprland.nix
@@ -13,15 +14,7 @@
     ../packages/shared.nix
   ];
 
-  nixy.stylix.enable = lib.mkDefault true;
-  nixy.stylix.image = lib.mkDefault ../../shared/wallpapers/catppuccin-latte/white-snow-and-a-tree_light.png;
-  nixy.stylix.base16Scheme = lib.mkDefault (import ../../shared/theme/catppuccin-latte-base16.nix);
-
-  stylix.cursor = {
-    name = "Bibata-Modern-Ice";
-    package = pkgs.bibata-cursors;
-    size = 24;
-  };
+  nixy.themeProfile.name = lib.mkDefault "catppuccin-latte";
 
   security.sudo.wheelNeedsPassword = false;
 }

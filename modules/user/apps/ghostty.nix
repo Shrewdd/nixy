@@ -4,7 +4,6 @@
     enable = true;
     enableZshIntegration = true;
     settings = {
-      theme = lib.mkDefault "Everforest Dark Hard";
       background-blur-radius = lib.mkDefault 20;
       font-family = lib.mkDefault "Maple Mono NF";
       font-feature = [ "+ss02" "+ss03" "+ss05" "+ss07" ];
