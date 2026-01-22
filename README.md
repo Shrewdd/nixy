@@ -1,4 +1,4 @@
-# nixy - Modular NixOS configuration (I suppose)
+# nixy - Modular NixOS configuration (maybe too modular)
 
 A clean, feature-based NixOS configuration with Home Manager integration. Built for maintainability and easy expansion.
 
