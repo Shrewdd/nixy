@@ -2,6 +2,8 @@
 {
   services.displayManager.gdm.enable = lib.mkForce false;
 
+  services.gnome.gnome-keyring.enable = true;
+
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -42,6 +44,8 @@
 
   environment.systemPackages = with pkgs; [
     playerctl
+    libsecret
+    seahorse
     (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
   ];
 
