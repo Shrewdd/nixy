@@ -1,6 +1,6 @@
-# nixy - Modular NixOS configuration (maybe too modular)
+# nixy
 
-A clean, feature-based NixOS configuration with Home Manager integration. Built for maintainability and easy expansion.
+My personal NixOS configuration. Modular, maintainable, and easy to expand.
 
 ## Structure
 
@@ -8,7 +8,7 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 .
 ├── flake.nix                  # Flake entrypoint with host definitions
 ├── flake.lock                 # Locked dependency versions
-├── hosts/                     # Host manifests and configurations
+├── hosts/                     # Host-specific configurations
 │   ├── aurora/
 │   │   ├── configuration.nix
 │   │   └── hardware-configuration.nix
@@ -18,25 +18,27 @@ A clean, feature-based NixOS configuration with Home Manager integration. Built 
 │   ├── nomad/
 │   │   ├── configuration.nix
 │   │   └── hardware-configuration.nix
-│   └── default.nix            # Shared host definitions consumed by flake.nix
+│   └── default.nix            # Host definitions consumed by flake.nix
 ├── modules/
 │   ├── shared/
-│   │   ├── theme/             # Color palettes for reuse
-│   │   └── wallpapers/        # Shared wallpaper collection
+│   │   ├── theme/             # Color palettes
+│   │   ├── stylix.nix         # Stylix theming config
+│   │   ├── theme-profiles.nix # Theme profile selector
+│   │   └── wallpapers/        # Wallpaper collection
 │   ├── system/
-│   │   ├── core/              # Base OS defaults (nix, networking, localization)
-│   │   ├── desktop/           # Desktop environment modules (GNOME only for now)
-│   │   ├── hardware/          # Audio, bluetooth, GPU helpers
-│   │   ├── packages/          # Package bundles per role
-│   │   ├── profiles/          # Host roles (server, workstation, laptop)
-│   │   └── services/          # Flatpak, printing, etc.
+│   │   ├── core/              # Base OS defaults (nix, networking, localization, boot)
+│   │   ├── desktop/           # Desktop environments (Hyprland, GNOME)
+│   │   ├── hardware/          # Audio, Bluetooth, GPU
+│   │   ├── packages/          # System package bundles
+│   │   ├── profiles/          # System profiles (server, workstation, laptop)
+│   │   └── services/          # Services (Flatpak, printing, etc.)
 │   └── user/
-│       ├── apps/              # Home Manager application modules
-│       ├── core/              # Shared user defaults
-│       ├── desktop/           # User-level desktop tweaks (GNOME, GTK)
-│       ├── dev/               # Developer tooling (git)
-│       ├── profiles/          # User bundles (server, desktop)
-│       └── shell/             # Shell tooling (zsh, starship, etc.)
+│       ├── apps/              # User applications (Ghostty, Spotify, Zen, etc.)
+│       ├── core/              # User defaults
+│       ├── desktop/           # Desktop tweaks (GTK, Hyprland)
+│       ├── dev/               # Developer tools (Git, etc.)
+│       ├── profiles/          # User profiles
+│       └── shell/             # Shell tools (Zsh, Starship, btop, etc.)
 └── README.md
 ```
 
