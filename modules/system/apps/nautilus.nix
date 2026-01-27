@@ -5,5 +5,6 @@
 
   environment.systemPackages = [
     pkgs.nautilus
+    pkgs.file-roller
   ];
 }
