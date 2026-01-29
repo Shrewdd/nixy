@@ -9,7 +9,6 @@
     apostrophe
     anytype
     vscode
-    veracrypt
     zapzap
     speedtest-cli
     gthumb
