@@ -13,6 +13,7 @@
     zapzap
     speedtest-cli
     gthumb
+    tree
   ];
 
   programs.localsend = {

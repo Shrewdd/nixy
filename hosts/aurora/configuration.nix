@@ -2,35 +2,7 @@
   lib,
   pkgs,
   ...
-}: let
-  prismaEnginesOverlay = final: prev: {
-    prisma-engines = prev.prisma-engines.overrideAttrs (_: rec {
-      version = "7.1.0";
-      src = final.fetchFromGitHub {
-        owner = "prisma";
-        repo = "prisma-engines";
-        rev = "7.1.0";
-        hash = "sha256-RBHUJI6QG37cMVGciQAWrmMnEhgRW/B8/BxpLhK09OQ=";
-      };
-      cargoDeps = final.rustPlatform.fetchCargoVendor {
-        inherit src;
-        hash = "sha256-n83hJfSlvuaoBb3w9Rk8+q2emjGCoPDHhFdoVzhf4sM=";
-      };
-      cargoBuildFlags = [
-        "--package"
-        "query-compiler"
-        "--package"
-        "schema-engine-cli"
-        "--package"
-        "prisma-fmt"
-      ];
-      postInstall = ''
-        mv $out/bin/query-engine-node-api $out/bin/query-engine || true
-        mv $out/lib/libquery_engine*.so $out/lib/libquery_engine.node || true
-      '';
-    });
-  };
-in {
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/profiles/server.nix
@@ -46,7 +18,6 @@ in {
 
   nix.settings.auto-optimise-store = true;
   nix.gc.options = "--delete-older-than 30d";
-  nixpkgs.overlays = [prismaEnginesOverlay];
 
   networking.useDHCP = lib.mkDefault true;
   networking.networkmanager.enable = lib.mkForce false;
@@ -75,12 +46,12 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    nixfmt
     speedtest-cli
     tree
     nodejs_24
     pnpm
     openssl
+    prisma-engines
   ];
 
   programs.nh = {

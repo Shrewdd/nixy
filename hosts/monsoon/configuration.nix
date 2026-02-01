@@ -47,8 +47,18 @@
     "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
   };
 
+  # Monsoon-specific packages and programs
+  environment.systemPackages = with pkgs; [
+    vesktop
+    sixpair
+    appimage-run
+    lshw
+  ];
+
+  programs.gamemode.enable = true;
+  programs.steam.enable = true;
+
   home-manager.users.km = {
     imports = [../../modules/user/profiles/monsoon-hyprland.nix];
-    home.packages = with pkgs; [tree];
   };
 }

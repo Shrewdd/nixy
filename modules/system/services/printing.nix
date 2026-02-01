@@ -8,9 +8,8 @@
     drivers = with pkgs; [gutenprint hplip];
   };
 
-  # Need to figure out why avahi fails to start mDNS/DNS-SD Stack
   services.avahi = {
-    enable = lib.mkDefault false;
+    enable = lib.mkDefault true;
     nssmdns4 = true;
     openFirewall = true;
   };
