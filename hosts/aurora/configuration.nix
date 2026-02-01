@@ -106,14 +106,10 @@
     PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
     PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
     PRISMA_FMT_BINARY = "${pkgs.prisma-engines}/bin/prisma-fmt";
+    PNPM_HOME = "/home/km/.local/share/pnpm";
   };
 
-  home-manager.users.km = {
-    imports = [../../modules/user/profiles/server.nix];
-    home = {
-      packages = [];
-      sessionVariables.PNPM_HOME = "/home/km/.local/share/pnpm";
-      sessionPath = ["$PNPM_HOME"];
-    };
+  environment.profileRelativeSessionVariables = {
+    PATH = [".local/share/pnpm"];
   };
 }
