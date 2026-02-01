@@ -1,6 +1,8 @@
-{ lib, pkgs, ... }:
-
-let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   prismaEnginesOverlay = final: prev: {
     prisma-engines = prev.prisma-engines.overrideAttrs (_: rec {
       version = "7.1.0";
@@ -15,9 +17,12 @@ let
         hash = "sha256-n83hJfSlvuaoBb3w9Rk8+q2emjGCoPDHhFdoVzhf4sM=";
       };
       cargoBuildFlags = [
-        "--package" "query-compiler"
-        "--package" "schema-engine-cli"
-        "--package" "prisma-fmt"
+        "--package"
+        "query-compiler"
+        "--package"
+        "schema-engine-cli"
+        "--package"
+        "prisma-fmt"
       ];
       postInstall = ''
         mv $out/bin/query-engine-node-api $out/bin/query-engine || true
@@ -25,8 +30,7 @@ let
       '';
     });
   };
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/profiles/server.nix
@@ -42,13 +46,13 @@ in
 
   nix.settings.auto-optimise-store = true;
   nix.gc.options = "--delete-older-than 30d";
-  nixpkgs.overlays = [ prismaEnginesOverlay ];
+  nixpkgs.overlays = [prismaEnginesOverlay];
 
   networking.useDHCP = lib.mkDefault true;
   networking.networkmanager.enable = lib.mkForce false;
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 ];
+    allowedTCPPorts = [22];
   };
 
   users.users.km = {
@@ -96,10 +100,24 @@ in
       host    all             all             127.0.0.1/32            scram-sha-256
       host    all             all             ::1/128                 scram-sha-256
     '';
-    ensureDatabases = [ "tyraax" "clerk" ];
+    ensureDatabases = ["tyraax" "clerk"];
     ensureUsers = [
-      { name = "tyraax"; ensureDBOwnership = true; ensureClauses = { createdb = true; login = true; }; }
-      { name = "clerk"; ensureDBOwnership = true; ensureClauses = { createdb = true; login = true; }; }
+      {
+        name = "tyraax";
+        ensureDBOwnership = true;
+        ensureClauses = {
+          createdb = true;
+          login = true;
+        };
+      }
+      {
+        name = "clerk";
+        ensureDBOwnership = true;
+        ensureClauses = {
+          createdb = true;
+          login = true;
+        };
+      }
     ];
   };
 
@@ -120,11 +138,11 @@ in
   };
 
   home-manager.users.km = {
-    imports = [ ../../modules/user/profiles/server.nix ];
+    imports = [../../modules/user/profiles/server.nix];
     home = {
-      packages = [ ];
+      packages = [];
       sessionVariables.PNPM_HOME = "/home/km/.local/share/pnpm";
-      sessionPath = [ "$PNPM_HOME" ];
+      sessionPath = ["$PNPM_HOME"];
     };
   };
 }

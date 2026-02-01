@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   gtk = {
     enable = true;
     theme = {
@@ -16,5 +19,5 @@
     };
   };
 
-  home.packages = [ pkgs.bibata-cursors ];
+  home.packages = [pkgs.bibata-cursors];
 }

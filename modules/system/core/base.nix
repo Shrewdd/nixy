@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   imports = [
     ./nix.nix
     ./networking.nix
@@ -9,6 +8,6 @@
   users.users.km = {
     isNormalUser = true;
     description = "km";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
   };
 }

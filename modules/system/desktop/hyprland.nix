@@ -1,5 +1,8 @@
-{ pkgs, lib, ... }:
 {
+  pkgs,
+  lib,
+  ...
+}: {
   services.displayManager.gdm.enable = lib.mkForce false;
 
   services.gnome.gnome-keyring.enable = true;
@@ -46,7 +49,7 @@
     playerctl
     libsecret
     seahorse
-    (pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; })
+    (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
   ];
 
   environment.sessionVariables = {

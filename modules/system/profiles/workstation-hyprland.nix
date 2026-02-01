@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     ../../shared/stylix.nix
     ../../shared/theme-profiles.nix

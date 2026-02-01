@@ -19,20 +19,25 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, stylix, ... }@inputs:
-    let
-      lib = nixpkgs.lib;
-      specialArgs = { inherit inputs; };
-      hosts = import ./hosts/default.nix { inherit inputs; };
-      mkHost = _: attrs:
-        let
-          system = attrs.system or "x86_64-linux";
-          hostModules = attrs.modules or [ ];
-        in
-        lib.nixosSystem {
-          inherit system;
-          specialArgs = specialArgs;
-          modules = hostModules ++ [
+  outputs = {
+    nixpkgs,
+    home-manager,
+    stylix,
+    ...
+  } @ inputs: let
+    lib = nixpkgs.lib;
+    specialArgs = {inherit inputs;};
+    hosts = import ./hosts/default.nix {inherit inputs;};
+    mkHost = _: attrs: let
+      system = attrs.system or "x86_64-linux";
+      hostModules = attrs.modules or [];
+    in
+      lib.nixosSystem {
+        inherit system;
+        specialArgs = specialArgs;
+        modules =
+          hostModules
+          ++ [
             stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
@@ -44,8 +49,8 @@
               };
             }
           ];
-        };
-    in {
-      nixosConfigurations = lib.mapAttrs mkHost hosts;
-    };
+      };
+  in {
+    nixosConfigurations = lib.mapAttrs mkHost hosts;
+  };
 }

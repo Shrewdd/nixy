@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -11,5 +10,5 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
-  environment.systemPackages = with pkgs; [ pavucontrol ];
+  environment.systemPackages = with pkgs; [pavucontrol];
 }

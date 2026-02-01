@@ -1,10 +1,12 @@
-{ lib, pkgs, inputs, ... }:
-
-let
-  spicePkgs = inputs.spotify.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in
 {
-  imports = [ inputs.spotify.homeManagerModules.default ];
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: let
+  spicePkgs = inputs.spotify.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in {
+  imports = [inputs.spotify.homeManagerModules.default];
 
   programs.spicetify = {
     enable = true;

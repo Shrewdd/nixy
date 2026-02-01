@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
@@ -31,7 +30,7 @@
   programs.fzf.enable = true;
   programs.zoxide.enable = true;
 
-  home.packages = with pkgs; [ fd ripgrep ];
+  home.packages = with pkgs; [fd ripgrep];
 
   programs.bash = {
     enable = true;

@@ -1,6 +1,9 @@
-{ pkgs, inputs, ... }:
 {
-  imports = [ inputs.caelestia-shell.homeManagerModules.default ];
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [inputs.caelestia-shell.homeManagerModules.default];
 
   programs.caelestia = {
     enable = true;
@@ -9,24 +12,24 @@
     systemd = {
       enable = true;
       target = "graphical-session.target";
-      environment = [ ];
+      environment = [];
     };
 
     settings = {
       general.apps = {
-        terminal = [ "ghostty" ];
-        explorer = [ "nautilus" ];
+        terminal = ["ghostty"];
+        explorer = ["nautilus"];
       };
 
       services.weatherLocation = "";
 
       utilities.toasts.capsLockChanged = false;
 
-        bar = {
-          # Hide the bar on the secondary display; include both common names so hotplug renames don't re-enable it.
-          excludedScreens = [ "HDMI-A-2" "HDMI-A-5" ];
-          workspaces.perMonitorWorkspaces = false;
-        };
+      bar = {
+        # Hide the bar on the secondary display; include both common names so hotplug renames don't re-enable it.
+        excludedScreens = ["HDMI-A-2" "HDMI-A-5"];
+        workspaces.perMonitorWorkspaces = false;
+      };
     };
 
     cli = {
@@ -36,7 +39,6 @@
       };
     };
   };
-
 
   wayland.windowManager.hyprland = {
     enable = true;

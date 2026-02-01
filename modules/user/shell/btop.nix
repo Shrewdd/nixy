@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   programs.btop = {
     enable = true;
     settings = {

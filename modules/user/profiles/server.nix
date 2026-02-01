@@ -1,4 +1,3 @@
-{ ... }:
-{
-  imports = [ ../core/base.nix ];
+{...}: {
+  imports = [../core/base.nix];
 }

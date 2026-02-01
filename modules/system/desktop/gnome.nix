@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   services.displayManager.gdm = {
     enable = true;
     wayland = true;
@@ -23,5 +26,5 @@
 
   services.tlp.enable = lib.mkForce false;
 
-  services.udev.packages = with pkgs; [ gnomeExtensions.appindicator ];
+  services.udev.packages = with pkgs; [gnomeExtensions.appindicator];
 }

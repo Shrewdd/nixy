@@ -1,8 +1,11 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   services.printing = {
     enable = true;
-    drivers = with pkgs; [ gutenprint hplip ];
+    drivers = with pkgs; [gutenprint hplip];
   };
 
   # Need to figure out why avahi fails to start mDNS/DNS-SD Stack

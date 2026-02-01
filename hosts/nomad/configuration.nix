@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/profiles/laptop.nix
@@ -13,9 +11,9 @@
   # Home Manager (User Configuration)
   # ===================================
   home-manager.users.km = {
-    imports = [ ../../modules/user/profiles/desktop.nix ];
+    imports = [../../modules/user/profiles/desktop.nix];
 
     # Host-specific packages
-    home.packages = with pkgs; [ tree ];
+    home.packages = with pkgs; [tree];
   };
 }

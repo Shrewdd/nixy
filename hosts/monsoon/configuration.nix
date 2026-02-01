@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/system/profiles/monsoon-hyprland.nix
@@ -9,7 +11,7 @@
   networking.hostName = "monsoon";
   system.stateVersion = "25.05";
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
     open = false;
@@ -25,8 +27,8 @@
     };
   };
 
-  boot.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
+  boot.blacklistedKernelModules = ["nouveau"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   hardware.graphics = {
@@ -46,7 +48,7 @@
   };
 
   home-manager.users.km = {
-    imports = [ ../../modules/user/profiles/monsoon-hyprland.nix ];
-    home.packages = with pkgs; [ tree ];
+    imports = [../../modules/user/profiles/monsoon-hyprland.nix];
+    home.packages = with pkgs; [tree];
   };
 }

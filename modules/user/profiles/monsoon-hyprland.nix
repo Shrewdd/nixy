@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../core/base.nix
     ../desktop/hyprland.nix

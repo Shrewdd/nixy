@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   imports = [
     ../../shared/stylix.nix
     ./workstation.nix
