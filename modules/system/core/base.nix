@@ -1,4 +1,4 @@
-{lib, ...}: {
+{...}: {
   imports = [
     ./nix.nix
     ./networking.nix
