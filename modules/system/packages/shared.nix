@@ -6,6 +6,8 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    nixd
+    alejandra
     apostrophe
     anytype
     vscode
