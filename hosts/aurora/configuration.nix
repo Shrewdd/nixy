@@ -46,6 +46,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    nixd
+    btop
     git
     speedtest-cli
     tree
