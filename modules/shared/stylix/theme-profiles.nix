@@ -4,6 +4,8 @@
   config,
   ...
 }: {
+  imports = [./stylix.nix];
+
   options.nixy.themeProfile = {
     name = lib.mkOption {
       type = lib.types.enum ["catppuccin-latte" "catppuccin-mocha"];

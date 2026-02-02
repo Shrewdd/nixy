@@ -3,7 +3,6 @@
   ...
 }: {
   imports = [
-    ../../shared/stylix/stylix.nix
     ../../shared/stylix/theme-profiles.nix
     ../core/base.nix
     ../core/boot.nix
