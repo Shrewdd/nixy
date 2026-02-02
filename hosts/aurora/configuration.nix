@@ -46,6 +46,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    git
     speedtest-cli
     tree
     nodejs_24
