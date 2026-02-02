@@ -1,6 +1,6 @@
 {lib, ...}: {
   imports = [
-    ../../shared/stylix.nix
+    ../../shared/stylix/stylix.nix
     ./workstation.nix
   ];
 

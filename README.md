@@ -21,10 +21,11 @@ My personal NixOS configuration. Modular, maintainable, and easy to expand.
 │   └── default.nix            # Host definitions consumed by flake.nix
 ├── modules/
 │   ├── shared/
-│   │   ├── theme/             # Color palettes
-│   │   ├── stylix.nix         # Stylix theming config
-│   │   ├── theme-profiles.nix # Theme profile selector
-│   │   └── wallpapers/        # Wallpaper collection
+│   │   ├── stylix/
+│   │   │   ├── stylix.nix         # Stylix config
+│   │   │   ├── theme-profiles.nix # Theme selector
+│   │   │   ├── theme/             # Color schemes
+│   │   │   └── wallpapers/        # Wallpaper collection
 │   ├── system/
 │   │   ├── core/              # Base OS defaults (nix, networking, localization, boot)
 │   │   ├── desktop/           # Desktop environments (Hyprland, GNOME)

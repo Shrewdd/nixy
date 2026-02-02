@@ -26,25 +26,25 @@
 
   config = let
     cfg = config.nixy.themeProfile;
-    themeConfig = {
-      "catppuccin-latte" = {
+    themes = {
+      catppuccin-latte = {
         wallpaper = ./wallpapers/catppuccin-latte/white-snow-and-a-tree_light.png;
         base16Scheme = import ./theme/catppuccin-latte-base16.nix;
         polarity = "light";
       };
-      "catppuccin-mocha" = {
+      catppuccin-mocha = {
         wallpaper = ./wallpapers/catppuccin-mocha/sunset.png;
         base16Scheme = import ./theme/catppuccin-mocha-base16.nix;
         polarity = "dark";
       };
     };
-    selectedTheme = themeConfig.${cfg.name};
+    theme = themes.${cfg.name};
   in {
     nixy.stylix = {
       enable = lib.mkDefault true;
-      image = lib.mkDefault selectedTheme.wallpaper;
-      polarity = lib.mkDefault selectedTheme.polarity;
-      base16Scheme = lib.mkDefault selectedTheme.base16Scheme;
+      image = lib.mkDefault theme.wallpaper;
+      polarity = lib.mkDefault theme.polarity;
+      base16Scheme = lib.mkDefault theme.base16Scheme;
     };
 
     stylix.cursor = {
