@@ -4,33 +4,23 @@
     settings = {
       logo = {
         type = "small";
-        width = 20;
-        height = 13;
+        width = 16;
+        height = 10;
       };
       display = {
-        separator = "  ";
+        separator = " ";
       };
       modules = [
         {
           type = "title";
-          format = "{user-name-colored} @{host-name-colored}";
-        }
-        {
-          type = "separator";
-          string = "─";
+          format = "{user-name-colored}@{host-name-colored}";
         }
         "os"
         "kernel"
-        "uptime"
         "cpu"
-        "gpu"
         "memory"
-        "swap"
-        "disk"
-        "display"
         "shell"
-        "de"
-        "distro-id"
+        "uptime"
       ];
     };
   };

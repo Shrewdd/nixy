@@ -18,6 +18,7 @@
     };
     initContent = ''
       eval "$(zoxide init zsh)"
+      fastfetch --logo small
     '';
   };
 
