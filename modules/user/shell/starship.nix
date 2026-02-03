@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  lib,
+  config,
+  ...
+}: {
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
@@ -23,42 +27,42 @@
       add_newline = true;
 
       character = {
-        success_symbol = "[❯](bold green)";
-        error_symbol = "[❯](bold red)";
-        vimcmd_symbol = "[❮](bold green)";
+        success_symbol = "[❯](bold ${config.stylix.base16Scheme.base0B})";
+        error_symbol = "[❯](bold ${config.stylix.base16Scheme.base08})";
+        vimcmd_symbol = "[❮](bold ${config.stylix.base16Scheme.base0B})";
       };
 
       username = {
         format = "[$user]($style) ";
         show_always = false;
-        style_user = "bold blue";
-        style_root = "bold red";
+        style_user = "bold ${config.stylix.base16Scheme.base0D}";
+        style_root = "bold ${config.stylix.base16Scheme.base08}";
       };
 
       hostname = {
         format = "in [$hostname]($style) ";
         ssh_only = true;
-        style = "bold purple";
+        style = "bold ${config.stylix.base16Scheme.base0E}";
       };
 
       directory = {
         format = "in [$path]($style)[$read_only]($read_only_style) ";
-        style = "bold cyan";
+        style = "bold ${config.stylix.base16Scheme.base0C}";
         truncation_length = 3;
         truncate_to_repo = true;
         read_only = " 󰌾";
-        read_only_style = "red";
+        read_only_style = "${config.stylix.base16Scheme.base08}";
       };
 
       git_branch = {
         format = "on [$symbol$branch]($style) ";
         symbol = " ";
-        style = "bold purple";
+        style = "bold ${config.stylix.base16Scheme.base0E}";
       };
 
       git_status = {
         format = "([\\[$all_status$ahead_behind\\]]($style) )";
-        style = "bold red";
+        style = "bold ${config.stylix.base16Scheme.base08}";
         conflicted = "=";
         ahead = lib.concatStrings ["⇡$" "{count}"];
         behind = lib.concatStrings ["⇣$" "{count}"];
@@ -74,31 +78,31 @@
       nodejs = {
         symbol = "󰎙 ";
         format = "[$symbol$version]($style) ";
-        style = "bold green";
+        style = "bold ${config.stylix.base16Scheme.base0B}";
       };
 
       python = {
         symbol = "󰌠 ";
         format = "[$symbol$version]($style) ";
-        style = "bold yellow";
+        style = "bold ${config.stylix.base16Scheme.base0A}";
       };
 
       rust = {
         symbol = "󱘗 ";
         format = "[$symbol$version]($style) ";
-        style = "bold red";
+        style = "bold ${config.stylix.base16Scheme.base08}";
       };
 
       golang = {
         symbol = "󰟓 ";
         format = "[$symbol$version]($style) ";
-        style = "bold cyan";
+        style = "bold ${config.stylix.base16Scheme.base0C}";
       };
 
       nix_shell = {
         format = "via [$symbol$state]($style) ";
         symbol = " ";
-        style = "bold blue";
+        style = "bold ${config.stylix.base16Scheme.base0D}";
         impure_msg = "";
         pure_msg = "pure";
       };
@@ -106,7 +110,7 @@
       cmd_duration = {
         format = "took [$duration]($style) ";
         min_time = 2000;
-        style = "bold yellow";
+        style = "bold ${config.stylix.base16Scheme.base0A}";
       };
     };
   };

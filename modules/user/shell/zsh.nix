@@ -2,6 +2,7 @@
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
+    autosuggestion.strategy = ["history" "completion"];
     syntaxHighlighting.enable = true;
     history = {
       size = 10000;
@@ -16,21 +17,13 @@
       "..." = "cd ../..";
     };
     initContent = ''
-      if command -v fzf >/dev/null 2>&1; then
-        export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --preview-window=down:60%'
-        export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-        if typeset -f fzf-file-widget >/dev/null; then bindkey '^T' fzf-file-widget; fi
-        if typeset -f fzf-history-widget >/dev/null; then bindkey '^R' fzf-history-widget; fi
-        if typeset -f fzf-cd-widget >/dev/null; then bindkey '^[c' fzf-cd-widget; fi
-      fi
       eval "$(zoxide init zsh)"
     '';
   };
 
-  programs.fzf.enable = true;
   programs.zoxide.enable = true;
 
-  home.packages = with pkgs; [fd ripgrep];
+  home.packages = with pkgs; [fd zsh-completions];
 
   programs.bash = {
     enable = true;
