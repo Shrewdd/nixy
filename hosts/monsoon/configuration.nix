@@ -53,6 +53,7 @@
     sixpair
     appimage-run
     lshw
+    simple-scan
   ];
 
   programs.gamemode.enable = true;
