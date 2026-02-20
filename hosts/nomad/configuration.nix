@@ -5,7 +5,7 @@
   ];
 
   networking.hostName = "nomad";
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 
   nixy.themeProfile.name = "catppuccin-latte";
 
