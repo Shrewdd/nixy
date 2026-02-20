@@ -54,5 +54,6 @@
 
   home-manager.users.km = {
     imports = [../../modules/user/profiles/monsoon-hyprland.nix];
+    home.stateVersion = "25.05";
   };
 }

@@ -14,5 +14,6 @@
   # ===================================
   home-manager.users.km = {
     imports = [../../modules/user/profiles/desktop.nix];
+    home.stateVersion = "25.11";
   };
 }
