@@ -5,7 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/profiles/monsoon-hyprland.nix
+    ../../modules/system/profiles/workstation-hyprland.nix
   ];
 
   networking.hostName = "monsoon";

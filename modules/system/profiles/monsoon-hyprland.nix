@@ -1,5 +1,0 @@
-{...}: {
-  imports = [
-    ./workstation-hyprland.nix
-  ];
-}
