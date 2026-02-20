@@ -51,13 +51,11 @@
   environment.systemPackages = with pkgs; [
     vesktop
     sixpair
-    appimage-run
     lshw
     simple-scan
   ];
 
   programs.gamemode.enable = true;
-  programs.steam.enable = true;
 
   home-manager.users.km = {
     imports = [../../modules/user/profiles/monsoon-hyprland.nix];
