@@ -45,7 +45,7 @@
         polarity = "dark";
       };
       rose-pine-dawn = {
-        wallpaper = ./wallpapers/catppuccin-latte/white-snow-and-a-tree_light.png;
+        wallpaper = ./wallpapers/rose-pine-moon/pink-clouds.png;
         base16Scheme = import ./theme/rose-pine-dawn-base16.nix;
         polarity = "light";
       };

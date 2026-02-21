@@ -7,7 +7,7 @@
   networking.hostName = "nomad";
   system.stateVersion = "25.11";
 
-  nixy.themeProfile.name = "rose-pine-moon";
+  nixy.themeProfile.name = "rose-pine-dawn";
 
   # ===================================
   # Home Manager (User Configuration)
