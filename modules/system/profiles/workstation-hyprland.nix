@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   imports = [
     ../../shared/stylix/theme-profiles.nix
     ../core/base.nix
