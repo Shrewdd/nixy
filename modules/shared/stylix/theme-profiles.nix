@@ -6,8 +6,7 @@
 }: let
   themes = import ./themes.nix;
   themeNames = builtins.attrNames themes;
-in
-{
+in {
   imports = [./stylix.nix];
 
   options.nixy.themeProfile = {
@@ -48,4 +47,3 @@ in
     };
   };
 }
-

@@ -1,4 +1,8 @@
-{inputs, osConfig, ...}: {
+{
+  inputs,
+  osConfig,
+  ...
+}: {
   imports = [inputs.caelestia-shell.homeManagerModules.default];
 
   programs.caelestia = {
