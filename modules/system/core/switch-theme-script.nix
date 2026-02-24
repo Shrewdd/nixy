@@ -5,29 +5,36 @@
   ...
 }: let
   cfg = config.nixy.stylix;
-  themeNames = [
-    "catppuccin-latte"
-    "catppuccin-mocha"
-    "rose-pine-moon"
-    "rose-pine-dawn"
-  ];
+  themes = import ../../shared/stylix/themes.nix;
+  themeNames = builtins.attrNames themes;
 
   # Build script that switches to specified theme using specialisations
   switchThemeScript = pkgs.writeShellScriptBin "switch-theme" ''
     SPECIALISATIONS_DIR="/nix/var/nix/profiles/system/specialisation"
+    THEMES=(${lib.concatMapStringsSep " " (t: "\"${t}\"") themeNames})
 
-    if [[ $# -ne 1 ]]; then
-      echo "Usage: switch-theme <theme>"
+    # If no argument provided, show interactive menu
+    if [[ $# -eq 0 ]]; then
+      echo "Select a theme:"
+      for i in "''${!THEMES[@]}"; do
+        echo "  $((i+1))) ''${THEMES[$i]}"
+      done
+      echo ""
+      read -p "Enter choice [1-''${#THEMES[@]}]: " choice
+      if ! [[ "$choice" =~ ^[0-9]+$ ]] || ((choice < 1 || choice > ''${#THEMES[@]})); then
+        echo "Invalid selection"
+        exit 1
+      fi
+      THEME="''${THEMES[$((choice-1))]}"
+    elif [[ $# -eq 1 ]]; then
+      THEME="$1"
+    else
+      echo "Usage: switch-theme [theme]"
       echo ""
       echo "Available themes:"
-      ${lib.concatMapStringsSep "\n      " (theme: "echo '  - ${theme}'") themeNames}
-      echo ""
-      echo "Currently available specialisations:"
-      ls -1 "$SPECIALISATIONS_DIR" 2>/dev/null | sed 's/^/  /'
+      for theme in "''${THEMES[@]}"; do echo "  - $theme"; done
       exit 1
     fi
-
-    THEME="$1"
     SPECIALISATION_PATH="$SPECIALISATIONS_DIR/$THEME"
 
     if [[ ! -d "$SPECIALISATION_PATH" ]]; then
@@ -44,10 +51,7 @@
 
     # Map theme to polarity
     declare -A THEME_POLARITY=(
-      [catppuccin-latte]="light"
-      [catppuccin-mocha]="dark"
-      [rose-pine-moon]="dark"
-      [rose-pine-dawn]="light"
+${lib.concatMapStringsSep "\n      " (name: "      [${name}]=\"${themes.${name}.polarity}\"") themeNames}
     )
     POLARITY="''${THEME_POLARITY[$THEME]:-dark}"
 

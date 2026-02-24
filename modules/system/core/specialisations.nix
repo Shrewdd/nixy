@@ -3,13 +3,8 @@
   config,
   ...
 }: let
-  # Available themes (must match theme-profiles.nix enum)
-  availableThemes = [
-    "catppuccin-latte"
-    "catppuccin-mocha"
-    "rose-pine-moon"
-    "rose-pine-dawn"
-  ];
+  themes = import ../../shared/stylix/themes.nix;
+  availableThemes = builtins.attrNames themes;
 
   # Create a specialisation for each theme
   mkThemeSpecialisation = theme: {

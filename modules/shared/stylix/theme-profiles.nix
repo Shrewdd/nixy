@@ -3,13 +3,17 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  themes = import ./themes.nix;
+  themeNames = builtins.attrNames themes;
+in
+{
   imports = [./stylix.nix];
 
   options.nixy.themeProfile = {
     name = lib.mkOption {
-      type = lib.types.enum ["catppuccin-latte" "catppuccin-mocha" "rose-pine-moon" "rose-pine-dawn"];
-      default = "catppuccin-mocha";
+      type = lib.types.enum themeNames;
+      default = "rose-pine-moon";
       description = "Theme profile to use (light or dark variant)";
     };
 
@@ -28,28 +32,6 @@
 
   config = let
     cfg = config.nixy.themeProfile;
-    themes = {
-      catppuccin-latte = {
-        wallpaper = ./wallpapers/catppuccin-latte/white-snow-and-a-tree_light.png;
-        base16Scheme = import ./theme/catppuccin-latte-base16.nix;
-        polarity = "light";
-      };
-      catppuccin-mocha = {
-        wallpaper = ./wallpapers/catppuccin-mocha/sunset.png;
-        base16Scheme = import ./theme/catppuccin-mocha-base16.nix;
-        polarity = "dark";
-      };
-      rose-pine-moon = {
-        wallpaper = ./wallpapers/rose-pine-moon/pink-clouds.png;
-        base16Scheme = import ./theme/rose-pine-moon-base16.nix;
-        polarity = "dark";
-      };
-      rose-pine-dawn = {
-        wallpaper = ./wallpapers/rose-pine-moon/pink-clouds.png;
-        base16Scheme = import ./theme/rose-pine-dawn-base16.nix;
-        polarity = "light";
-      };
-    };
     theme = themes.${cfg.name};
   in {
     nixy.stylix = {
@@ -66,3 +48,4 @@
     };
   };
 }
+
