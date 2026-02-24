@@ -55,14 +55,29 @@ ${lib.concatMapStringsSep "\n      " (name: "      [${name}]=\"${themes.${name}.
     )
     POLARITY="''${THEME_POLARITY[$THEME]:-dark}"
 
+    # Map theme to wallpaper path
+    declare -A THEME_WALLPAPER=(
+  ${lib.concatMapStringsSep "\n      " (name: "      [${name}]=\"${themes.${name}.wallpaper}\"") themeNames}
+    )
+    WALLPAPER="''${THEME_WALLPAPER[$THEME]:-}"
+
     echo "Switching to theme: $THEME"
 
     # Activate the specialisation
     sudo "$SPECIALISATION_PATH/bin/switch-to-configuration" switch
 
+    # Reload Caelestia so it picks updated HM settings (including wallpaperDir)
+    if command -v systemctl &> /dev/null; then
+      systemctl --user restart caelestia.service &>/dev/null || true
+      sleep 1
+    fi
+
     # Apply runtime theme changes
     if command -v caelestia &> /dev/null; then
       caelestia scheme set -m "$POLARITY" &>/dev/null || true
+      if [[ -n "$WALLPAPER" ]]; then
+        caelestia wallpaper -f "$WALLPAPER" &>/dev/null || true
+      fi
     fi
 
     if command -v gsettings &> /dev/null; then

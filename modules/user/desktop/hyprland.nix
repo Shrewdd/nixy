@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{inputs, osConfig, ...}: {
   imports = [inputs.caelestia-shell.homeManagerModules.default];
 
   programs.caelestia = {
@@ -8,7 +8,7 @@
     systemd = {
       enable = true;
       target = "graphical-session.target";
-      environment = [];
+      environment = ["NIXY_THEME=${osConfig.nixy.themeProfile.name}"];
     };
 
     settings = {
@@ -16,6 +16,8 @@
         terminal = ["ghostty"];
         explorer = ["nautilus"];
       };
+
+      paths.wallpaperDir = "${inputs.self}/modules/shared/stylix/wallpapers/${osConfig.nixy.themeProfile.name}";
 
       services.weatherLocation = "";
 
