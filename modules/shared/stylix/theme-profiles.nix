@@ -53,7 +53,7 @@
     theme = themes.${cfg.name};
   in {
     nixy.stylix = {
-      enable = lib.mkDefault true;
+      enable = lib.mkForce true;
       image = lib.mkDefault theme.wallpaper;
       polarity = lib.mkDefault theme.polarity;
       base16Scheme = lib.mkDefault theme.base16Scheme;

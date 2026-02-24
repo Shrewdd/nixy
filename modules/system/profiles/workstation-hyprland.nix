@@ -3,6 +3,7 @@
     ../../shared/stylix/theme-profiles.nix
     ../core/base.nix
     ../core/boot.nix
+    ../core/specialisations.nix
     ../desktop/hyprland.nix
     ../apps/nautilus.nix
     ../hardware/audio.nix
