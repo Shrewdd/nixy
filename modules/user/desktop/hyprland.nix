@@ -37,7 +37,7 @@
     cli = {
       enable = true;
       settings = {
-        theme.enableGtk = true;
+        theme.enableGtk = false;
       };
     };
   };
