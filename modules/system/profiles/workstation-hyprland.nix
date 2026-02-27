@@ -13,7 +13,7 @@
     ../packages/shared.nix
   ];
 
-  nixy.themeProfile.name = lib.mkDefault "rose-pine-moon";
+  nixy.themeProfile.name = lib.mkDefault "rose-pine-dawn";
 
   security.sudo.wheelNeedsPassword = false;
 }
