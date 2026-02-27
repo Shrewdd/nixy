@@ -1,6 +1,6 @@
 {...}: {
   imports = [
-    ../../shared/stylix/theme-profiles.nix
+    ../../stylix/theme-profiles.nix
     ../core/base.nix
     ../core/boot.nix
     ../desktop/hyprland.nix

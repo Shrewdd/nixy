@@ -1,6 +1,6 @@
 {lib, ...}: {
   imports = [
-    ../../shared/stylix/theme-profiles.nix
+    ../../stylix/theme-profiles.nix
     ./workstation.nix
   ];
 
