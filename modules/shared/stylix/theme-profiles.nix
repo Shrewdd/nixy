@@ -16,12 +16,6 @@ in {
       description = "Theme profile to use (light or dark variant)";
     };
 
-    cursorTheme = lib.mkOption {
-      type = lib.types.str;
-      default = "Bibata-Modern-Ice";
-      description = "Cursor theme name";
-    };
-
     cursorSize = lib.mkOption {
       type = lib.types.int;
       default = 24;
@@ -41,7 +35,7 @@ in {
     };
 
     stylix.cursor = {
-      name = cfg.cursorTheme;
+      name = "Bibata-Modern-Ice";
       package = pkgs.bibata-cursors;
       size = cfg.cursorSize;
     };
