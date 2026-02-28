@@ -8,33 +8,33 @@ to look around and steal whatever is useful.
 
 ```
 .
-├── flake.nix                          # ── entrypoint, host definitions
+├── flake.nix                          # entrypoint, host definitions
 ├── hosts/
-│   ├── default.nix                    # ── host list consumed by flake.nix
-│   ├── aurora/                        # ── headless dev server (PostgreSQL, Prisma)
-│   ├── monsoon/                       # ── desktop workstation (Hyprland, Nvidia)
-│   └── nomad/                         # ── laptop (GNOME)
+│   ├── default.nix                    # host list consumed by flake.nix
+│   ├── aurora/                        # headless dev server (PostgreSQL, Prisma)
+│   ├── monsoon/                       # desktop workstation (Hyprland, Nvidia)
+│   └── nomad/                         # laptop (GNOME)
 ├── modules/
 │   ├── profiles/
-│   │   ├── hyprland.nix               # ── full Hyprland desktop profile
-│   │   ├── gnome.nix                  # ── full GNOME desktop profile
-│   │   └── server.nix                 # ── headless server profile
+│   │   ├── hyprland.nix               # full Hyprland desktop profile
+│   │   ├── gnome.nix                  # full GNOME desktop profile
+│   │   └── server.nix                 # headless server profile
 │   ├── nixos/
-│   │   ├── core.nix                   # ── users, nix settings, networking, boot, locale
-│   │   ├── audio.nix                  # ── PipeWire
-│   │   ├── bluetooth.nix             # ── Bluetooth
-│   │   ├── flatpak.nix               # ── Flatpak
-│   │   ├── nautilus.nix              # ── Nautilus file manager
-│   │   ├── packages.nix              # ── shared system packages
-│   │   ├── printing.nix              # ── CUPS
-│   │   └── stylix/                    # ── theming (Stylix, base16 schemes, wallpapers)
+│   │   ├── core.nix                   # users, nix settings, networking, boot, locale
+│   │   ├── audio.nix                  # PipeWire
+│   │   ├── bluetooth.nix              # Bluetooth
+│   │   ├── flatpak.nix                # Flatpak
+│   │   ├── nautilus.nix               # Nautilus file manager
+│   │   ├── packages.nix               # shared system packages
+│   │   ├── printing.nix               # CUPS
+│   │   └── stylix/                    # theming (Stylix, base16 schemes, wallpapers)
 │   └── home/
-│       ├── core.nix                   # ── HM base (imports shell + git)
-│       ├── shell.nix                  # ── zsh, starship, btop, fastfetch
-│       ├── git.nix                    # ── git config
-│       ├── ghostty.nix               # ── Ghostty terminal
-│       ├── zen.nix                    # ── Zen browser
-│       └── spotify.nix               # ── Spicetify
+│       ├── core.nix                   # HM base (imports shell + git)
+│       ├── shell.nix                  # zsh, starship, btop, fastfetch
+│       ├── git.nix                    # git config
+│       ├── ghostty.nix                # Ghostty terminal
+│       ├── zen.nix                    # Zen browser
+│       └── spotify.nix                # Spicetify
 └── README.md
 ```
 
