@@ -12,7 +12,6 @@
     systemd = {
       enable = true;
       target = "graphical-session.target";
-      environment = ["NIXY_THEME=${osConfig.nixy.themeProfile.name}"];
     };
 
     settings = {
