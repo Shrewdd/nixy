@@ -5,11 +5,13 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/profiles/workstation-hyprland.nix
+    ../../modules/profiles/hyprland.nix
   ];
 
   networking.hostName = "monsoon";
   system.stateVersion = "25.05";
+
+  nixy.themeProfile.name = "rose-pine-dawn";
 
   services.xserver.videoDrivers = ["nvidia"];
 

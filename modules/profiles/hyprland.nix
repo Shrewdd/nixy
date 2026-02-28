@@ -1,8 +1,8 @@
 # ── Hyprland – complete desktop profile ─────────────────────────────────
 #
-# Everything Hyprland needs in one place: NixOS options up top, Home
-# Manager options for user km down below.  Import this from a system
-# profile — it takes care of both halves.
+# Everything a Hyprland workstation needs in one file: shared system
+# plumbing, the compositor itself, and Home Manager user config.
+# Import this from a host — it takes care of both halves.
 #
 {
   inputs,
@@ -13,6 +13,21 @@
   # ════════════════════════════════════════════════════════════════════════
   # ── NixOS ──────────────────────────────────────────────────────────────
   # ════════════════════════════════════════════════════════════════════════
+
+  # ── Common desktop plumbing ──────────────────────────────────────────
+  imports = [
+    ../stylix/theme-profiles.nix
+    ../system/core/base.nix
+    ../system/core/boot.nix
+    ../system/apps/nautilus.nix
+    ../system/hardware/audio.nix
+    ../system/hardware/bluetooth.nix
+    ../system/services/flatpak.nix
+    ../system/services/printing.nix
+    ../system/packages/shared.nix
+  ];
+
+  security.sudo.wheelNeedsPassword = false;
 
   # ── Display Manager ──────────────────────────────────────────────────
   services.displayManager.gdm.enable = lib.mkForce false;
@@ -79,7 +94,13 @@
   # ════════════════════════════════════════════════════════════════════════
 
   home-manager.users.km = {osConfig, ...}: {
-    imports = [inputs.caelestia-shell.homeManagerModules.default];
+    imports = [
+      inputs.caelestia-shell.homeManagerModules.default
+      ../user/core/base.nix
+      ../user/apps/ghostty.nix
+      ../user/apps/zen.nix
+      ../user/apps/spotify.nix
+    ];
 
     # ── Caelestia shell ────────────────────────────────────────────────
     programs.caelestia = {
