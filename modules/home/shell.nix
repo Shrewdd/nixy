@@ -4,7 +4,6 @@
   config,
   ...
 }: {
-
   # ── Zsh ────────────────────────────────────────────────────────────
   programs.zsh = {
     enable = true;
@@ -169,17 +168,6 @@
   programs.fastfetch = {
     enable = true;
     settings = {
-      logo = {
-        type = "kitty-direct";
-        source = "/home/km/nixy/modules/shared/logos/nixos.png";
-        width = 34;
-        padding = {
-          top = 2;
-          bottom = 2;
-          right = 5;
-          left = 5;
-        };
-      };
       display = {
         separator = " : ";
       };
