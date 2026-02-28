@@ -10,7 +10,6 @@
   lib,
   ...
 }: {
-
   # ════════════════════════════════════════════════════════════════════════
   # ── NixOS ──────────────────────────────────────────────────────────────
   # ════════════════════════════════════════════════════════════════════════
@@ -19,10 +18,10 @@
   services.displayManager.gdm.enable = lib.mkForce false;
 
   services.displayManager.sddm = {
-    enable      = true;
+    enable = true;
     wayland.enable = true;
-    theme       = "sddm-astronaut-theme";
-    package     = pkgs.kdePackages.sddm;
+    theme = "sddm-astronaut-theme";
+    package = pkgs.kdePackages.sddm;
     extraPackages = with pkgs; [
       qt6Packages.qtmultimedia
       qt6Packages.qtsvg
@@ -32,9 +31,9 @@
 
   # ── Hyprland & portals ──────────────────────────────────────────────
   programs.hyprland = {
-    enable          = true;
+    enable = true;
     xwayland.enable = true;
-    withUWSM        = true;
+    withUWSM = true;
   };
 
   programs.gpu-screen-recorder.enable = true;
@@ -69,10 +68,10 @@
 
   # ── Session environment ────────────────────────────────────────────
   environment.sessionVariables = {
-    NIXOS_OZONE_WL      = lib.mkDefault "1";
-    XDG_SESSION_TYPE     = lib.mkDefault "wayland";
-    XDG_SESSION_DESKTOP  = lib.mkDefault "Hyprland";
-    XDG_CURRENT_DESKTOP  = lib.mkDefault "Hyprland";
+    NIXOS_OZONE_WL = lib.mkDefault "1";
+    XDG_SESSION_TYPE = lib.mkDefault "wayland";
+    XDG_SESSION_DESKTOP = lib.mkDefault "Hyprland";
+    XDG_CURRENT_DESKTOP = lib.mkDefault "Hyprland";
   };
 
   # ════════════════════════════════════════════════════════════════════════
@@ -106,7 +105,7 @@
         bar = {
           # Hide the bar on the secondary display; include both common
           # names so hotplug renames don't re-enable it.
-          excludedScreens       = ["HDMI-A-2" "HDMI-A-5"];
+          excludedScreens = ["HDMI-A-2" "HDMI-A-5"];
           workspaces.perMonitorWorkspaces = false;
         };
       };
@@ -119,12 +118,12 @@
 
     # ── Hyprland window manager ──────────────────────────────────────
     wayland.windowManager.hyprland = {
-      enable         = true;
+      enable = true;
       systemd.enable = true;
 
       settings = {
-        "$mainMod"     = "SUPER";
-        "$terminal"    = "ghostty";
+        "$mainMod" = "SUPER";
+        "$terminal" = "ghostty";
         "$fileManager" = "nautilus";
 
         # ── Autostart ─────────────────────────────────────────────────
@@ -140,10 +139,10 @@
 
         # ── Layout & gaps ────────────────────────────────────────────
         general = {
-          layout      = "dwindle";
+          layout = "dwindle";
           border_size = 3;
-          gaps_in     = 2;
-          gaps_out    = 8;
+          gaps_in = 2;
+          gaps_out = 8;
         };
 
         dwindle.preserve_split = true;
@@ -157,14 +156,14 @@
         decoration = {
           rounding = 10;
           blur = {
-            enabled           = true;
-            size              = 3;
-            passes            = 1;
+            enabled = true;
+            size = 3;
+            passes = 1;
             new_optimizations = true;
           };
           shadow = {
-            enabled      = true;
-            range        = 4;
+            enabled = true;
+            range = 4;
             render_power = 3;
           };
         };
@@ -288,11 +287,11 @@
 
         # ── Misc ─────────────────────────────────────────────────────
         misc = {
-          force_default_wallpaper    = 0;
-          disable_hyprland_logo      = true;
-          disable_splash_rendering   = true;
-          mouse_move_enables_dpms    = true;
-          key_press_enables_dpms     = true;
+          force_default_wallpaper = 0;
+          disable_hyprland_logo = true;
+          disable_splash_rendering = true;
+          mouse_move_enables_dpms = true;
+          key_press_enables_dpms = true;
         };
       };
     };
