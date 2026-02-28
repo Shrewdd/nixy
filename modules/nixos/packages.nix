@@ -25,6 +25,4 @@
     enable = true;
     flake = "/home/km/nixy";
   };
-
-  programs.zoom-us.enable = true;
 }

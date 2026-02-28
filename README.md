@@ -1,45 +1,40 @@
 # nixy
 
-My personal NixOS configuration. Modular, maintainable, and easy to expand.
+my personal nixos configuration! this is made for my machines
+and probably won't work on yours without changes, but feel free
+to look around and steal whatever is useful.
 
-## Structure
+## structure
 
 ```
 .
-├── flake.nix                  # Flake entrypoint with host definitions
-├── flake.lock                 # Locked dependency versions
-├── hosts/                     # Host-specific configurations
-│   ├── aurora/
-│   │   ├── configuration.nix
-│   │   └── hardware-configuration.nix
-│   ├── monsoon/
-│   │   ├── configuration.nix
-│   │   └── hardware-configuration.nix
-│   ├── nomad/
-│   │   ├── configuration.nix
-│   │   └── hardware-configuration.nix
-│   └── default.nix            # Host definitions consumed by flake.nix
+├── flake.nix                          # ── entrypoint, host definitions
+├── hosts/
+│   ├── default.nix                    # ── host list consumed by flake.nix
+│   ├── aurora/                        # ── headless dev server (PostgreSQL, Prisma)
+│   ├── monsoon/                       # ── desktop workstation (Hyprland, Nvidia)
+│   └── nomad/                         # ── laptop (GNOME)
 ├── modules/
-│   ├── shared/
-│   │   ├── stylix/
-│   │   │   ├── stylix.nix         # Stylix config
-│   │   │   ├── theme-profiles.nix # Theme selector
-│   │   │   ├── theme/             # Color schemes
-│   │   │   └── wallpapers/        # Wallpaper collection
-│   ├── system/
-│   │   ├── core/              # Base OS defaults (nix, networking, localization, boot)
-│   │   ├── desktop/           # Desktop environments (Hyprland, GNOME)
-│   │   ├── hardware/          # Audio, Bluetooth, GPU
-│   │   ├── packages/          # System package bundles
-│   │   ├── profiles/          # System profiles (server, workstation, laptop)
-│   │   └── services/          # Services (Flatpak, printing, etc.)
-│   └── user/
-│       ├── apps/              # User applications (Ghostty, Spotify, Zen, etc.)
-│       ├── core/              # User defaults
-│       ├── desktop/           # Desktop tweaks (GTK, Hyprland)
-│       ├── dev/               # Developer tools (Git, etc.)
-│       ├── profiles/          # User profiles
-│       └── shell/             # Shell tools (Zsh, Starship, btop, etc.)
+│   ├── profiles/
+│   │   ├── hyprland.nix               # ── full Hyprland desktop profile
+│   │   ├── gnome.nix                  # ── full GNOME desktop profile
+│   │   └── server.nix                 # ── headless server profile
+│   ├── nixos/
+│   │   ├── core.nix                   # ── users, nix settings, networking, boot, locale
+│   │   ├── audio.nix                  # ── PipeWire
+│   │   ├── bluetooth.nix             # ── Bluetooth
+│   │   ├── flatpak.nix               # ── Flatpak
+│   │   ├── nautilus.nix              # ── Nautilus file manager
+│   │   ├── packages.nix              # ── shared system packages
+│   │   ├── printing.nix              # ── CUPS
+│   │   └── stylix/                    # ── theming (Stylix, base16 schemes, wallpapers)
+│   └── home/
+│       ├── core.nix                   # ── HM base (imports shell + git)
+│       ├── shell.nix                  # ── zsh, starship, btop, fastfetch
+│       ├── git.nix                    # ── git config
+│       ├── ghostty.nix               # ── Ghostty terminal
+│       ├── zen.nix                    # ── Zen browser
+│       └── spotify.nix               # ── Spicetify
 └── README.md
 ```
 
