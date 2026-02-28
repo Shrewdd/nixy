@@ -5,6 +5,6 @@
 #
 {...}: {
   imports = [
-    ../system/core/base.nix
+    ../nixos/core.nix
   ];
 }

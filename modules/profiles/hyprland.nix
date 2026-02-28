@@ -16,15 +16,14 @@
 
   # ── Common desktop plumbing ──────────────────────────────────────────
   imports = [
-    ../stylix/theme-profiles.nix
-    ../system/core/base.nix
-    ../system/core/boot.nix
-    ../system/apps/nautilus.nix
-    ../system/hardware/audio.nix
-    ../system/hardware/bluetooth.nix
-    ../system/services/flatpak.nix
-    ../system/services/printing.nix
-    ../system/packages/shared.nix
+    ../nixos/stylix/theme-profiles.nix
+    ../nixos/core.nix
+    ../nixos/nautilus.nix
+    ../nixos/audio.nix
+    ../nixos/bluetooth.nix
+    ../nixos/flatpak.nix
+    ../nixos/printing.nix
+    ../nixos/packages.nix
   ];
 
   security.sudo.wheelNeedsPassword = false;
@@ -96,10 +95,10 @@
   home-manager.users.km = {osConfig, ...}: {
     imports = [
       inputs.caelestia-shell.homeManagerModules.default
-      ../user/core/base.nix
-      ../user/apps/ghostty.nix
-      ../user/apps/zen.nix
-      ../user/apps/spotify.nix
+      ../home/core.nix
+      ../home/ghostty.nix
+      ../home/zen.nix
+      ../home/spotify.nix
     ];
 
     # ── Caelestia shell ────────────────────────────────────────────────

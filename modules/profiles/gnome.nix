@@ -15,13 +15,12 @@
 
   # ── Common desktop plumbing ──────────────────────────────────────────
   imports = [
-    ../system/core/base.nix
-    ../system/core/boot.nix
-    ../system/hardware/audio.nix
-    ../system/hardware/bluetooth.nix
-    ../system/services/flatpak.nix
-    ../system/services/printing.nix
-    ../system/packages/shared.nix
+    ../nixos/core.nix
+    ../nixos/audio.nix
+    ../nixos/bluetooth.nix
+    ../nixos/flatpak.nix
+    ../nixos/printing.nix
+    ../nixos/packages.nix
   ];
 
   security.sudo.wheelNeedsPassword = false;
@@ -62,10 +61,10 @@
 
   home-manager.users.km = {
     imports = [
-      ../user/core/base.nix
-      ../user/apps/ghostty.nix
-      ../user/apps/zen.nix
-      ../user/apps/spotify.nix
+      ../home/core.nix
+      ../home/ghostty.nix
+      ../home/zen.nix
+      ../home/spotify.nix
     ];
   };
 }

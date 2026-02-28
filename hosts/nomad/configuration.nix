@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/stylix/theme-profiles.nix
+    ../../modules/nixos/stylix/theme-profiles.nix
     ../../modules/profiles/gnome.nix
   ];
 

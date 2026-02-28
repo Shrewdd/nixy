@@ -1,10 +1,7 @@
 {lib, ...}: {
   imports = [
-    ../shell/zsh.nix
-    ../shell/starship.nix
-    ../shell/btop.nix
-    ../shell/fastfetch.nix
-    ../dev/git.nix
+    ./shell.nix
+    ./git.nix
   ];
 
   programs.home-manager.enable = true;
