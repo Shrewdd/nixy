@@ -11,14 +11,17 @@
   networking.hostName = "aurora";
   system.stateVersion = "25.11";
 
+  # ── Boot ───────────────────────────────────────────────────────────
   boot.loader.grub = {
     enable = true;
     device = "/dev/sda";
   };
 
+  # ── Nix ────────────────────────────────────────────────────────────
   nix.settings.auto-optimise-store = true;
   nix.gc.options = "--delete-older-than 30d";
 
+  # ── Networking ─────────────────────────────────────────────────────
   networking.useDHCP = lib.mkDefault true;
   networking.networkmanager.enable = lib.mkForce false;
   networking.firewall = {
@@ -26,6 +29,7 @@
     allowedTCPPorts = [22];
   };
 
+  # ── SSH & access ───────────────────────────────────────────────────
   users.users.km = {
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgMUi7ElERM2QYAh4YsXDT1Ak9QtiWk0rCV6Cbab3ur aurora"
@@ -45,6 +49,7 @@
     };
   };
 
+  # ── Packages ───────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     nixd
     btop
@@ -63,6 +68,7 @@
   };
   programs.nix-ld.enable = true;
 
+  # ── PostgreSQL ─────────────────────────────────────────────────────
   services.postgresql = {
     enable = true;
     settings = {
@@ -103,6 +109,7 @@
     location = "/var/backup/postgresql";
   };
 
+  # ── Environment ────────────────────────────────────────────────────
   environment.variables = {
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";

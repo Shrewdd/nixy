@@ -13,6 +13,7 @@
 
   nixy.themeProfile.name = "rose-pine-dawn";
 
+  # ── Nvidia ─────────────────────────────────────────────────────────
   services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
@@ -39,12 +40,12 @@
     LIBVA_DRIVER_NAME = "nvidia";
   };
 
+  # ── MIME & apps ────────────────────────────────────────────────────
   xdg.mime.defaultApplications = {
     "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
     "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
   };
 
-  # Monsoon-specific packages and programs
   environment.systemPackages = with pkgs; [
     vesktop
     sixpair
@@ -54,6 +55,7 @@
 
   programs.gamemode.enable = true;
 
+  # ── Home Manager ───────────────────────────────────────────────────
   home-manager.users.km = {
     home.stateVersion = "25.05";
   };

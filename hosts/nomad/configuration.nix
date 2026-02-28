@@ -10,9 +10,7 @@
 
   nixy.themeProfile.name = "rose-pine-dawn";
 
-  # ===================================
-  # Home Manager (User Configuration)
-  # ===================================
+  # ── Home Manager ───────────────────────────────────────────────────
   home-manager.users.km = {
     home.stateVersion = "25.11";
   };
