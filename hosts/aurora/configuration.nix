@@ -21,6 +21,24 @@
   nix.settings.auto-optimise-store = true;
   nix.gc.options = "--delete-older-than 30d";
 
+  # ── Locale ─────────────────────────────────────────────────────────
+  time.timeZone = "Europe/Warsaw";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "pl_PL.UTF-8";
+      LC_IDENTIFICATION = "pl_PL.UTF-8";
+      LC_MEASUREMENT = "pl_PL.UTF-8";
+      LC_MONETARY = "pl_PL.UTF-8";
+      LC_NAME = "pl_PL.UTF-8";
+      LC_NUMERIC = "pl_PL.UTF-8";
+      LC_PAPER = "pl_PL.UTF-8";
+      LC_TELEPHONE = "pl_PL.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
+  };
+  console.keyMap = "us";
+
   # ── Networking ─────────────────────────────────────────────────────
   networking.useDHCP = lib.mkDefault true;
   networking.networkmanager.enable = lib.mkForce false;
@@ -31,6 +49,9 @@
 
   # ── SSH & access ───────────────────────────────────────────────────
   users.users.km = {
+    isNormalUser = true;
+    description = "km";
+    extraGroups = ["networkmanager" "wheel"];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgMUi7ElERM2QYAh4YsXDT1Ak9QtiWk0rCV6Cbab3ur aurora"
     ];
