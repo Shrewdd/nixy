@@ -3,7 +3,7 @@
     ../../stylix/theme-profiles.nix
     ../core/base.nix
     ../core/boot.nix
-    ../desktop/hyprland.nix
+    ../../profiles/hyprland.nix
     ../apps/nautilus.nix
     ../hardware/audio.nix
     ../hardware/bluetooth.nix
