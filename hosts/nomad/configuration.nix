@@ -8,7 +8,6 @@
   networking.hostName = "nomad";
   system.stateVersion = "25.11";
 
-  nixy.stylix.enable = true;
   nixy.themeProfile.name = "rose-pine-dawn";
 
   # ===================================
