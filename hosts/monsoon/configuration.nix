@@ -5,7 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/profiles/workstation-hyprland.nix
+    ../../modules/profiles/workstation-hyprland.nix
   ];
 
   networking.hostName = "monsoon";
@@ -53,7 +53,6 @@
   programs.gamemode.enable = true;
 
   home-manager.users.km = {
-    imports = [../../modules/user/profiles/monsoon-hyprland.nix];
     home.stateVersion = "25.05";
   };
 }

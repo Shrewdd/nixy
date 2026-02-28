@@ -5,7 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/system/profiles/server.nix
+    ../../modules/profiles/server.nix
   ];
 
   networking.hostName = "aurora";
