@@ -12,7 +12,7 @@ in {
   options.nixy.themeProfile = {
     name = lib.mkOption {
       type = lib.types.enum themeNames;
-      default = "rose-pine-moon";
+      default = "rose-pine-dawn";
       description = "Theme profile to use (light or dark variant)";
     };
 
