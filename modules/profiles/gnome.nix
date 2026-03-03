@@ -23,8 +23,6 @@
     ../nixos/packages.nix
   ];
 
-  security.sudo.wheelNeedsPassword = false;
-
   # ── Display Manager ──────────────────────────────────────────────────
   services.displayManager.gdm = {
     enable = true;

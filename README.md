@@ -18,7 +18,6 @@ to look around and steal whatever is useful.
 │   ├── profiles/
 │   │   ├── hyprland.nix               # full Hyprland desktop profile
 │   │   ├── gnome.nix                  # full GNOME desktop profile
-│   │   └── server.nix                 # headless server profile
 │   ├── nixos/
 │   │   ├── core.nix                   # users, nix settings, networking, boot, locale
 │   │   ├── audio.nix                  # PipeWire
