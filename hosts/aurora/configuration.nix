@@ -43,7 +43,7 @@
   networking.networkmanager.enable = lib.mkForce false;
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [22];
+    allowedTCPPorts = [22 3732];
   };
 
   # ── SSH & access ───────────────────────────────────────────────────
