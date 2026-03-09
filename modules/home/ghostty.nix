@@ -8,7 +8,7 @@
     enableZshIntegration = true;
     settings = {
       background-blur-radius = lib.mkDefault 20;
-      font-family = lib.mkDefault "Maple Mono NF";
+    font-family = lib.mkDefault "JetBrains Mono NF";
       font-feature = ["+ss02" "+ss03" "+ss05" "+ss07"];
       font-size = lib.mkDefault 14;
       adjust-cell-height = lib.mkDefault "28%";
