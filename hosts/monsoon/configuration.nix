@@ -11,7 +11,7 @@
   networking.hostName = "monsoon";
   system.stateVersion = "25.11";
 
-  nixy.themeProfile.name = "rose-pine-dawn";
+  nixy.themeProfile.name = "rose-pine";
 
   # ── Nvidia ─────────────────────────────────────────────────────────
   services.xserver.videoDrivers = ["nvidia"];

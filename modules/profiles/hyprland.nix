@@ -103,7 +103,7 @@
           explorer = ["nautilus"];
         };
 
-        paths.wallpaperDir = "${inputs.self}/modules/nixos/stylix/wallpapers/${osConfig.nixy.themeProfile.name}";
+        paths.wallpaperDir = "${osConfig.nixy.stylix.wallpaperDir}";
 
         services.weatherLocation = "";
 

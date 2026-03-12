@@ -13,6 +13,11 @@ in {
       description = "Wallpaper for Stylix palette generation";
     };
 
+    wallpaperDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory of wallpapers available to the active theme";
+    };
+
     polarity = lib.mkOption {
       type = lib.types.enum ["dark" "light" "either"];
       description = "Color scheme polarity";
