@@ -12,8 +12,9 @@
     vscode
     zapzap
     speedtest-cli
-    gthumb
     tree
+    imv
+    mpv
   ];
 
   programs.localsend = {
