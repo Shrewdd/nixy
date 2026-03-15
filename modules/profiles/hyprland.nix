@@ -29,7 +29,17 @@
   # ── Display Manager ──────────────────────────────────────────────────
   services.displayManager.gdm.enable = lib.mkForce false;
 
-  services.displayManager.ly.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+    theme = "sddm-astronaut-theme";
+    package = pkgs.kdePackages.sddm;
+    extraPackages = with pkgs; [
+      qt6Packages.qtmultimedia
+      qt6Packages.qtsvg
+      qt6Packages.qtvirtualkeyboard
+    ];
+  };
 
   # ── Hyprland & portals ──────────────────────────────────────────────
   programs.hyprland = {
@@ -65,6 +75,7 @@
     libsecret
     seahorse
     hyprpolkitagent
+    (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
   ];
 
   # ── Session environment ────────────────────────────────────────────
