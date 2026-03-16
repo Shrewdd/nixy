@@ -76,8 +76,6 @@
     seahorse
     hyprpolkitagent
     (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
-
-    # ── Wayland-native media tooling ───────────────────────────────
     imv  # image viewer
     mpv  # video player
   ];
