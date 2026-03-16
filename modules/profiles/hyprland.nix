@@ -76,6 +76,8 @@
     seahorse
     hyprpolkitagent
     (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
+    imv  # image viewer
+    mpv  # video player
   ];
 
   # ── Session environment ────────────────────────────────────────────
