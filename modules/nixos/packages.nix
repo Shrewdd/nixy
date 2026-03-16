@@ -13,8 +13,6 @@
     zapzap
     speedtest-cli
     tree
-    imv
-    mpv
   ];
 
   programs.localsend = {

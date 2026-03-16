@@ -40,6 +40,7 @@
     gnome-tour
     geary
     yelp
+    gnome-console  # Ghostty is used instead
   ];
 
   # ── Extensions & helpers ─────────────────────────────────────────────
