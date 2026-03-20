@@ -76,8 +76,8 @@
     seahorse
     hyprpolkitagent
     (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
-    imv  # image viewer
-    mpv  # video player
+    imv # image viewer
+    mpv # video player
   ];
 
   # ── Session environment ────────────────────────────────────────────
@@ -97,6 +97,7 @@
       inputs.caelestia-shell.homeManagerModules.default
       ../home/core.nix
       ../home/ghostty.nix
+      ../home/nixvim.nix
       ../home/zen.nix
       ../home/spotify.nix
     ];

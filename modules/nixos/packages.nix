@@ -13,8 +13,8 @@
     zapzap
     speedtest-cli
     tree
+    tree-sitter
   ];
-
   programs.localsend = {
     enable = true;
     openFirewall = true;
