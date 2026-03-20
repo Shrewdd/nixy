@@ -131,6 +131,12 @@
         key = "<Esc>";
         action = "<cmd>nohlsearch<CR>";
       }
+      {
+        mode = "n";
+        key = "-";
+        action = "<cmd>Oil<CR>";
+        options.desc = "Open file explorer";
+      }
     ];
 
     # ── Plugins ────────────────────────────────────────────────────────
@@ -153,6 +159,14 @@
 
       # Autopairs
       nvim-autopairs.enable = true;
+
+      oil = {
+        enable = true;
+        settings = {
+          default_file_explorer = true;
+          view_options.show_hidden = true;
+        };
+      };
 
       # Comment toggling  (gcc / gc in visual)
       comment.enable = true;
