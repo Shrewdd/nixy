@@ -166,6 +166,27 @@
           delete.text = "_";
         };
       };
+
+      # Discord Rich Presence
+      cord = {
+        enable = true;
+        settings = {
+          editor = {
+            client = "1484571788494114929";
+            icon = "car";
+          };
+          display = {
+            swap_icons = true;
+          };
+          idle = {
+            enabled = true;
+            timeout = 900000;
+          };
+          text = {
+            workspace = "working in thigh highs 🧦";
+          };
+        };
+      };
     };
   };
 }
