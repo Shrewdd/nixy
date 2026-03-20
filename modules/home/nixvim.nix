@@ -168,6 +168,17 @@
         };
       };
 
+      telescope = {
+        enable = true;
+        keymaps = {
+          "<C-p>" = "find_files";
+          "<C-b>" = "buffers";
+          "<leader>fr" = "oldfiles";
+        };
+      };
+
+      web-devicons.enable = true;
+
       # Comment toggling  (gcc / gc in visual)
       comment.enable = true;
 
