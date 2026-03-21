@@ -137,6 +137,12 @@
         action = "<cmd>Oil<CR>";
         options.desc = "Open file explorer";
       }
+      {
+        mode = "n";
+        key = "<leader>cc";
+        action = "<cmd>CopilotChat<CR>";
+        options.desc = "Copilot Chat";
+      }
     ];
 
     # ── Plugins ────────────────────────────────────────────────────────
@@ -174,6 +180,25 @@
           "<C-p>" = "find_files";
           "<C-b>" = "buffers";
           "<leader>fr" = "oldfiles";
+        };
+      };
+
+      copilot-lua = {
+        enable = true;
+        settings = {
+          suggestion = {
+          enabled = true;
+          auto_trigger = true;
+          keymap.accept = "<Tab>";
+        };
+          panel.enabled = false;
+        };
+      };
+
+      copilot-chat = {
+        enable = true;
+        settings = {
+          window.layout = "vertical";
         };
       };
 
