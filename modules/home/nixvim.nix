@@ -187,10 +187,10 @@
         enable = true;
         settings = {
           suggestion = {
-          enabled = true;
-          auto_trigger = true;
-          keymap.accept = "<Tab>";
-        };
+            enabled = true;
+            auto_trigger = true;
+            keymap.accept = "<Tab>";
+          };
           panel.enabled = false;
         };
       };
