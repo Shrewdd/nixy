@@ -9,7 +9,28 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  qylockSrc = pkgs.fetchFromGitHub {
+    owner = "Darkkal44";
+    repo = "qylock";
+    rev = "main";
+    sha256 = "01c3kgx7mc0s3ssqzms0dxikjpq5bcd8jiqymcn4i4y7p4sklkvg";
+  };
+
+  qylockWuwaTheme = pkgs.stdenvNoCC.mkDerivation {
+    pname = "sddm-theme-qylock-wuwa";
+    version = "main";
+    src = qylockSrc;
+    dontBuild = true;
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p "$out/share/sddm/themes/wuwa"
+      cp -r themes/wuwa/* "$out/share/sddm/themes/wuwa/"
+      runHook postInstall
+    '';
+  };
+in {
   # ════════════════════════════════════════════════════════════════════════
   # ── NixOS ──────────────────────────────────────────────────────────────
   # ════════════════════════════════════════════════════════════════════════
@@ -32,12 +53,17 @@
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    theme = "sddm-astronaut-theme";
+    theme = "${qylockWuwaTheme}/share/sddm/themes/wuwa";
     package = pkgs.kdePackages.sddm;
     extraPackages = with pkgs; [
       qt6Packages.qtmultimedia
       qt6Packages.qtsvg
+      qt6Packages.qt5compat
       qt6Packages.qtvirtualkeyboard
+      gst_all_1.gst-plugins-base
+      gst_all_1.gst-plugins-good
+      gst_all_1.gst-plugins-bad
+      gst_all_1.gst-plugins-ugly
     ];
   };
 
@@ -75,7 +101,6 @@
     libsecret
     seahorse
     hyprpolkitagent
-    (pkgs.sddm-astronaut.override {embeddedTheme = "pixel_sakura";})
     imv # image viewer
     mpv # video player
   ];
