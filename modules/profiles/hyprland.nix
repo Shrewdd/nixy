@@ -171,6 +171,8 @@ in {
         "$mainMod" = "SUPER";
         "$terminal" = "ghostty";
         "$fileManager" = "nautilus";
+        "$browser" = "zen-twilight";
+        "$wallpaperDir" = "${osConfig.nixy.stylix.wallpaperDir}";
 
         # ── Autostart ─────────────────────────────────────────────────
         exec-once = [
@@ -242,10 +244,9 @@ in {
 
           # Window management
           "$mainMod,       Q,      killactive,"
-          "$mainMod,       M,      exit,"
+          "$mainMod,       M,      exec,            uwsm stop"
           "$mainMod,       V,      togglefloating,"
-          "$mainMod,       P,      pseudo"
-          "$mainMod,       J,      togglesplit"
+          "$mainMod,       J,      layoutmsg,       togglesplit"
 
           # Focus
           "$mainMod,       left,   movefocus,       l"
@@ -287,8 +288,11 @@ in {
 
           # Caelestia
           "$mainMod,       A,      global,          caelestia:launcher"
+          "$mainMod,       B,      exec,            $browser"
           "$mainMod,       Escape, global,          caelestia:session"
+          "$mainMod,       G,      exec,            caelestia shell gameMode toggle"
           "$mainMod,       L,      global,          caelestia:lock"
+          "$mainMod,       W,      exec,            caelestia wallpaper -r $wallpaperDir"
 
           # Screenshots
           "$mainMod,       Print,  exec,            caelestia screenshot --freeze"
