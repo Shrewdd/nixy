@@ -61,7 +61,6 @@
     imports = [
       ../home/core.nix
       ../home/ghostty.nix
-      ../home/nixvim.nix
       ../home/zen.nix
       ../home/spotify.nix
     ];

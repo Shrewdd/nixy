@@ -32,7 +32,6 @@ to look around and steal whatever is useful.
 │       ├── shell.nix                  # zsh, starship, btop, fastfetch
 │       ├── git.nix                    # git config
 │       ├── ghostty.nix                # Ghostty terminal
-│       ├── nixvim.nix                 # nixvim
 │       ├── zen.nix                    # Zen browser
 │       └── spotify.nix                # Spicetify
 └── README.md
