@@ -1,5 +1,6 @@
 {inputs, ...}: {
   imports = [inputs.nixvim.homeModules.nixvim];
+  # Keep Nixvim theme config local to this module.
   stylix.targets.nixvim.enable = false;
 
   programs.nixvim = {
@@ -33,7 +34,7 @@
       background = "dark";
       cursorline = true;
 
-      # Split behaviour
+      # Split behavior
       splitright = true;
       splitbelow = true;
 
@@ -53,7 +54,7 @@
 
     # ── Keymaps ────────────────────────────────────────────────────────
     keymaps = [
-      # Better window navigation
+      # Window navigation
       {
         mode = "n";
         key = "<C-h>";
@@ -75,7 +76,7 @@
         action = "<C-w>l";
       }
 
-      # Stay in indent mode when shifting
+      # Keep selection after indenting
       {
         mode = "v";
         key = "<";
@@ -87,7 +88,7 @@
         action = ">gv";
       }
 
-      # Move selected lines up/down
+      # Move selected lines
       {
         mode = "v";
         key = "J";
@@ -99,7 +100,7 @@
         action = ":m '<-2<CR>gv=gv";
       }
 
-      # Keep cursor centred when jumping
+      # Keep cursor centered when jumping
       {
         mode = "n";
         key = "<C-d>";
@@ -111,7 +112,7 @@
         action = "<C-u>zz";
       }
 
-      # Save & quit shortcuts
+      # Save and quit shortcuts
       {
         mode = "n";
         key = "<leader>w";
@@ -147,7 +148,7 @@
 
     # ── Plugins ────────────────────────────────────────────────────────
     plugins = {
-      # Syntax highlighting
+      # Syntax parsing and highlighting
       treesitter = {
         enable = true;
         settings = {
@@ -157,13 +158,13 @@
         };
       };
 
-      # Nice status line — styled by Stylix automatically
+      # Status line
       lualine.enable = true;
 
-      # Show pending keybind completions
+      # Keybind hint popup
       which-key.enable = true;
 
-      # Autopairs
+      # Auto-close brackets and quotes
       nvim-autopairs.enable = true;
 
       oil = {
@@ -204,7 +205,7 @@
 
       web-devicons.enable = true;
 
-      # Comment toggling  (gcc / gc in visual)
+      # Comment toggling (gcc / gc in visual)
       comment.enable = true;
 
       # Git signs in the gutter

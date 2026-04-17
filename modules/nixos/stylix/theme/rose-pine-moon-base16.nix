@@ -1,3 +1,4 @@
+# ── Rose Pine Moon base16 ───────────────────────────────────────────
 {
   scheme = "Rosé Pine Moon";
   author = "Rosé Pine";

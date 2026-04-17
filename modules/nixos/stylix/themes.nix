@@ -1,4 +1,4 @@
-# Single source of truth for all available themes
+# Available Stylix theme profiles
 {pkgs}: let
   rosepine = import ./wallpapers/rosepine.nix {inherit pkgs;};
 in {

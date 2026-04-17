@@ -4,11 +4,14 @@
   config,
   ...
 }: let
+  # ── Theme source ──────────────────────────────────────────────────
   themes = import ./themes.nix {inherit pkgs;};
   themeNames = builtins.attrNames themes;
 in {
+  # ── Module imports ────────────────────────────────────────────────
   imports = [./stylix.nix];
 
+  # ── Theme profile options ─────────────────────────────────────────
   options.nixy.themeProfile = {
     name = lib.mkOption {
       type = lib.types.enum themeNames;
@@ -23,6 +26,7 @@ in {
     };
   };
 
+  # ── Theme mapping ─────────────────────────────────────────────────
   config = let
     cfg = config.nixy.themeProfile;
     theme = themes.${cfg.name};

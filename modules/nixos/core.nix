@@ -1,4 +1,7 @@
 {lib, ...}: {
+  # ── Defaults policy ───────────────────────────────────────────────
+  # Shared defaults use mkDefault so hosts can override per machine.
+
   # ── Users ──────────────────────────────────────────────────────────
   users.users.km = {
     isNormalUser = true;

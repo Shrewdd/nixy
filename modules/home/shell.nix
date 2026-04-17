@@ -27,10 +27,13 @@
     '';
   };
 
+  # ── Shell utilities ────────────────────────────────────────────────
   programs.zoxide.enable = true;
 
   home.packages = with pkgs; [fd zsh-completions];
 
+  # ── Bash handoff ───────────────────────────────────────────────────
+  # Start zsh for interactive bash sessions to keep one shell workflow.
   programs.bash = {
     enable = true;
     initExtra = ''

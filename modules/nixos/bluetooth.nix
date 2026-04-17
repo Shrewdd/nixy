@@ -1,4 +1,5 @@
 {lib, ...}: {
+  # ── Bluetooth stack ───────────────────────────────────────────────
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = lib.mkDefault true;
@@ -8,5 +9,6 @@
     };
   };
 
+  # ── Bluetooth UI ──────────────────────────────────────────────────
   services.blueman.enable = lib.mkDefault true;
 }

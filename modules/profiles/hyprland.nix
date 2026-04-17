@@ -1,8 +1,7 @@
-# ── Hyprland – complete desktop profile ─────────────────────────────────
+# ── Hyprland desktop profile ─────────────────────────────────────────────
 #
-# Everything a Hyprland workstation needs in one file: shared system
-# plumbing, the compositor itself, and Home Manager user config.
-# Import this from a host — it takes care of both halves.
+# Host-level profile for Hyprland machines.
+# Combines shared NixOS modules with Home Manager user modules.
 #
 {
   inputs,
@@ -200,7 +199,7 @@ in {
           gradients = false;
         };
 
-        # ── Eye-candy ────────────────────────────────────────────────
+        # ── Visual effects ────────────────────────────────────────────
         decoration = {
           rounding = 10;
           blur = {

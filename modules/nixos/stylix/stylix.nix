@@ -5,6 +5,7 @@
 }: let
   cfg = config.nixy.stylix;
 in {
+  # ── Module options ────────────────────────────────────────────────
   options.nixy.stylix = {
     enable = lib.mkEnableOption "Enable Stylix theming";
 
@@ -30,6 +31,7 @@ in {
     };
   };
 
+  # ── Stylix mapping ────────────────────────────────────────────────
   config = lib.mkIf cfg.enable {
     stylix = {
       enable = true;

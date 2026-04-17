@@ -1,4 +1,6 @@
 {}: {
+  # ── aurora ────────────────────────────────────────────────────────
+  # Headless server profile.
   aurora = {
     system = "x86_64-linux";
     useHomeManager = false;
@@ -6,6 +8,8 @@
     modules = [./aurora/configuration.nix];
   };
 
+  # ── monsoon ───────────────────────────────────────────────────────
+  # Main Hyprland desktop.
   monsoon = {
     system = "x86_64-linux";
     useHomeManager = true;
@@ -13,6 +17,8 @@
     modules = [./monsoon/configuration.nix];
   };
 
+  # ── nomad ─────────────────────────────────────────────────────────
+  # Laptop GNOME profile.
   nomad = {
     system = "x86_64-linux";
     useHomeManager = true;

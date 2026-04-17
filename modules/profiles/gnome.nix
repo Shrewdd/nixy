@@ -1,8 +1,7 @@
-# ── GNOME – complete desktop profile ─────────────────────────────────────
+# ── GNOME desktop profile ────────────────────────────────────────────────
 #
-# Everything a GNOME workstation needs: shared system plumbing, the
-# desktop shell, and Home Manager user config.  Import this from a
-# host — it takes care of both halves.
+# Host-level profile for GNOME machines.
+# Combines shared NixOS modules with Home Manager user modules.
 #
 {
   lib,

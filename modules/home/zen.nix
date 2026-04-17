@@ -1,6 +1,7 @@
 {inputs, ...}: {
   imports = [inputs.zen-browser.homeModules.twilight];
 
+  # ── Browser config ────────────────────────────────────────────────
   programs.zen-browser = {
     enable = true;
     policies = {
@@ -18,5 +19,6 @@
     };
   };
 
+  # ── Stylix integration ────────────────────────────────────────────
   stylix.targets.zen-browser.profileNames = ["default"];
 }
