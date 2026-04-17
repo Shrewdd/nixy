@@ -290,7 +290,7 @@ in {
           "$mainMod,       Escape, global,          caelestia:session"
           "$mainMod,       G,      exec,            caelestia shell gameMode toggle"
           "$mainMod,       L,      global,          caelestia:lock"
-          "$mainMod,       W,      exec,            caelestia wallpaper -r $wallpaperDir"
+          "$mainMod,       W,      exec,            caelestia wallpaper -r $wallpaperDir && caelestia scheme set -m ${osConfig.nixy.stylix.polarity}"
 
           # Screenshots
           "$mainMod,       Print,  exec,            caelestia screenshot --freeze"
