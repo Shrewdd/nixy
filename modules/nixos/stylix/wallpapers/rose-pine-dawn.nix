@@ -1,5 +1,5 @@
 {pkgs}: let
-  # ── krishna4a6av/Wallpapers/Rosepine ────────────────────────────────
+  # ── krishna4a6av/Wallpapers/Rosepine (light-leaning picks) ─────────
   kBase = "https://raw.githubusercontent.com/krishna4a6av/Wallpapers/master/Rosepine";
   kFetch = name: sha256:
     pkgs.fetchurl {
@@ -32,7 +32,38 @@
   telefpMd = kFetch "telefpMd.jpg" "sha256-PQVbI5bI8mEoAYwTnzcAMABTyeYWBmtOkgPqmFLps5Q=";
   windows-error = kFetch "windows-error.jpg" "sha256-Yr31nKWS1yLkxs6GxYQ6jHwKgJ+b9iqPcZbBY0suGLg=";
 
-  krishnaLinks = [
+  # ── fr0st-xyz/wallz/Rose Pine (light-leaning picks) ───────────────
+  fBase = "https://raw.githubusercontent.com/fr0st-xyz/wallz/main/Ros%C3%A9%20Pine";
+  fFetch = encodedName: storeName: sha256:
+    pkgs.fetchurl {
+      url = "${fBase}/${encodedName}";
+      name = storeName;
+      inherit sha256;
+    };
+
+  fr-01 = fFetch "01.%20Ros%C3%A9%20Pine.jpeg" "01-Rose-Pine.jpeg" "sha256-hnlr9v3RvSK296lrO2TbG09RKjB/9W0WQyA5dn2uC1w=";
+  fr-02 = fFetch "02.%20Ros%C3%A9%20Pine.png" "02-Rose-Pine.png" "sha256-jnigukMtPmgdrBQdEW99KKioUVE+XKix2kiiRuSMXpM=";
+  fr-03 = fFetch "03.%20Ros%C3%A9%20Pine.png" "03-Rose-Pine.png" "sha256-WFH63e3q6B38SfgFMzhFR4Vpb26hwUZq7ngIRCvlUBs=";
+  fr-04 = fFetch "04.%20Ros%C3%A9%20Pine.jpg" "04-Rose-Pine.jpg" "sha256-+kieKFOWkUkjO/POkNyxdq1k2MLLy1eDoLmlj7He5Zc=";
+  fr-05 = fFetch "05.%20Ros%C3%A9%20Pine.jpg" "05-Rose-Pine.jpg" "sha256-pienmklbIRK0aBhV/5oE9LQ4r19suIKB29GjkN9iCgs=";
+  fr-06 = fFetch "06.%20Ros%C3%A9%20Pine.jpg" "06-Rose-Pine.jpg" "sha256-XNxv2CRnFtGD74V2wHjgiuwENUY/VoX7Vg0GahiL5Oc=";
+  fr-07 = fFetch "07.%20Ros%C3%A9%20Pine.png" "07-Rose-Pine.png" "sha256-mjIQYBi887EQyTKbvSD0Gmoz/nFN4+AkhsudQbq6zQY=";
+  fr-08 = fFetch "08.%20Ros%C3%A9%20Pine.jpg" "08-Rose-Pine.jpg" "sha256-le98mXFePv3Hh3XKylXpyaRQV5GLGyMQwbNYGcrFbMY=";
+  fr-09 = fFetch "09.%20Ros%C3%A9%20Pine.jpg" "09-Rose-Pine.jpg" "sha256-ySPmoAPYsX90H19D5VULCXeZfnpks7JUFU3s/jITG5o=";
+  fr-10 = fFetch "10.%20Ros%C3%A9%20Pine.jpg" "10-Rose-Pine.jpg" "sha256-6RXsjniHZzij/pTBlNK/TtlZZoXbYZvIaQEuV2KvCrQ=";
+  fr-11 = fFetch "11.%20Ros%C3%A9%20Pine.jpg" "11-Rose-Pine.jpg" "sha256-ZKJ9OjnKufhc/6IkXwcv0SdYujDBM5kITgNiKWdzfkI=";
+  fr-12 = fFetch "12.%20Ros%C3%A9%20Pine.png" "12-Rose-Pine.png" "sha256-eHKwZjs1NjM3OEH7wJeH40Gje6cvKNStswbAiR/4sKg=";
+  fr-13 = fFetch "13.%20Ros%C3%A9%20Pine.png" "13-Rose-Pine.png" "sha256-6zVWw4S6tiF00vZKmUWtl/D0nYG2F9qk4e+e66/Jx4o=";
+  fr-14 = fFetch "14.%20Ros%C3%A9%20Pine.png" "14-Rose-Pine.png" "sha256-Qmy+yCQEOnBQXVRXcRdNcTZzu9JP4NZmnBVW8NNZSUA=";
+  fr-15 = fFetch "15.%20Ros%C3%A9%20Pine.jpg" "15-Rose-Pine.jpg" "sha256-aSgvKrVXBYyfbY/v2l9zccwRs6/D5VwCdqco4Oo7HEI=";
+  fr-16 = fFetch "16.%20Ros%C3%A9%20Pine.png" "16-Rose-Pine.png" "sha256-FDSlo2XUz8XI5IHbTLQU8Q4CvZWSEnaqP55l6amdnZc=";
+  fr-17 = fFetch "17.%20Ros%C3%A9%20Pine.jpg" "17-Rose-Pine.jpg" "sha256-zUWS0hFDCB6k32iXqPHzUCqWBcU82jCvaryBER88I/4=";
+  fr-18 = fFetch "18.%20Ros%C3%A9%20Pine.jpeg" "18-Rose-Pine.jpeg" "sha256-H4OM5VRoRQF4/L8OhJYd7BTQsxy75CYiLQvECGef3sk=";
+  fr-19 = fFetch "19.%20Ros%C3%A9%20Pine.jpeg" "19-Rose-Pine.jpeg" "sha256-8Zq7QzqlLswgilV6sOGBgcl+8L6XURYwxIh8FLz+1s0=";
+  fr-20 = fFetch "20.%20Ros%C3%A9%20Pine.jpg" "20-Rose-Pine.jpg" "sha256-X9BdFzoVqy/rAwn8o7Hf9dKj3j1g9LtczQ1kUOBIa2E=";
+  fr-21 = fFetch "21.%20Ros%C3%A9%20Pine.png" "21-Rose-Pine.png" "sha256-iajDpFBzyctQuQaVkrTUgbOYlGuqHi7vl3qPEp/ndDw=";
+
+  lightLinks = [
     {
       name = "anime-girl-flowers.png";
       path = anime-girl-flowers;
@@ -129,129 +160,93 @@
       name = "windows-error.jpg";
       path = windows-error;
     }
-  ];
-
-  # ── fr0st-xyz/wallz/Rosé Pine ───────────────────────────────────────
-  fBase = "https://raw.githubusercontent.com/fr0st-xyz/wallz/main/Ros%C3%A9%20Pine";
-  fFetch = encodedName: storeName: sha256:
-    pkgs.fetchurl {
-      url = "${fBase}/${encodedName}";
-      name = storeName;
-      inherit sha256;
-    };
-
-  fr-01 = fFetch "01.%20Ros%C3%A9%20Pine.jpeg" "01-Rose-Pine.jpeg" "sha256-hnlr9v3RvSK296lrO2TbG09RKjB/9W0WQyA5dn2uC1w=";
-  fr-02 = fFetch "02.%20Ros%C3%A9%20Pine.png" "02-Rose-Pine.png" "sha256-jnigukMtPmgdrBQdEW99KKioUVE+XKix2kiiRuSMXpM=";
-  fr-03 = fFetch "03.%20Ros%C3%A9%20Pine.png" "03-Rose-Pine.png" "sha256-WFH63e3q6B38SfgFMzhFR4Vpb26hwUZq7ngIRCvlUBs=";
-  fr-04 = fFetch "04.%20Ros%C3%A9%20Pine.jpg" "04-Rose-Pine.jpg" "sha256-+kieKFOWkUkjO/POkNyxdq1k2MLLy1eDoLmlj7He5Zc=";
-  fr-05 = fFetch "05.%20Ros%C3%A9%20Pine.jpg" "05-Rose-Pine.jpg" "sha256-pienmklbIRK0aBhV/5oE9LQ4r19suIKB29GjkN9iCgs=";
-  fr-06 = fFetch "06.%20Ros%C3%A9%20Pine.jpg" "06-Rose-Pine.jpg" "sha256-XNxv2CRnFtGD74V2wHjgiuwENUY/VoX7Vg0GahiL5Oc=";
-  fr-07 = fFetch "07.%20Ros%C3%A9%20Pine.png" "07-Rose-Pine.png" "sha256-mjIQYBi887EQyTKbvSD0Gmoz/nFN4+AkhsudQbq6zQY=";
-  fr-08 = fFetch "08.%20Ros%C3%A9%20Pine.jpg" "08-Rose-Pine.jpg" "sha256-le98mXFePv3Hh3XKylXpyaRQV5GLGyMQwbNYGcrFbMY=";
-  fr-09 = fFetch "09.%20Ros%C3%A9%20Pine.jpg" "09-Rose-Pine.jpg" "sha256-ySPmoAPYsX90H19D5VULCXeZfnpks7JUFU3s/jITG5o=";
-  fr-10 = fFetch "10.%20Ros%C3%A9%20Pine.jpg" "10-Rose-Pine.jpg" "sha256-6RXsjniHZzij/pTBlNK/TtlZZoXbYZvIaQEuV2KvCrQ=";
-  fr-11 = fFetch "11.%20Ros%C3%A9%20Pine.jpg" "11-Rose-Pine.jpg" "sha256-ZKJ9OjnKufhc/6IkXwcv0SdYujDBM5kITgNiKWdzfkI=";
-  fr-12 = fFetch "12.%20Ros%C3%A9%20Pine.png" "12-Rose-Pine.png" "sha256-eHKwZjs1NjM3OEH7wJeH40Gje6cvKNStswbAiR/4sKg=";
-  fr-13 = fFetch "13.%20Ros%C3%A9%20Pine.png" "13-Rose-Pine.png" "sha256-6zVWw4S6tiF00vZKmUWtl/D0nYG2F9qk4e+e66/Jx4o=";
-  fr-14 = fFetch "14.%20Ros%C3%A9%20Pine.png" "14-Rose-Pine.png" "sha256-Qmy+yCQEOnBQXVRXcRdNcTZzu9JP4NZmnBVW8NNZSUA=";
-  fr-15 = fFetch "15.%20Ros%C3%A9%20Pine.jpg" "15-Rose-Pine.jpg" "sha256-aSgvKrVXBYyfbY/v2l9zccwRs6/D5VwCdqco4Oo7HEI=";
-  fr-16 = fFetch "16.%20Ros%C3%A9%20Pine.png" "16-Rose-Pine.png" "sha256-FDSlo2XUz8XI5IHbTLQU8Q4CvZWSEnaqP55l6amdnZc=";
-  fr-17 = fFetch "17.%20Ros%C3%A9%20Pine.jpg" "17-Rose-Pine.jpg" "sha256-zUWS0hFDCB6k32iXqPHzUCqWBcU82jCvaryBER88I/4=";
-  fr-18 = fFetch "18.%20Ros%C3%A9%20Pine.jpeg" "18-Rose-Pine.jpeg" "sha256-H4OM5VRoRQF4/L8OhJYd7BTQsxy75CYiLQvECGef3sk=";
-  fr-19 = fFetch "19.%20Ros%C3%A9%20Pine.jpeg" "19-Rose-Pine.jpeg" "sha256-8Zq7QzqlLswgilV6sOGBgcl+8L6XURYwxIh8FLz+1s0=";
-  fr-20 = fFetch "20.%20Ros%C3%A9%20Pine.jpg" "20-Rose-Pine.jpg" "sha256-X9BdFzoVqy/rAwn8o7Hf9dKj3j1g9LtczQ1kUOBIa2E=";
-  fr-21 = fFetch "21.%20Ros%C3%A9%20Pine.png" "21-Rose-Pine.png" "sha256-iajDpFBzyctQuQaVkrTUgbOYlGuqHi7vl3qPEp/ndDw=";
-
-  fr0stLinks = [
     {
-      name = "01. Rosé Pine.jpeg";
+      name = "01-Rose-Pine.jpeg";
       path = fr-01;
     }
     {
-      name = "02. Rosé Pine.png";
+      name = "02-Rose-Pine.png";
       path = fr-02;
     }
     {
-      name = "03. Rosé Pine.png";
+      name = "03-Rose-Pine.png";
       path = fr-03;
     }
     {
-      name = "04. Rosé Pine.jpg";
+      name = "04-Rose-Pine.jpg";
       path = fr-04;
     }
     {
-      name = "05. Rosé Pine.jpg";
+      name = "05-Rose-Pine.jpg";
       path = fr-05;
     }
     {
-      name = "06. Rosé Pine.jpg";
+      name = "06-Rose-Pine.jpg";
       path = fr-06;
     }
     {
-      name = "07. Rosé Pine.png";
+      name = "07-Rose-Pine.png";
       path = fr-07;
     }
     {
-      name = "08. Rosé Pine.jpg";
+      name = "08-Rose-Pine.jpg";
       path = fr-08;
     }
     {
-      name = "09. Rosé Pine.jpg";
+      name = "09-Rose-Pine.jpg";
       path = fr-09;
     }
     {
-      name = "10. Rosé Pine.jpg";
+      name = "10-Rose-Pine.jpg";
       path = fr-10;
     }
     {
-      name = "11. Rosé Pine.jpg";
+      name = "11-Rose-Pine.jpg";
       path = fr-11;
     }
     {
-      name = "12. Rosé Pine.png";
+      name = "12-Rose-Pine.png";
       path = fr-12;
     }
     {
-      name = "13. Rosé Pine.png";
+      name = "13-Rose-Pine.png";
       path = fr-13;
     }
     {
-      name = "14. Rosé Pine.png";
+      name = "14-Rose-Pine.png";
       path = fr-14;
     }
     {
-      name = "15. Rosé Pine.jpg";
+      name = "15-Rose-Pine.jpg";
       path = fr-15;
     }
     {
-      name = "16. Rosé Pine.png";
+      name = "16-Rose-Pine.png";
       path = fr-16;
     }
     {
-      name = "17. Rosé Pine.jpg";
+      name = "17-Rose-Pine.jpg";
       path = fr-17;
     }
     {
-      name = "18. Rosé Pine.jpeg";
+      name = "18-Rose-Pine.jpeg";
       path = fr-18;
     }
     {
-      name = "19. Rosé Pine.jpeg";
+      name = "19-Rose-Pine.jpeg";
       path = fr-19;
     }
     {
-      name = "20. Rosé Pine.jpg";
+      name = "20-Rose-Pine.jpg";
       path = fr-20;
     }
     {
-      name = "21. Rosé Pine.png";
+      name = "21-Rose-Pine.png";
       path = fr-21;
     }
   ];
-
-  allLinks = krishnaLinks ++ fr0stLinks;
 in {
-  inherit miami;
-  links = allLinks;
-  directory = pkgs.linkFarm "rosepine-wallpapers" allLinks;
+  inherit pnkMd miami;
+  links = lightLinks;
+  directory = pkgs.linkFarm "rose-pine-dawn-wallpapers" lightLinks;
 }

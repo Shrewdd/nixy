@@ -1,10 +1,10 @@
 # Available Stylix theme profiles
 {pkgs}: let
-  rosepine = import ./wallpapers/rosepine.nix {inherit pkgs;};
+  rose-pine-dawn = import ./wallpapers/rose-pine-dawn.nix {inherit pkgs;};
 in {
-  rose-pine = {
-    wallpaper = rosepine.miami;
-    wallpaperDir = rosepine.directory;
+  rose-pine-dawn = {
+    wallpaper = rose-pine-dawn.pnkMd;
+    wallpaperDir = rose-pine-dawn.directory;
     base16Scheme = import ./theme/rose-pine-dawn-base16.nix;
     polarity = "light";
   };
