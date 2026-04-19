@@ -5,7 +5,7 @@
 }: {
   programs.ghostty = {
     enable = true;
-    enableZshIntegration = true;
+    enableFishIntegration = true;
     settings = {
       background-blur-radius = lib.mkDefault 20;
       font-family = lib.mkDefault "JetBrains Mono NF";

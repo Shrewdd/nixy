@@ -29,7 +29,7 @@ to look around and steal whatever is useful.
 │   │   └── stylix/                    # theming (Stylix, base16 schemes, wallpapers)
 │   └── home/
 │       ├── core.nix                   # HM base (imports shell + git)
-│       ├── shell.nix                  # zsh, starship, btop, fastfetch
+│       ├── shell.nix                  # fish, starship, btop, fastfetch
 │       ├── git.nix                    # git config
 │       ├── ghostty.nix                # Ghostty terminal
 │       ├── zen.nix                    # Zen browser

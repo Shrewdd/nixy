@@ -1,12 +1,20 @@
-{lib, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   # ── Defaults policy ───────────────────────────────────────────────
   # Shared defaults use mkDefault so hosts can override per machine.
+
+  # ── Shell ──────────────────────────────────────────────────────────
+  programs.fish.enable = true;
 
   # ── Users ──────────────────────────────────────────────────────────
   users.users.km = {
     isNormalUser = true;
     description = "km";
     extraGroups = ["networkmanager" "wheel"];
+    shell = pkgs.fish;
   };
 
   # ── Nix ────────────────────────────────────────────────────────────
