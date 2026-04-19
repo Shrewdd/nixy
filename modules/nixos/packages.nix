@@ -22,7 +22,7 @@
     openFirewall = true;
   };
 
-  # ── Programs ──────────────────────────────────────────────────
+  # ── Programs ──────────────────────────────────────────────────────
   programs.nh = {
     enable = true;
     flake = "/home/km/nixy";
