@@ -10,12 +10,10 @@
     nixd
     alejandra
     apostrophe
-    anytype
     vscode
     zapzap
     speedtest-cli
     tree
-    tree-sitter
   ];
 
   # ── Services ──────────────────────────────────────────────────────
