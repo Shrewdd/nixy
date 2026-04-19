@@ -11,15 +11,11 @@
     '';
   };
 
-  # ── Starship (HyDE style) ──────────────────────────────────────────
+  # ── Starship ───────────────────────────────────────────────────────
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
-  };
-
-  home.file.".config/starship/starship.toml".source = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/HyDE-Project/HyDE/main/Configs/.config/starship/starship.toml";
-    sha256 = "sha256-qxVRjTixNMt+VGlEqUC8rHx5zRJmBYzyCkpmumttah4=";
+    presets = ["plain-text-symbols"];
   };
 
   # ── Shell utilities ────────────────────────────────────────────────
