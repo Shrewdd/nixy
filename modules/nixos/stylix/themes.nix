@@ -8,4 +8,11 @@ in {
     base16Scheme = import ./theme/rose-pine-dawn-base16.nix;
     polarity = "light";
   };
+
+  rose-pine-moon = {
+    wallpaper = rose-pine-dawn.pnkMd;
+    wallpaperDir = rose-pine-dawn.directory;
+    base16Scheme = import ./theme/rose-pine-moon-base16.nix;
+    polarity = "dark";
+  };
 }
