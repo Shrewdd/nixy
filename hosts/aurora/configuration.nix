@@ -17,7 +17,10 @@
   };
 
   # ── Nix ────────────────────────────────────────────────────────────
-  nix.settings.auto-optimise-store = true;
+  nix.settings = {
+    auto-optimise-store = true;
+    experimental-features = ["nix-command" "flakes"];
+  };
   nix.gc.options = "--delete-older-than 30d";
 
   # ── Locale ─────────────────────────────────────────────────────────
