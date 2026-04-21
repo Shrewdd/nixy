@@ -38,3 +38,13 @@ to look around and steal whatever is useful.
 ```
 
 ---
+
+## rbw setup (new install) cuz im dum dum
+
+```bash
+rbw config set email you@example.com
+rbw config set base_url https://api.bitwarden.eu
+rbw register
+rbw login
+rbw sync
+```

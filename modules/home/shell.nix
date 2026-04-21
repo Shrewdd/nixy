@@ -19,7 +19,7 @@
   };
 
   # ── Shell utilities ────────────────────────────────────────────────
-  home.packages = with pkgs; [fd];
+  home.packages = with pkgs; [fd rbw pinentry-curses];
 
   # ── Btop ───────────────────────────────────────────────────────────
   programs.btop = {
@@ -131,5 +131,10 @@
         "break"
       ];
     };
+  };
+
+  # ── SSH auth ───────────────────────────────────────────────────────
+  home.sessionVariables = {
+    SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/rbw/ssh-agent-socket";
   };
 }
