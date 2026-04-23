@@ -23,7 +23,6 @@
     nvidiaSettings = true;
   };
 
-  boot.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
   boot.blacklistedKernelModules = ["nouveau"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
