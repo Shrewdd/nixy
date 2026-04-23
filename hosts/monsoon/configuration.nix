@@ -19,11 +19,10 @@
     modesetting.enable = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580; # temporarily use 580 until latest is fixed
     nvidiaSettings = true;
   };
 
-  boot.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
   boot.blacklistedKernelModules = ["nouveau"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
