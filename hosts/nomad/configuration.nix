@@ -1,8 +1,7 @@
 {...}: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/stylix/theme-profiles.nix
-    ../../modules/profiles/gnome.nix
+    ../../modules/profiles/hypr-nomad.nix
   ];
 
   networking.hostName = "nomad";
