@@ -20,7 +20,6 @@
   puffy-stars = kFetch "puffy-stars.jpg" "sha256-UN/4cOjPJ/2AtbIBpJbs6iUeTT5Sh6AHKUHIIHVXFqw=";
   purple-road = kFetch "purple-road.png" "sha256-MmexNO3m6iXT2Ooz8SQo9VT5DKUbWjgIVjGhzPJ1a5s=";
   retrocmp = kFetch "retrocmp.jpg" "sha256-Msajm3fVpUL3zX9zUILxj7xOzTPbzT+ubAjvmoEpDAU=";
-  sakurabranch = kFetch "sakurabranch.jpeg" "sha256-mJouFoiPYGRGzCkkASaRCRgJtgrHkX30ozBg/xmyEK4=";
   shougan2 = kFetch "shougan2.png" "sha256-/X64eC0yvoIq92ib084qpR5T/CDYl+EFMdFd/cjDRSk=";
   starwars-xwing = kFetch "starwars-xwing.png" "sha256-wasviQRe2x9iFBYjBpgN5S1LLiHivgpOEHDIXVPiBIU=";
   telefpMd = kFetch "telefpMd.jpg" "sha256-PQVbI5bI8mEoAYwTnzcAMABTyeYWBmtOkgPqmFLps5Q=";
@@ -101,10 +100,6 @@
     {
       name = "retrocmp.jpg";
       path = retrocmp;
-    }
-    {
-      name = "sakurabranch.jpeg";
-      path = sakurabranch;
     }
     {
       name = "shougan2.png";
