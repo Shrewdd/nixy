@@ -58,12 +58,6 @@
     programs.plasma = {
       enable = true;
 
-      input.touchpads = [
-        {
-          naturalScroll = true;
-        }
-      ];
-
       panels = [
         {
           location = "bottom";
