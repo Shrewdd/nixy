@@ -18,7 +18,7 @@
   };
 
   # ── nomad ─────────────────────────────────────────────────────────
-  # Laptop GNOME profile.
+  # Laptop KDE profile.
   nomad = {
     system = "x86_64-linux";
     useHomeManager = true;

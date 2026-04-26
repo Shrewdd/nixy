@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/profiles/hypr-nomad.nix
+    ../../modules/profiles/kde.nix
   ];
 
   networking.hostName = "nomad";
