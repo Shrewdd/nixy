@@ -28,6 +28,12 @@
   services.displayManager.gdm.enable = lib.mkForce false;
 
   services.desktopManager.plasma6.enable = true;
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    konsole
+    kate
+    khelpcenter
+  ];
+
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
@@ -57,6 +63,38 @@
 
     programs.plasma = {
       enable = true;
+
+      input = {
+        keyboard.layouts = [
+          {
+            layout = "pl";
+          }
+        ];
+
+        mice = [
+          {
+            name = "SYNA3083:00 06CB:8265 Mouse";
+            vendorId = "06cb";
+            productId = "8265";
+            naturalScroll = false;
+          }
+        ];
+
+        touchpads = [
+          {
+            name = "SYNA3083:00 06CB:8265 Touchpad";
+            vendorId = "06cb";
+            productId = "8265";
+            naturalScroll = false;
+          }
+          {
+            name = "SynPS/2 Synaptics TouchPad";
+            vendorId = "0002";
+            productId = "0007";
+            naturalScroll = false;
+          }
+        ];
+      };
 
       panels = [
         {
