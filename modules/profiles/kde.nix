@@ -63,6 +63,7 @@
           location = "bottom";
           height = 36;
           floating = true;
+          hiding = "autohide";
           lengthMode = "fit";
           widgets = [
             "org.kde.plasma.kickoff"
@@ -73,7 +74,14 @@
               };
             }
             "org.kde.plasma.systemtray"
-            "org.kde.plasma.digitalclock"
+            {
+              digitalClock.settings = {
+                Configuration = {
+                  popupHeight = 451;
+                  popupWidth = 560;
+                };
+              };
+            }
           ];
         }
       ];
