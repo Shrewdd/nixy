@@ -52,7 +52,7 @@
   # ── Home Manager (km) ──────────────────────────────────────────────────
   # ════════════════════════════════════════════════════════════════════════
 
-  home-manager.users.km = { ... }: {
+  home-manager.users.km = {...}: {
     imports = [
       inputs.plasma-manager.homeModules.plasma-manager
       ../home/core.nix
