@@ -9,26 +9,6 @@
   lib,
   ...
 }: let
-  qylockSrc = pkgs.fetchFromGitHub {
-    owner = "Darkkal44";
-    repo = "qylock";
-    rev = "6d676217daef421e1d4abdc99a9307c60ed0d49b";
-    sha256 = "sha256-Qq+0hvSMJOmOhzqZet0SOi3N3PMCGd+GvlMArF7t8n0=";
-  };
-
-  qylockLastOfUsTheme = pkgs.stdenvNoCC.mkDerivation {
-    pname = "sddm-theme-qylock-last-of-us";
-    version = "6d67621";
-    src = qylockSrc;
-    dontBuild = true;
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p "$out/share/sddm/themes/last-of-us"
-      cp -r themes/last-of-us/* "$out/share/sddm/themes/last-of-us/"
-      runHook postInstall
-    '';
-  };
 in {
   # ════════════════════════════════════════════════════════════════════════
   # ── NixOS ──────────────────────────────────────────────────────────────
@@ -52,11 +32,12 @@ in {
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-    theme = "${qylockLastOfUsTheme}/share/sddm/themes/last-of-us";
+    theme = "sddm-astronaut-theme";
     package = pkgs.kdePackages.sddm;
     extraPackages = with pkgs; [
       qt6Packages.qtmultimedia
-      qt6Packages.qt5compat
+      qt6Packages.qtsvg
+      qt6Packages.qtvirtualkeyboard
     ];
   };
 
@@ -96,6 +77,7 @@ in {
     hyprpolkitagent
     imv # image viewer
     mpv # video player
+    (pkgs.sddm-astronaut.override {embeddedTheme = "hyprland_kath";})
   ];
 
   # ── Session environment ────────────────────────────────────────────
