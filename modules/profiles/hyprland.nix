@@ -120,6 +120,8 @@ in {
 
         services.weatherLocation = "";
 
+        background.desktopClock.enabled = true;
+
         utilities.toasts.capsLockChanged = false;
 
         bar = {
