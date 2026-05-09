@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # ── Printing stack ───────────────────────────────────────────────
   services.printing = {
     enable = true;
@@ -11,7 +7,7 @@
 
   # ── Printer discovery ────────────────────────────────────────────
   services.avahi = {
-    enable = lib.mkDefault true;
+    enable = true;
     nssmdns4 = true;
     openFirewall = true;
   };
