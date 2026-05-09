@@ -6,7 +6,7 @@
   # ── Printing stack ───────────────────────────────────────────────
   services.printing = {
     enable = true;
-    drivers = with pkgs; [gutenprint hplip];
+    drivers = with pkgs; [epson-escpr2 gutenprint];
   };
 
   # ── Printer discovery ────────────────────────────────────────────
