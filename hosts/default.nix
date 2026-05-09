@@ -1,13 +1,4 @@
 {}: {
-  # ── aurora ────────────────────────────────────────────────────────
-  # Headless server profile.
-  aurora = {
-    system = "x86_64-linux";
-    useHomeManager = false;
-    useStylix = false;
-    modules = [./aurora/configuration.nix];
-  };
-
   # ── monsoon ───────────────────────────────────────────────────────
   # Main Hyprland desktop.
   monsoon = {

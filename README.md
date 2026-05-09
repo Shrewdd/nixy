@@ -11,7 +11,6 @@ to look around and steal whatever is useful.
 ├── flake.nix                          # entrypoint, host definitions
 ├── hosts/
 │   ├── default.nix                    # host list consumed by flake.nix
-│   ├── aurora/                        # headless dev server (PostgreSQL, Prisma)
 │   ├── monsoon/                       # desktop workstation (Hyprland, Nvidia)
 │   └── nomad/                         # laptop (GNOME)
 ├── modules/
