@@ -13,6 +13,7 @@
     zapzap
     speedtest-cli
     tree
+    obsidian
   ];
 
   # ── Services ──────────────────────────────────────────────────────
