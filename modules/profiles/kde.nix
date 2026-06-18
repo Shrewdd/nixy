@@ -63,38 +63,15 @@
 
     programs.plasma = {
       enable = true;
-
       input = {
         keyboard.layouts = [
           {
             layout = "pl";
           }
         ];
-
-        mice = [
-          {
-            name = "SYNA3083:00 06CB:8265 Mouse";
-            vendorId = "06cb";
-            productId = "8265";
-            naturalScroll = false;
-          }
-        ];
-
-        touchpads = [
-          {
-            name = "SYNA3083:00 06CB:8265 Touchpad";
-            vendorId = "06cb";
-            productId = "8265";
-            naturalScroll = false;
-          }
-          {
-            name = "SynPS/2 Synaptics TouchPad";
-            vendorId = "0002";
-            productId = "0007";
-            naturalScroll = false;
-          }
-        ];
       };
+
+      desktop.widgets = [];
 
       panels = [
         {
@@ -104,7 +81,10 @@
           hiding = "autohide";
           lengthMode = "fit";
           widgets = [
-            "org.kde.plasma.kickoff"
+            {
+              name = "org.kde.plasma.kickoff";
+              config.General.icon = "nix-snowflake-white";
+            }
             {
               name = "org.kde.plasma.icontasks";
               config.General = {
@@ -112,14 +92,7 @@
               };
             }
             "org.kde.plasma.systemtray"
-            {
-              digitalClock.settings = {
-                Configuration = {
-                  popupHeight = 451;
-                  popupWidth = 560;
-                };
-              };
-            }
+            "org.kde.plasma.digitalclock"
           ];
         }
       ];
