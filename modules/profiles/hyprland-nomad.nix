@@ -261,9 +261,6 @@
           "$mainMod,       G,      exec,            caelestia shell gameMode toggle"
           "$mainMod,       L,      global,          caelestia:lock"
           "$mainMod,       W,      exec,            caelestia wallpaper -r $wallpaperDir && caelestia scheme set -m ${osConfig.nixy.stylix.polarity}"
-          
-          # Space Saving Toggle
-          "$mainMod SHIFT, space,  exec,            caelestia shell bar toggle || killall quickshell || caelestia shell -d"
 
           # Screenshots
           "$mainMod,       Print,  exec,            caelestia screenshot --freeze"
@@ -294,7 +291,6 @@
         ];
 
         windowrule = [
-
           "match:class .*, suppress_event maximize"
           "match:class ^$ match:title ^$ match:xwayland 1 match:float 1 match:fullscreen 0 match:pin 0, no_focus on"
         ];
