@@ -8,7 +8,4 @@
       Experimental = true;
     };
   };
-
-  # ── Bluetooth UI ──────────────────────────────────────────────────
-  services.blueman.enable = lib.mkDefault true;
 }
