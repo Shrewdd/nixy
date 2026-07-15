@@ -170,6 +170,9 @@
           direction = "right";
         };
 
+        # ── Trackpad Gestures ───────────────────────────────────────
+        gesture = "3, horizontal, workspace";
+
         group.groupbar = {
           font_size = 11;
           gradients = false;
