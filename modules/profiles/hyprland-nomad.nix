@@ -97,7 +97,7 @@
       ../home/spotify.nix
     ];
 
-    # ── Caelestia Shell Configuration ──────────────────────────────────
+    # ── Caelestia shell ────────────────────────────────────────────────
     programs.caelestia = {
       enable = true;
       systemd = {
@@ -115,6 +115,8 @@
         background.desktopClock.enabled = true;
 
         bar = {
+          persistent = false;
+          showOnHover = true;
           workspaces.perMonitorWorkspaces = false;
         };
 
@@ -131,7 +133,7 @@
       };
     };
 
-    # ── Hyprland Window Manager Settings ──────────────────────────────
+    # ── Hyprland window manager ──────────────────────────────────────
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = false;
