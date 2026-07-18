@@ -8,11 +8,11 @@
   environment.systemPackages = with pkgs; [
     nixd
     alejandra
-    apostrophe
     vscode
     zapzap
     speedtest-cli
     tree
+    fetch
   ];
 
   # ── Services ──────────────────────────────────────────────────────
