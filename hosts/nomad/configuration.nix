@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/profiles/hyprland-nomad.nix
+    ../../modules/profiles/hyprland.nix
   ];
 
   networking.hostName = "nomad";
