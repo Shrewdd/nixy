@@ -7,7 +7,6 @@
       inherit sha256;
     };
 
-  anime-girl-flowers = kFetch "anime-girl-flowers.png" "sha256-t5jQluwZ0YLQtBrZwymIDEWRp9DkKFJ9AkYypBXJJNU=";
   blossom = kFetch "blossom.jpg" "sha256-IOZl3qxVhUlv/cQVYHGtyyoe7FXDZRcyMRWZuyFelzU=";
   clowscape = kFetch "clowscape.jpg" "sha256-gyOtrH5EYenBTAiP2HITAawlJ5yge/ZXmsgHAVeDhAs=";
   dominik-mayer = kFetch "dominik-mayer.jpg" "sha256-kceCfeBfOaZ5gj5ajlS86H20zo34nN4zyEhMmVeN4gk=";
@@ -49,10 +48,6 @@
   fr-21 = fFetch "21.%20Ros%C3%A9%20Pine.png" "21-Rose-Pine.png" "sha256-iajDpFBzyctQuQaVkrTUgbOYlGuqHi7vl3qPEp/ndDw=";
 
   lightLinks = [
-    {
-      name = "anime-girl-flowers.png";
-      path = anime-girl-flowers;
-    }
     {
       name = "blossom.jpg";
       path = blossom;
