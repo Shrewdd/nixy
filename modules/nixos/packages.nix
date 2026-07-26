@@ -14,7 +14,7 @@
     speedtest-cli
     tree
     fetch
-    obsidian
+    anytype
   ];
 
   # ── Services ──────────────────────────────────────────────────────
