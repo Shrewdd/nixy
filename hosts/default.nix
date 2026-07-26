@@ -1,6 +1,5 @@
 {}: {
   # ── monsoon ───────────────────────────────────────────────────────
-  # Main Hyprland desktop.
   monsoon = {
     system = "x86_64-linux";
     useHomeManager = true;
@@ -9,7 +8,6 @@
   };
 
   # ── nomad ─────────────────────────────────────────────────────────
-  # Laptop KDE profile.
   nomad = {
     system = "x86_64-linux";
     useHomeManager = true;
