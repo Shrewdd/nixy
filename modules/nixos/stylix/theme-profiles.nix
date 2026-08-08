@@ -33,10 +33,19 @@ in {
       base16Scheme = lib.mkDefault theme.base16Scheme;
     };
 
-    stylix.cursor = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-      size = 24;
+    stylix = {
+      cursor = {
+        name = "Bibata-Modern-Ice";
+        package = pkgs.bibata-cursors;
+        size = 24;
+      };
+
+      iconTheme = {
+        enable = true;
+        package = pkgs.papirus-icon-theme;
+        dark = "Papirus-Dark";
+        light = "Papirus-Light";
+      };
     };
   };
 }
