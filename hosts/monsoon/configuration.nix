@@ -37,16 +37,9 @@
     LIBVA_DRIVER_NAME = "nvidia";
   };
 
-  # ── MIME & apps ────────────────────────────────────────────────────
-  xdg.mime.defaultApplications = {
-    "x-scheme-handler/roblox-player" = "org.vinegarhq.Sober.desktop";
-    "x-scheme-handler/roblox-studio" = "org.vinegarhq.Vinegar.desktop";
-  };
-
   environment.systemPackages = with pkgs; [
     vesktop
     sixpair
-    lshw
     simple-scan
   ];
 
