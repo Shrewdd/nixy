@@ -14,7 +14,6 @@
     speedtest-cli
     tree
     fetch
-    anytype
   ];
 
   # ── Services ──────────────────────────────────────────────────────
