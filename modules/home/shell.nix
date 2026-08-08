@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{lib, ...}: {
   # ── Fish ───────────────────────────────────────────────────────────
   programs.fish = {
     enable = true;
@@ -18,9 +14,6 @@
     presets = ["plain-text-symbols"];
   };
 
-  # ── Shell utilities ────────────────────────────────────────────────
-  home.packages = with pkgs; [fd rbw pinentry-curses];
-
   # ── Btop ───────────────────────────────────────────────────────────
   programs.btop = {
     enable = true;
@@ -28,10 +21,5 @@
       color_theme = lib.mkDefault "Default";
       theme_background = false;
     };
-  };
-
-  # ── SSH auth ───────────────────────────────────────────────────────
-  home.sessionVariables = {
-    SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/rbw/ssh-agent-socket";
   };
 }
