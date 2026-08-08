@@ -20,7 +20,7 @@ in {
   imports = [
     ../nixos/stylix/theme-profiles.nix
     ../nixos/core.nix
-    ../nixos/nautilus.nix
+    ../nixos/thunar.nix
     ../nixos/audio.nix
     ../nixos/bluetooth.nix
     ../nixos/flatpak.nix
@@ -96,7 +96,7 @@ in {
     imports = [
       inputs.caelestia-shell.homeManagerModules.default
       ../home/core.nix
-      ../home/ghostty.nix
+      ../home/kitty.nix
       ../home/zen.nix
       ../home/spotify.nix
     ];
@@ -114,8 +114,8 @@ in {
 
       settings = {
         general.apps = {
-          terminal = ["ghostty"];
-          explorer = ["nautilus"];
+          terminal = ["kitty"];
+          explorer = ["thunar"];
         };
 
         paths.wallpaperDir = "${osConfig.nixy.stylix.wallpaperDir}";
@@ -156,8 +156,8 @@ in {
       settings =
         {
           "$mainMod" = "SUPER";
-          "$terminal" = "ghostty";
-          "$fileManager" = "nautilus";
+          "$terminal" = "kitty";
+          "$fileManager" = "thunar";
           "$browser" = "zen-twilight";
           "$wallpaperDir" = "${osConfig.nixy.stylix.wallpaperDir}";
 
