@@ -11,18 +11,17 @@ to look around and steal whatever is useful.
 ├── flake.nix                          # entrypoint, host definitions
 ├── hosts/
 │   ├── default.nix                    # host list consumed by flake.nix
-│   ├── monsoon/                       # desktop workstation (Hyprland, Nvidia)
-│   └── nomad/                         # laptop (GNOME)
+│   ├── monsoon/                       # desktop
+│   └── nomad/                         # laptop
 ├── modules/
 │   ├── profiles/
 │   │   ├── hyprland.nix               # full Hyprland desktop profile
-│   │   ├── gnome.nix                  # full GNOME desktop profile
 │   ├── nixos/
 │   │   ├── core.nix                   # users, nix settings, networking, boot, locale
 │   │   ├── audio.nix                  # PipeWire
 │   │   ├── bluetooth.nix              # Bluetooth
 │   │   ├── flatpak.nix                # Flatpak
-│   │   ├── nautilus.nix               # Nautilus file manager
+│   │   ├── thunar.nix                 # thunar file manager
 │   │   ├── packages.nix               # shared system packages
 │   │   ├── printing.nix               # CUPS
 │   │   └── stylix/                    # theming (Stylix, base16 schemes, wallpapers)
@@ -30,7 +29,7 @@ to look around and steal whatever is useful.
 │       ├── core.nix                   # HM base (imports shell + git)
 │       ├── shell.nix                  # fish, starship, btop, fastfetch
 │       ├── git.nix                    # git config
-│       ├── ghostty.nix                # Ghostty terminal
+│       ├── kitty.nix                  # kitty terminal
 │       ├── zen.nix                    # Zen browser
 │       └── spotify.nix                # Spicetify
 └── README.md
