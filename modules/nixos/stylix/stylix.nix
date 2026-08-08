@@ -25,9 +25,9 @@ in {
     };
 
     base16Scheme = lib.mkOption {
-      type = lib.types.nullOr lib.types.attrs;
+      type = lib.types.nullOr (lib.types.either lib.types.path lib.types.attrs);
       default = null;
-      description = "Custom Base16 color scheme (optional)";
+      description = "Base16 color scheme: a path to a .yaml scheme file, or an inline attrset";
     };
   };
 

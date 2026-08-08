@@ -18,12 +18,6 @@ in {
       default = "rose-pine-dawn";
       description = "Theme profile to use (light or dark variant)";
     };
-
-    cursorSize = lib.mkOption {
-      type = lib.types.int;
-      default = 24;
-      description = "Cursor size";
-    };
   };
 
   # ── Theme mapping ─────────────────────────────────────────────────
@@ -42,7 +36,7 @@ in {
     stylix.cursor = {
       name = "Bibata-Modern-Ice";
       package = pkgs.bibata-cursors;
-      size = cfg.cursorSize;
+      size = 24;
     };
   };
 }

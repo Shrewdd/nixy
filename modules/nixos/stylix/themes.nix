@@ -1,18 +1,27 @@
 # Available Stylix theme profiles
-{pkgs}: let
-  rose-pine-dawn = import ./wallpapers/rose-pine-dawn.nix {inherit pkgs;};
-in {
+#
+{pkgs}: {
   rose-pine-dawn = {
-    wallpaper = rose-pine-dawn.pnkMd;
-    wallpaperDir = rose-pine-dawn.directory;
-    base16Scheme = import ./theme/rose-pine-dawn-base16.nix;
+    wallpaper = ./wallpapers/leafy-dawn.jpg;
+    wallpaperDir = pkgs.linkFarm "rose-pine-dawn-wallpapers" [
+      {
+        name = "leafy-dawn.jpg";
+        path = ./wallpapers/leafy-dawn.jpg;
+      }
+    ];
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine-dawn.yaml";
     polarity = "light";
   };
 
   rose-pine-moon = {
-    wallpaper = rose-pine-dawn.pnkMd;
-    wallpaperDir = rose-pine-dawn.directory;
-    base16Scheme = import ./theme/rose-pine-moon-base16.nix;
+    wallpaper = ./wallpapers/leafy-moon.jpg;
+    wallpaperDir = pkgs.linkFarm "rose-pine-moon-wallpapers" [
+      {
+        name = "leafy-moon.jpg";
+        path = ./wallpapers/leafy-moon.jpg;
+      }
+    ];
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine-moon.yaml";
     polarity = "dark";
   };
 }
