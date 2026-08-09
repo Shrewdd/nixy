@@ -9,6 +9,7 @@
     tree
     fetch
     mission-center
+    simple-scan
   ];
 
   # ── Services ──────────────────────────────────────────────────────

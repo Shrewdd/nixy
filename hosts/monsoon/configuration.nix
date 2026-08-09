@@ -40,7 +40,6 @@
   environment.systemPackages = with pkgs; [
     vesktop
     sixpair
-    simple-scan
   ];
 
   programs.gamemode.enable = true;
