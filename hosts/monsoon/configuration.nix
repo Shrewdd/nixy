@@ -20,7 +20,7 @@
     powerManagement.enable = false;
     powerManagement.finegrained = false;
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-    nvidiaSettings = true;
+    nvidiaSettings = false;
   };
 
   boot.blacklistedKernelModules = ["nouveau"];
