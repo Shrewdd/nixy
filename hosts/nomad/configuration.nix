@@ -5,12 +5,12 @@
   ];
 
   networking.hostName = "nomad";
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 
   hardware.graphics.enable = true;
 
   # ── Home Manager ───────────────────────────────────────────────────
   home-manager.users.km = {
-    home.stateVersion = "25.11";
+    home.stateVersion = "26.05";
   };
 }

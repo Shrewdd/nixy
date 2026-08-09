@@ -152,6 +152,7 @@ in {
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = false;
+      configType = "hyprlang"; # lua support is still broken hence why we are on hyprlang
 
       settings =
         {
