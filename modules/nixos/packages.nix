@@ -5,7 +5,6 @@
     alejandra
     vscode
     onlyoffice-desktopeditors
-    zapzap
     speedtest-cli
     tree
     fetch
