@@ -1,9 +1,4 @@
 {pkgs, ...}: {
-  # ── Fonts ─────────────────────────────────────────────────────────
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-  ];
-
   # ── Shared packages ───────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     nixd
@@ -14,6 +9,7 @@
     speedtest-cli
     tree
     fetch
+    mission-center
   ];
 
   # ── Services ──────────────────────────────────────────────────────
