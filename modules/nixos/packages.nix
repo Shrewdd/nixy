@@ -7,9 +7,8 @@
     onlyoffice-desktopeditors
     speedtest-cli
     tree
-    fetch
-    mission-center
     simple-scan
+    fastfetch
   ];
 
   # ── Services ──────────────────────────────────────────────────────
