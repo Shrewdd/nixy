@@ -2,7 +2,6 @@
   programs.kitty = {
     enable = true;
     shellIntegration.enableFishIntegration = true;
-
     settings = {
       cursor_shape = "beam";
       cursor_blink_interval = "-1";
