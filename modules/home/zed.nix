@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   osConfig,
   ...
@@ -12,6 +13,7 @@
       alejandra
     ];
     userSettings = {
+      theme = lib.mkForce "Duskfox - blurred";
       lsp = {
         nixd = {
           settings = {
