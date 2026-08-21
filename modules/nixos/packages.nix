@@ -1,9 +1,6 @@
 {pkgs, ...}: {
   # ── Shared packages ───────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
-    nixd
-    alejandra
-    vscode
     onlyoffice-desktopeditors
     speedtest-cli
     tree

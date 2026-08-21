@@ -99,6 +99,7 @@ in {
       ../home/kitty.nix
       ../home/zen.nix
       ../home/spotify.nix
+      ../home/zed.nix
     ];
 
     # ── Stylix ────────────────────────────────────────────────────────
