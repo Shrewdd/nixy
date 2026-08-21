@@ -9,4 +9,5 @@
       email = lib.mkDefault "qkbpp@protonmail.com";
     };
   };
+  programs.git-credential-oauth.enable = true;
 }
