@@ -29,6 +29,7 @@
           formatter.external = {
             command = "alejandra";
           };
+          format_on_save = "on";
         };
       };
     };
