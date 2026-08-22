@@ -42,8 +42,6 @@
     sixpair
   ];
 
-  programs.gamemode.enable = true;
-
   # ── Home Manager ───────────────────────────────────────────────────
   home-manager.users.km = {
     home.stateVersion = "25.11";
