@@ -68,8 +68,8 @@ in {
 
   # ── Power & thermal ────────────────────────────────────────────────
   services.upower.enable = true;
-  services.thermald.enable = true;
   services.power-profiles-daemon.enable = true;
+  services.thermald.enable = lib.mkIf isNomad true;
   services.logind.settings.Login.HandleLidSwitch = lib.mkIf isNomad "suspend";
 
   # ── System packages ────────────────────────────────────────────────
