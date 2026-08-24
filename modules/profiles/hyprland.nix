@@ -1,8 +1,4 @@
 # ── Hyprland desktop profile ─────────────────────────────────────────────
-#
-# Host-level profile for Hyprland machines (desktop + laptop).
-# Combines shared NixOS modules with Home Manager user modules.
-#
 {
   inputs,
   pkgs,

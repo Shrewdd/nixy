@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   # ── Audio stack ───────────────────────────────────────────────────
-  # PipeWire provides the server, with ALSA/Pulse/JACK compatibility.
   services.pipewire = {
     enable = true;
     alsa.enable = true;
