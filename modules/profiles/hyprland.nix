@@ -116,7 +116,10 @@ in {
         };
 
         paths.wallpaperDir = "${osConfig.nixy.stylix.wallpaperDir}";
-
+        appearance.anim.durations.scale =
+          if isNomad
+          then 0
+          else 1;
         services.weatherLocation = "";
 
         background.desktopClock.enabled = true;
@@ -222,7 +225,7 @@ in {
 
           # ── Animations ───────────────────────────────────────────────
           animations = {
-            enabled = true;
+            enabled = !isNomad;
 
             bezier = [
               "easeOutExpo, 0.16, 1, 0.3, 1"
