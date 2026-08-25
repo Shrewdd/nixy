@@ -2,7 +2,6 @@
   # ── Shared packages ───────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     onlyoffice-desktopeditors
-    speedtest-cli
     tree
     simple-scan
     fastfetch
