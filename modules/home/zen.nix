@@ -15,6 +15,8 @@
       id = 0;
       settings = {
         "browser.startup.page" = 3;
+        # Stop zen from offering translation popups on every single website
+        "browser.translations.automaticallyPopup" = false;
       };
     };
   };
