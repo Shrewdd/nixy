@@ -24,4 +24,17 @@
   environment.systemPackages = [
     pkgs.file-roller
   ];
+
+  # ── User Configuration (Home Manager) ──────────────────────────────
+  home-manager.users.km = {...}: {
+    xdg.desktopEntries = {
+      thunar-settings = {
+        name = "Thunar Settings";
+        exec = "thunar --settings";
+        icon = "org.xfce.thunar";
+        # removes "thunar preferences" app from application launchers
+        noDisplay = true;
+      };
+    };
+  };
 }
