@@ -5,7 +5,6 @@
     tree
     simple-scan
     fastfetch
-    anytype
   ];
 
   # ── Services ──────────────────────────────────────────────────────
