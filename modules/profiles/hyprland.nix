@@ -117,6 +117,12 @@ in {
               "desc:Samsung Electric Company LS24C33xG H9TX501795, 1920x1080@100, 1920x0, 1"
             ];
 
+          # ── Layout & gaps ────────────────────────────────────────────
+          general = {
+            gaps_in = 3;
+            gaps_out = 6;
+          };
+
           # ── Animations ───────────────────────────────────────────────
           animations = {
             bezier = [
@@ -253,14 +259,16 @@ in {
             mouse_move_enables_dpms = true;
             key_press_enables_dpms = true;
           };
+
+          # ── Visual effects ───────────────────────────────────────────
+          decoration =
+            {rounding = 10;}
+            // lib.optionalAttrs isNomad {
+              blur.enabled = false;
+              shadow.enabled = false;
+            };
         }
         // lib.optionalAttrs isNomad {
-          # ── Visual effects ───────────────────────────────────────────
-          decoration = {
-            blur.enabled = false;
-            shadow.enabled = false;
-          };
-
           # ── Trackpad gestures ───────────────────────────────────────
           gesture = "3, horizontal, workspace";
         };
