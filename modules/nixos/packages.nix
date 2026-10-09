@@ -3,6 +3,7 @@
   environment.systemPackages = with pkgs; [
     onlyoffice-desktopeditors
     tree
+    simple-scan
     microfetch
     obsidian
   ];
