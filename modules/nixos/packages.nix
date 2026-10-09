@@ -3,9 +3,8 @@
   environment.systemPackages = with pkgs; [
     onlyoffice-desktopeditors
     tree
-    simple-scan
-    fastfetch
-    anytype
+    microfetch
+    obsidian
   ];
 
   # ── Services ──────────────────────────────────────────────────────
