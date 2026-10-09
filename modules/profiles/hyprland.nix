@@ -1,6 +1,5 @@
 # ── Hyprland desktop profile ─────────────────────────────────────────────
 {
-  inputs,
   pkgs,
   lib,
   config,
@@ -25,37 +24,17 @@ in {
   ];
 
   # ── Display Manager ──────────────────────────────────────────────────
-  services.greetd = {
+  services.displayManager.noctalia-greeter = {
     enable = true;
-    settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --cmd 'uwsm start hyprland-uwsm.desktop'";
-      user = "greeter";
-    };
+    passwordlessSyncUsers = ["km"];
+    settings.keyboard.layout = "pl";
+    extraArgs = ["--" "--session" "hyprland-uwsm"];
   };
 
   # ── Hyprland & portals ──────────────────────────────────────────────
   programs.hyprland = {
     enable = true;
-    xwayland.enable = true;
     withUWSM = true;
-  };
-
-  programs.gpu-screen-recorder.enable = true;
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
-
-    # Ensure screencast/screenshot requests are handled by the Hyprland portal.
-    # Without this, the session may pick the GTK portal first, which doesn't
-    # provide the screen-share picker under Hyprland.
-    config.common.default = [
-      "hyprland"
-      "gtk"
-    ];
   };
 
   # ── Secrets & auth ─────────────────────────────────────────────────
@@ -80,17 +59,14 @@ in {
   environment.sessionVariables = {
     NIXOS_OZONE_WL = lib.mkDefault "1";
     XDG_SESSION_TYPE = lib.mkDefault "wayland";
-    XDG_SESSION_DESKTOP = lib.mkDefault "Hyprland";
-    XDG_CURRENT_DESKTOP = lib.mkDefault "Hyprland";
   };
 
   # ════════════════════════════════════════════════════════════════════════
   # ── Home Manager (km) ──────────────────────────────────────────────────
   # ════════════════════════════════════════════════════════════════════════
 
-  home-manager.users.km = {osConfig, ...}: {
+  home-manager.users.km = {
     imports = [
-      inputs.caelestia-shell.homeManagerModules.default
       ../home/core.nix
       ../home/kitty.nix
       ../home/zen.nix
@@ -98,53 +74,24 @@ in {
       ../home/zed.nix
     ];
 
-    # ── Stylix ────────────────────────────────────────────────────────
-    stylix.targets.hyprland.enable = false;
-
-    # ── Caelestia shell ────────────────────────────────────────────────
-    programs.caelestia = {
+    # ── Noctalia shell ─────────────────────────────────────────────────
+    programs.noctalia = {
       enable = true;
-      systemd = {
-        enable = true;
-        target = "graphical-session.target";
-      };
-
+      systemd.enable = true;
       settings = {
-        general.apps = {
-          terminal = ["kitty"];
-          explorer = ["thunar"];
+        shell.launcher.categories = false;
+        shell.launch_apps_as_systemd_services = true;
+        shell.polkit_agent = true;
+        shell.greeter_sync.auto_sync = true;
+        location.auto_locate = true;
+        shell.screenshot = {
+          show_cursor = true;
+          annotate = true;
         };
-
-        paths.wallpaperDir = "${osConfig.nixy.stylix.wallpaperDir}";
-        appearance.anim.durations.scale =
-          if isNomad
-          then 0
-          else 1;
-        services.weatherLocation = "";
-
-        background.desktopClock.enabled = true;
-
-        utilities.toasts.capsLockChanged = false;
-
-        bar =
-          {workspaces.perMonitorWorkspaces = false;}
-          // (
-            if isNomad
-            then {
-              persistent = false;
-              showOnHover = true;
-            }
-            else {
-              # Hide the bar on the secondary display; include both common
-              # names so hotplug renames don't re-enable it.
-              excludedScreens = ["HDMI-A-2" "HDMI-A-5"];
-            }
-          );
-      };
-
-      cli = {
-        enable = true;
-        settings.theme.enableGtk = false;
+        shell.screen_corners = {
+          enabled = true;
+          size = 32;
+        };
       };
     };
 
@@ -160,12 +107,6 @@ in {
           "$terminal" = "kitty";
           "$fileManager" = "thunar";
           "$browser" = "zen-twilight";
-          "$wallpaperDir" = "${osConfig.nixy.stylix.wallpaperDir}";
-
-          # ── Autostart ─────────────────────────────────────────────────
-          exec-once = [
-            "${lib.getExe pkgs.hyprpolkitagent}"
-          ];
 
           # ── Monitors ─────────────────────────────────────────────────
           monitor =
@@ -176,70 +117,21 @@ in {
               "desc:Samsung Electric Company LS24C33xG H9TX501795, 1920x1080@100, 1920x0, 1"
             ];
 
-          # ── Layout & gaps ────────────────────────────────────────────
-          general = {
-            layout = "dwindle";
-            border_size =
-              if isNomad
-              then 2
-              else 3;
-
-            gaps_in = 2;
-            gaps_out =
-              if isNomad
-              then 4
-              else 8;
-          };
-
-          dwindle = {
-            preserve_split = true;
-          };
-
-          group.groupbar = {
-            font_size = 11;
-            gradients = false;
-          };
-
-          # ── Visual effects ───────────────────────────────────────────
-          decoration =
-            if isNomad
-            then {
-              rounding = 8;
-              blur.enabled = false;
-              shadow.enabled = false;
-            }
-            else {
-              rounding = 10;
-              blur = {
-                enabled = true;
-                size = 3;
-                passes = 1;
-                new_optimizations = true;
-              };
-              shadow = {
-                enabled = true;
-                range = 4;
-                render_power = 3;
-              };
-            };
-
           # ── Animations ───────────────────────────────────────────────
           animations = {
-            enabled = !isNomad;
-
             bezier = [
               "easeOutExpo, 0.16, 1, 0.3, 1"
               "easeOutCubic, 0.33, 1, 0.68, 1"
             ];
 
             animation = [
-              "windows,     1, 2.5, easeOutExpo, popin 80%"
-              "windowsIn,   1, 2.5, easeOutExpo, popin 80%"
-              "windowsOut,  1, 2,   easeOutCubic, popin 80%"
-              "windowsMove, 1, 2.5, easeOutExpo"
-              "border,      1, 2,   default"
-              "fade,        1, 2,   default"
-              "workspaces,  1, 2.5, easeOutExpo, slide"
+              "windows,     1, 1.6, easeOutExpo, popin 80%"
+              "windowsIn,   1, 1.6, easeOutExpo, popin 80%"
+              "windowsOut,  1, 1.2, easeOutCubic, popin 80%"
+              "windowsMove, 1, 1.6, easeOutExpo"
+              "border,      1, 1.6, default"
+              "fade,        1, 1.6, default"
+              "workspaces,  1, 1.6, easeOutExpo, slide"
             ];
           };
 
@@ -252,25 +144,19 @@ in {
 
             # Window management
             "$mainMod,       Q,      killactive,"
-            "$mainMod,       M,      exec,            uwsm stop"
             "$mainMod,       V,      togglefloating,"
-            "$mainMod ALT,   J,      layoutmsg, togglesplit"
 
-            # Focus (vim home-row, arrows kept as an alternate)
-            "$mainMod,       H,      movefocus,       l"
-            "$mainMod,       J,      movefocus,       d"
-            "$mainMod,       K,      movefocus,       u"
-            "$mainMod,       L,      movefocus,       r"
+            # Focus
             "$mainMod,       left,   movefocus,       l"
             "$mainMod,       right,  movefocus,       r"
             "$mainMod,       up,     movefocus,       u"
             "$mainMod,       down,   movefocus,       d"
 
-            # Move window (vim home-row)
-            "$mainMod SHIFT, H,      movewindow,      l"
-            "$mainMod SHIFT, J,      movewindow,      d"
-            "$mainMod SHIFT, K,      movewindow,      u"
-            "$mainMod SHIFT, L,      movewindow,      r"
+            # Move window
+            "$mainMod SHIFT, left,   movewindow,      l"
+            "$mainMod SHIFT, right,  movewindow,      r"
+            "$mainMod SHIFT, up,     movewindow,      u"
+            "$mainMod SHIFT, down,   movewindow,      d"
 
             # Workspace cycling
             "$mainMod,       Tab,    workspace,       e+1"
@@ -304,21 +190,15 @@ in {
             "$mainMod,       S,      togglespecialworkspace, magic"
             "$mainMod SHIFT, S,      movetoworkspace,        special:magic"
 
-            # Scroll through workspaces
-            "$mainMod,       mouse_down, workspace,   e+1"
-            "$mainMod,       mouse_up,   workspace,   e-1"
-
-            # Caelestia ecosystem actions
-            "$mainMod,       A,      global,          caelestia:launcher"
-            "$mainMod,       Escape, global,          caelestia:session"
-            "$mainMod,       G,      exec,            caelestia shell gameMode toggle"
-            "$mainMod CTRL,  L,      global,          caelestia:lock"
-            "$mainMod,       W,      exec,            caelestia wallpaper -r $wallpaperDir && caelestia scheme set -m ${osConfig.nixy.stylix.polarity}"
+            # Noctalia ecosystem actions
+            "$mainMod,       A,      exec,            noctalia msg panel-toggle launcher"
+            "$mainMod,       Escape, exec,            noctalia msg panel-toggle session"
+            "$mainMod CTRL,  L,      exec,            noctalia msg session lock"
 
             # Screenshots
-            "$mainMod,       Print,  exec,            caelestia screenshot --freeze"
-            ",               Print,  exec,            caelestia screenshot --region --freeze"
-            "$mainMod ALT,   Print,  exec,            caelestia screenshot --all --freeze"
+            ",               Print,  exec,            noctalia msg screenshot-region"
+            "$mainMod,       Print,  exec,            noctalia msg screenshot-fullscreen"
+            "$mainMod ALT,   Print,  exec,            noctalia msg screenshot-fullscreen all"
           ];
 
           bindm = [
@@ -329,14 +209,14 @@ in {
           # ── Media / hardware keys ────────────────────────────────────
           bindel =
             [
-              ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-              ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-              ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+              ",XF86AudioRaiseVolume, exec, noctalia msg volume-up"
+              ",XF86AudioLowerVolume, exec, noctalia msg volume-down"
+              ",XF86AudioMute, exec, noctalia msg volume-mute"
               ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
             ]
             ++ lib.optionals isNomad [
-              ",XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} set 5%+"
-              ",XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} set 5%-"
+              ",XF86MonBrightnessUp, exec, noctalia msg brightness-up"
+              ",XF86MonBrightnessDown, exec, noctalia msg brightness-down"
             ];
 
           bindl = [
@@ -356,10 +236,7 @@ in {
           input =
             {kb_layout = "pl";}
             // lib.optionalAttrs isNomad {
-              touchpad = {
-                natural_scroll = true;
-                disable_while_typing = true;
-              };
+              touchpad.natural_scroll = true;
             };
 
           # ── Cursor ───────────────────────────────────────────────────
@@ -378,6 +255,12 @@ in {
           };
         }
         // lib.optionalAttrs isNomad {
+          # ── Visual effects ───────────────────────────────────────────
+          decoration = {
+            blur.enabled = false;
+            shadow.enabled = false;
+          };
+
           # ── Trackpad gestures ───────────────────────────────────────
           gesture = "3, horizontal, workspace";
         };
