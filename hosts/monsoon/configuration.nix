@@ -23,6 +23,13 @@
     nvidiaSettings = false;
   };
 
+  # Shows the plymouth screen
+  boot.initrd.kernelModules = [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_drm"
+  ];
+
   boot.blacklistedKernelModules = ["nouveau"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
