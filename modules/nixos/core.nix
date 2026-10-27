@@ -47,20 +47,19 @@
     theme = lib.mkForce "gifmouth";
     themePackages = with pkgs; [
       (callPackage (inputs.plymouth-gifmouth-theme + /package.nix) {
-        gifSource = "https://media1.tenor.com/m/VR_FUcI2pfMAAAAd/cat-cat-blush.gif";
-        gifHash = "sha256:0drzz3wy4f0fqjz9s9ar00z7grnr56q1l9sjsfh29bj991vm6aai";
+        gifSource = "https://media1.tenor.com/m/iNppQklYYnYAAAAd/furry-boykisser-dance-furry.gif";
+        gifHash = "sha256:1chhj4lylggpykcrpr4f6ri2kqkmayasqix35sg589xlnc2ajgmh";
       })
     ];
   };
 
   # Silent boot
   boot.consoleLogLevel = 3;
-  boot.initrd.verbose = false;
-
   boot.kernelParams = [
     "quiet"
+    "splash"
     "udev.log_level=3"
-    "systemd.show_status=auto"
+    "rd.systemd.show_status=auto"
   ];
 
   # ── Locale ─────────────────────────────────────────────────────────
