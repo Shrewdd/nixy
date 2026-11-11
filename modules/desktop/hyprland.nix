@@ -195,10 +195,6 @@ in {
               (bind "${mainMod} + SHIFT + right" (dsp "window.move" [{direction = "right";}]))
               (bind "${mainMod} + SHIFT + up" (dsp "window.move" [{direction = "up";}]))
               (bind "${mainMod} + SHIFT + down" (dsp "window.move" [{direction = "down";}]))
-
-              # Workspace cycling
-              (bind "${mainMod} + Tab" (dsp "focus" [{workspace = "e+1";}]))
-              (bind "${mainMod} + SHIFT + Tab" (dsp "focus" [{workspace = "e-1";}]))
             ]
             # Switch workspace (key 0 is workspace 10)
             ++ map (i: bind "${mainMod} + ${toString (lib.mod i 10)}" (dsp "focus" [{workspace = i;}])) (lib.range 1 10)
@@ -210,6 +206,7 @@ in {
               (bind "${mainMod} + SHIFT + S" (dsp "window.move" [{workspace = "special:magic";}]))
 
               # Noctalia ecosystem actions
+              (bind "ALT + TAB" (exec "noctalia msg window-switcher hold"))
               (bind "${mainMod} + A" (exec "noctalia msg panel-toggle launcher"))
               (bind "${mainMod} + Escape" (exec "noctalia msg panel-toggle session"))
               (bind "${mainMod} + CTRL + L" (exec "noctalia msg session lock"))
@@ -301,5 +298,7 @@ in {
           };
         };
     };
+    # disable hyprland being managed by stylix as noctalia takes care of it
+    stylix.targets.hyprland.enable = false;
   };
 }
